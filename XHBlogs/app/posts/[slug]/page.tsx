@@ -19,15 +19,16 @@ import SidebarLyric from '../../../components/SidebarLyric';
 
 export async function generateStaticParams() {
   const postsDirectory = path.join(process.cwd(), 'posts');
-  if (!fs.existsSync(postsDirectory)) return [];
+  if (!fs.existsSync(postsDirectory)) return [{ slug: '_empty' }];
 
   const filenames = fs.readdirSync(postsDirectory);
 
-  return filenames
+  const params = filenames
     .filter((name) => name.endsWith('.md'))
     .map((name) => ({
       slug: name.replace(/\.md$/, ''),
     }));
+  return params.length > 0 ? params : [{ slug: '_empty' }];
 }
 
 function extractToc(content: string) {
@@ -59,6 +60,9 @@ function extractToc(content: string) {
 
 async function getPostData(slug: string) {
   const fullPath = path.join(process.cwd(), 'posts', `${slug}.md`);
+  if (!fs.existsSync(fullPath)) {
+    return { slug, title: '暂无文章', date: '2026-11-23', tags: [], cover: '', description: '', contentHtml: '<p>这里暂时还没有文章内容~</p>', toc: [] };
+  }
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   let { data, content } = matter(fileContents);
 

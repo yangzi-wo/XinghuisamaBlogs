@@ -19,17 +19,21 @@ import Comments from '../../../components/Comments';
 
 export async function generateStaticParams() {
   const chattersDirectory = path.join(process.cwd(), 'chatters');
-  if (!fs.existsSync(chattersDirectory)) return [];
+  if (!fs.existsSync(chattersDirectory)) return [{ slug: '_empty' }];
   const filenames = fs.readdirSync(chattersDirectory);
-  return filenames
+  const params = filenames
     .filter((name) => name.endsWith('.md'))
     .map((name) => ({
       slug: name.replace(/\.md$/, ''),
     }));
+  return params.length > 0 ? params : [{ slug: '_empty' }];
 }
 
 async function getChatterData(slug: string) {
   const fullPath = path.join(process.cwd(), 'chatters', `${slug}.md`);
+  if (!fs.existsSync(fullPath)) {
+    return { slug, title: '暂无杂谈', date: '2026-11-23', tags: [], mood: '', cover: '', description: '', contentHtml: '<p>这里暂时还没有杂谈内容~</p>' };
+  }
   const fileContents = fs.readFileSync(fullPath, 'utf8');
 
   let { data, content } = matter(fileContents);
