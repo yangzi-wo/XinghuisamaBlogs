@@ -21,6 +21,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       avatar_url: user.avatar_url,
       exp: user.exp,
       level: user.level,
+      checkin_streak: user.checkin_streak || 0,
       next_level_exp: getNextLevelExp(user.level),
       checked_in_today: user.last_checkin_date === today,
       is_admin: user.is_admin === 1,

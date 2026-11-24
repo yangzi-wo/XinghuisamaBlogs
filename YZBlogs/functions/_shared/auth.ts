@@ -12,13 +12,15 @@ export interface SessionUser {
   avatar_url: string;
   exp: number;
   level: number;
+  checkin_streak: number;
   last_checkin_date: string | null;
   is_admin: number;
 }
 
 export const SESSION_COOKIE_NAME = "babel_session";
-export const DAILY_CHECKIN_EXP = 10;
-export const LEVEL_THRESHOLDS = [0, 10, 30, 60, 100, 150, 220, 300, 400, 520];
+export const DAILY_CHECKIN_EXP = 30;
+export const STREAK_7_BONUS_EXP = 60;
+export const LEVEL_THRESHOLDS = [0, 80, 400, 1120, 2400, 4400, 7280, 11200, 16320, 22800];
 
 export function calculateLevel(exp: number): number {
   let lvl = 1;
@@ -38,6 +40,11 @@ export function getNextLevelExp(level: number): number | null {
 export function getUtc8DateString(date = new Date()): string {
   const utc8 = new Date(date.getTime() + 8 * 60 * 60 * 1000);
   return utc8.toISOString().slice(0, 10);
+}
+
+export function getUtc8YesterdayString(date = new Date()): string {
+  const yesterday = new Date(date.getTime() - 24 * 60 * 60 * 1000);
+  return getUtc8DateString(yesterday);
 }
 
 export function jsonResponse(data: unknown, status = 200, headers: Record<string, string> = {}): Response {
@@ -102,7 +109,7 @@ export async function getSessionUser(env: Env, request: Request): Promise<Sessio
   if (!sessionId || !env.DB) return null;
 
   const row = await env.DB.prepare(
-    `SELECT u.id, u.github_id, u.username, u.avatar_url, u.exp, u.level, u.last_checkin_date, u.is_admin
+    `SELECT u.id, u.github_id, u.username, u.avatar_url, u.exp, u.level, u.checkin_streak, u.last_checkin_date, u.is_admin
      FROM sessions s
      JOIN users u ON u.id = s.user_id
      WHERE s.id = ? AND s.expires_at > datetime('now')`

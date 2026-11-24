@@ -9,6 +9,7 @@ export interface AuthUser {
   avatar_url: string;
   exp: number;
   level: number;
+  checkin_streak?: number;
   next_level_exp: number | null;
   checked_in_today: boolean;
   is_admin: boolean;
@@ -70,6 +71,7 @@ export default function AuthWidget() {
                 ...prev,
                 exp: data.exp,
                 level: data.level,
+                checkin_streak: data.checkin_streak ?? prev.checkin_streak,
                 next_level_exp: data.next_level_exp ?? null,
                 checked_in_today: true,
               }
@@ -167,6 +169,9 @@ export default function AuthWidget() {
               <div className="text-[11px] text-slate-500 dark:text-slate-400">
                 Lv.{user.level} · {user.exp} / {user.next_level_exp ?? "MAX"} EXP
               </div>
+              <div className="text-[10px] text-indigo-500 dark:text-indigo-400 mt-0.5">
+                已连续签到 {user.checkin_streak ?? 0} 天（满7天额外+60）
+              </div>
             </div>
           </div>
 
@@ -187,7 +192,7 @@ export default function AuthWidget() {
                 : "bg-indigo-500 hover:bg-indigo-600 text-white shadow-md shadow-indigo-500/25"
             }`}
           >
-            {user.checked_in_today ? "今日已签到 ✓" : busy ? "签到中..." : "每日签到领经验 (+10 EXP)"}
+            {user.checked_in_today ? "今日已签到 ✓" : busy ? "签到中..." : "每日签到领经验 (+30 EXP)"}
           </button>
 
           {checkinMsg && (
