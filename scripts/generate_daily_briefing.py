@@ -75,6 +75,17 @@ def strip_html(text: str) -> str:
     return cleaned[:260]
 
 
+def normalize_dot_date(raw: str | None, fallback: str) -> str:
+    text = (raw or "").strip()[:10].replace("-", ".").replace("/", ".")
+    if re.fullmatch(r"\d{4}\.\d{2}\.\d{2}", text):
+        try:
+            dt.datetime.strptime(text, "%Y.%m.%d")
+            return text if text <= fallback else fallback
+        except ValueError:
+            pass
+    return fallback
+
+
 def parse_rss_or_atom(raw: bytes, source_name: str, topic_hint: str, limit: int = 6) -> list[dict]:
     items: list[dict] = []
     root = ET.fromstring(raw)
@@ -428,13 +439,13 @@ def main() -> int:
             "originalTitle": (item.get("originalTitle") or item.get("title") or "").strip(),
             "source": (item.get("source") or "Web").strip(),
             "sourceOrg": (item.get("sourceOrg") or item.get("source") or "Community").strip(),
-            "sourceDate": (item.get("sourceDate") or today_iso).strip(),
+            "sourceDate": normalize_dot_date(item.get("sourceDate"), today_dot),
             "url": url,
             "tags": [str(t).strip() for t in (item.get("tags") or topics[:1]) if str(t).strip()][:3],
             "summary": (item.get("summary") or "").strip(),
             "highlights": [str(h).strip() for h in (item.get("highlights") or []) if str(h).strip()][:4],
             "readingNote": (item.get("readingNote") or "").strip(),
-            "verifiedAt": now.isoformat(timespec="seconds"),
+            "verifiedAt": today_dot,
             "verificationUrls": [url],
         })
 
