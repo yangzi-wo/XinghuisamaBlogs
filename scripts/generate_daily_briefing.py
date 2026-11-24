@@ -106,7 +106,7 @@ def parse_rss_or_atom(raw: bytes, source_name: str, topic_hint: str, limit: int 
     return items
 
 
-def fetch_candidates(now: dt.datetime) -> list[dict]:
+def fetch_candidates(now: dt.datetime, preferred_sources: list[str] | None = None, excluded_keywords: list[str] | None = None) -> list[dict]:
     candidates: list[dict] = []
     rss_sources = [
         ("https://blog.cloudflare.com/rss/", "Cloudflare Blog", "网络技术", 5),
@@ -114,6 +114,9 @@ def fetch_candidates(now: dt.datetime) -> list[dict]:
         ("https://simonwillison.net/atom/everything/", "Simon Willison", "AI大模型", 5),
         ("https://www.animenewsnetwork.com/all/rss.xml?ann-edition=us", "Anime News Network", "ACGN", 5),
     ]
+    for src in preferred_sources or []:
+        if src.startswith("http://") or src.startswith("https://"):
+            rss_sources.insert(0, (src, src.split("/")[2], "偏好来源", 6))
 
     for url, source_name, topic, limit in rss_sources:
         try:
@@ -178,6 +181,13 @@ def fetch_candidates(now: dt.datetime) -> list[dict]:
     except Exception as exc:
         print(f"[warn] Bangumi 抓取失败: {exc}", file=sys.stderr)
 
+    excluded = [k.strip().lower() for k in (excluded_keywords or []) if k.strip()]
+    if excluded:
+        candidates = [
+            item for item in candidates
+            if not any(kw in f"{item.get('title', '')} {item.get('summary', '')}".lower() for kw in excluded)
+        ]
+
     return candidates
 
 
@@ -234,12 +244,31 @@ def call_model(ai_cfg: dict, api_key: str, prompt: str) -> dict:
     raise ValueError(f"不支持的 provider: {provider}")
 
 
-def build_prompt(candidates: list[dict], topics: list[str], channels: list[dict], date_str: str) -> str:
+def build_prompt(
+    candidates: list[dict],
+    topics: list[str],
+    channels: list[dict],
+    date_str: str,
+    *,
+    language: str = "zh-CN",
+    max_items: int = 6,
+    preferred_sources: list[str] | None = None,
+    excluded_keywords: list[str] | None = None,
+) -> str:
     channel_desc = ", ".join(f"{c['id']}({c['name']})" for c in channels)
     topic_desc = "、".join(topics) if topics else "AI大模型、ACGN、GitHub开源热门、网络技术"
+    lang_map = {"zh-CN": "简体中文", "en-US": "English", "ja-JP": "日本語"}
+    lang_label = lang_map.get(language, "简体中文")
+    extra_rules = []
+    if preferred_sources:
+        extra_rules.append(f"优先考虑以下偏好来源：{'、'.join(preferred_sources)}。")
+    if excluded_keywords:
+        extra_rules.append(f"严禁收录包含以下关键词的内容：{'、'.join(excluded_keywords)}。")
+    extra_text = ("\n" + "\n".join(extra_rules)) if extra_rules else ""
     return (
-        f"今天是 {date_str}。请从以下候选资讯中挑选 4 到 6 条最有价值的内容，组成今天的「每日选刊」。\n"
-        f"要求尽量覆盖用户关注的主题：{topic_desc}。\n"
+        f"今天是 {date_str}。请从以下候选资讯中挑选最多 {max_items} 条（建议 4 到 {max_items} 条）最有价值的内容，组成今天的「每日选刊」。\n"
+        f"输出语言要求：标题、摘要、要点与点评均使用 {lang_label}。\n"
+        f"要求尽量覆盖用户关注的主题：{topic_desc}。{extra_text}\n"
         f"可用栏目 category 只能从以下 id 中选择：{channel_desc}（一般快讯/新番/开源热门用 news，技术深度文章/论文用 reading）。\n"
         f"必须返回严格 JSON，格式如下：\n"
         "{\n"
@@ -291,7 +320,14 @@ def main() -> int:
     today_iso = now.strftime("%Y-%m-%d")
     weekday_zh = WEEKDAYS_ZH[now.weekday()]
 
-    candidates = fetch_candidates(now)
+    selection = config.get("selection") or {}
+    topics = selection.get("topics") or config.get("topics") or ["AI大模型", "ACGN", "GitHub开源热门", "网络技术"]
+    excluded_keywords = selection.get("excludedKeywords") or []
+    preferred_sources = selection.get("preferredSources") or []
+    language = selection.get("language") or "zh-CN"
+    max_items = max(1, min(20, int(selection.get("maxItems") or 6)))
+
+    candidates = fetch_candidates(now, preferred_sources=preferred_sources, excluded_keywords=excluded_keywords)
     if not candidates:
         print("未能抓取到任何候选资讯，跳过更新。", file=sys.stderr)
         return 1
@@ -300,8 +336,16 @@ def main() -> int:
     if not channels:
         channels = [{"id": "news", "name": "动态精选"}, {"id": "reading", "name": "深度阅读"}]
 
-    topics = config.get("topics") or ["AI大模型", "ACGN", "GitHub开源热门", "网络技术"]
-    prompt = build_prompt(candidates, topics, channels, today_iso)
+    prompt = build_prompt(
+        candidates,
+        topics,
+        channels,
+        today_iso,
+        language=language,
+        max_items=max_items,
+        preferred_sources=preferred_sources,
+        excluded_keywords=excluded_keywords,
+    )
 
     print(f"正在调用 {ai_cfg.get('provider')} ({ai_cfg.get('model')}) 生成 {today_dot} 每日选刊...")
     generated = call_model(ai_cfg, api_key, prompt)
@@ -311,7 +355,7 @@ def main() -> int:
 
     valid_channel_ids = {c["id"] for c in channels}
     normalized_items = []
-    for idx, item in enumerate(raw_items[:6], start=1):
+    for idx, item in enumerate(raw_items[:max_items], start=1):
         url = (item.get("url") or "").strip()
         if not url.startswith("http"):
             continue

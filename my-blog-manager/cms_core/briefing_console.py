@@ -109,6 +109,7 @@ def public_config(config):
     return {
         'display': config['display'],
         'topics': config['selection']['topics'],
+        'selection': config['selection'],
         'channels': config['channels'],
         'aiProvider': config['aiProvider'],
     }
@@ -142,7 +143,10 @@ class BriefingStore:
             if public_path.is_file():
                 public = json.loads(public_path.read_text(encoding='utf-8'))
                 value['display'].update(public.get('display', {}))
-                value['selection']['topics'] = public.get('topics', [])
+                if isinstance(public.get('selection'), dict):
+                    value['selection'].update({k: v for k, v in public['selection'].items() if k in value['selection']})
+                else:
+                    value['selection']['topics'] = public.get('topics', [])
                 value['channels'] = public.get('channels', value['channels'])
                 if isinstance(public.get('aiProvider'), dict):
                     value['aiProvider'].update(public['aiProvider'])
