@@ -15,7 +15,8 @@
     "ACGN",
     "github开源热门",
     "网络",
-    "时政"
+    "时政",
+    "游戏"
   ],
   "selection": {
     "topics": [
@@ -23,7 +24,8 @@
       "ACGN",
       "github开源热门",
       "网络",
-      "时政"
+      "时政",
+      "游戏"
     ],
     "excludedKeywords": [],
     "preferredSources": [],
@@ -39,6 +41,11 @@
     {
       "id": "reading",
       "name": "深度阅读",
+      "enabled": true
+    },
+    {
+      "id": "section-3",
+      "name": "当下热门",
       "enabled": true
     }
   ],

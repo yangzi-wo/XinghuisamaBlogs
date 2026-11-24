@@ -40,7 +40,7 @@ export const siteConfig = {
     discord: "",
     x: "",
     telegram: "",
-    email: "",
+    email: "yzi606999@gmail.com",
     qq: "2829415774",
   },
   counts: {
@@ -68,6 +68,6 @@ export const siteConfig = {
     maxOutputTokens: 150,
     temperature: 0.85,
   },
-  friendLinkApplyFormat: "名称：样子の巴别塔\n简介：烏の歌に茜 この孤独も今音に変わる\n链接：\n头像：/avatar.jpg",
+  friendLinkApplyFormat: "名称：样子の巴别塔\n简介：烏の歌に茜 この孤独も今音に変わる\n链接：https://yangziqwq.org/\n头像：/avatar.jpg",
   enableLevelSystem: true,
 };
