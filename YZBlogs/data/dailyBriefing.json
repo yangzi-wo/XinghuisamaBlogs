@@ -1,9 +1,103 @@
 {
   "edition": {
-    "date": "1970.01.01",
-    "weekday": "",
+    "date": "2026.11.24",
+    "weekday": "星期二",
     "label": "每日选刊",
-    "notice": ""
+    "notice": "今日聚焦：AI模型幻觉研究、开源游戏兼容层进展及ACGN行业动态与新番资讯。"
   },
-  "items": []
+  "items": [
+    {
+      "id": "brief-20261124-1-67d54e34",
+      "category": "reading",
+      "title": "大模型在后训练阶段会记忆自身的幻觉",
+      "originalTitle": "LLMs Memorize Their Own Hallucinations During Post-Training",
+      "source": "Hugging Face Papers",
+      "sourceOrg": "Hugging Face",
+      "sourceDate": "2026-11-24",
+      "url": "https://huggingface.co/papers/2611.26863",
+      "tags": [
+        "AI大模型"
+      ],
+      "summary": "本研究探讨了直接采用推理导向的后训练方案对大模型的潜在负面影响。研究发现，模型在非数学和代码领域部署时，会错误地记忆并内化其在推理任务中产生的幻觉，从而影响模型整体的可靠性。",
+      "highlights": [
+        "推理导向训练的副作用",
+        "幻觉记忆机制分析"
+      ],
+      "readingNote": "深度解析大模型训练中“推理能力”与“知识准确性”之间的权衡，值得AI开发者关注。",
+      "verifiedAt": "2026-11-24T22:42:05+08:00",
+      "verificationUrls": [
+        "https://huggingface.co/papers/2611.26863"
+      ]
+    },
+    {
+      "id": "brief-20261124-2-30cdd4ec",
+      "category": "news",
+      "title": "开源项目 VIctory：尝试在PC上运行GTA 6",
+      "originalTitle": "Marvisak/VIctory (★9194)",
+      "source": "GitHub Trending",
+      "sourceOrg": "GitHub",
+      "sourceDate": "2026-11-23",
+      "url": "https://github.com/Marvisak/VIctory",
+      "tags": [
+        "github开源热门",
+        "ACGN"
+      ],
+      "summary": "GitHub热门项目VIctory旨在通过兼容层技术，尝试让主机大作《GTA 6》在Windows平台上运行。该项目近期在社区引发广泛关注，展示了跨平台游戏移植技术的最新进展。",
+      "highlights": [
+        "GTA 6 PC运行尝试",
+        "跨平台兼容层技术"
+      ],
+      "readingNote": "游戏移植领域的硬核开源尝试，关注其后续对底层图形API的适配进展。",
+      "verifiedAt": "2026-11-24T22:42:05+08:00",
+      "verificationUrls": [
+        "https://github.com/Marvisak/VIctory"
+      ]
+    },
+    {
+      "id": "brief-20261124-3-20eabf9d",
+      "category": "news",
+      "title": "《魔法使之夜》动画电影续作正式确认",
+      "originalTitle": "Witch on the Holy Night Anime Film's Sequel Confrmed",
+      "source": "Anime News Network",
+      "sourceOrg": "ANN",
+      "sourceDate": "2026-11-24",
+      "url": "https://www.animenewsnetwork.com/news/2026-11-24/witch-on-the-holy-night-anime-film-sequel-confrmed/.244151",
+      "tags": [
+        "ACGN"
+      ],
+      "summary": "继首部动画电影取得优异票房成绩后，官方正式确认《魔法使之夜》动画电影续作制作决定。该系列凭借精良的制作水准，在粉丝群体中拥有极高期待值。",
+      "highlights": [
+        "续作制作确认",
+        "首部票房表现优异"
+      ],
+      "readingNote": "型月粉丝不容错过的重磅消息，期待续作延续高水准制作。",
+      "verifiedAt": "2026-11-24T22:42:05+08:00",
+      "verificationUrls": [
+        "https://www.animenewsnetwork.com/news/2026-11-24/witch-on-the-holy-night-anime-film-sequel-confrmed/.244151"
+      ]
+    },
+    {
+      "id": "brief-20261124-4-48e9fadc",
+      "category": "news",
+      "title": "Cloudflare WAF发布针对ruby2shell等关键漏洞的防御机制",
+      "originalTitle": "How Cloudflare WAF protects against ruby2shell (CVE-2026-132825)",
+      "source": "Cloudflare Blog",
+      "sourceOrg": "Cloudflare",
+      "sourceDate": "2026-11-20",
+      "url": "https://blog.cloudflare.com/ruby2shell-waf-protection/",
+      "tags": [
+        "网络"
+      ],
+      "summary": "针对近期爆发的ruby2shell（CVE-2026-132825）及phpAfterShell等关键漏洞，Cloudflare更新了WAF规则，为所有层级的用户（包括免费版）提供自动防御，有效阻断了未经身份验证的代码执行风险。",
+      "highlights": [
+        "全网防御覆盖",
+        "针对CVE-2026-132825的修复"
+      ],
+      "readingNote": "网络安全从业者应及时检查相关组件，并利用WAF作为应急防护手段。",
+      "verifiedAt": "2026-11-24T22:42:05+08:00",
+      "verificationUrls": [
+        "https://blog.cloudflare.com/ruby2shell-waf-protection/"
+      ]
+    }
+  ]
 }
