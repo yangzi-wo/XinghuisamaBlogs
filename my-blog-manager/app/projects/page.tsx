@@ -3,7 +3,7 @@ import PageTransition from '../../components/PageTransition';
 import ProjectsBoard from './ProjectsBoard';
 
 export const metadata = {
-  title: "项目矩阵 | XingHuiSama の 博客",
+  title: "项目矩阵 | 样子の巴别塔",
   description: "开源项目与代码仓库展示",
 };
 
