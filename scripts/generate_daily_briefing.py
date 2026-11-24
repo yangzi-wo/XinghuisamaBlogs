@@ -9,6 +9,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -35,20 +36,37 @@ def http_get(url: str, timeout: int = 15, headers: dict[str, str] | None = None)
         return resp.read()
 
 
-def http_post_json(url: str, payload: dict, headers: dict[str, str] | None = None, timeout: int = 60) -> dict:
+def http_post_json(url: str, payload: dict, headers: dict[str, str] | None = None, timeout: int = 60, retries: int = 3) -> dict:
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req_headers = {
         "Content-Type": "application/json",
         "User-Agent": USER_AGENT,
         **(headers or {}),
     }
-    req = urllib.request.Request(url, data=data, headers=req_headers, method="POST")
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {exc.code} 调用模型失败: {detail[:400]}") from exc
+    last_exc: Exception | None = None
+    for attempt in range(retries):
+        req = urllib.request.Request(url, data=data, headers=req_headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            last_exc = RuntimeError(f"HTTP {exc.code} 调用模型失败: {detail[:400]}")
+            if exc.code in (429, 500, 502, 503, 504) and attempt < retries - 1:
+                wait_sec = 3 * (attempt + 1)
+                print(f"[warn] 接口返回 HTTP {exc.code}，{wait_sec}s 后重试 ({attempt + 1}/{retries})...", file=sys.stderr)
+                time.sleep(wait_sec)
+                continue
+            raise last_exc from exc
+        except urllib.error.URLError as exc:
+            last_exc = RuntimeError(f"网络请求失败: {exc}")
+            if attempt < retries - 1:
+                wait_sec = 3 * (attempt + 1)
+                print(f"[warn] 网络异常，{wait_sec}s 后重试 ({attempt + 1}/{retries})...", file=sys.stderr)
+                time.sleep(wait_sec)
+                continue
+            raise last_exc from exc
+    raise last_exc or RuntimeError("未知请求错误")
 
 
 def strip_html(text: str) -> str:
@@ -211,16 +229,28 @@ def call_model(ai_cfg: dict, api_key: str, prompt: str) -> dict:
     if provider == "gemini":
         if not base_url:
             base_url = "https://generativelanguage.googleapis.com"
-        endpoint = f"{base_url}/v1beta/models/{model}:generateContent?key={api_key}"
-        resp = http_post_json(
-            endpoint,
-            {
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"responseMimeType": "application/json", "temperature": 0.3},
-            },
-        )
-        raw_text = resp["candidates"][0]["content"]["parts"][0]["text"]
-        return extract_json_object(raw_text)
+        fallback_models = [model] + [
+            m for m in ("gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite") if m != model
+        ]
+        last_err: Exception | None = None
+        for idx, candidate_model in enumerate(fallback_models):
+            endpoint = f"{base_url}/v1beta/models/{candidate_model}:generateContent?key={api_key}"
+            try:
+                if idx > 0:
+                    print(f"[info] 尝试自动降级到备选模型 {candidate_model}...", file=sys.stderr)
+                resp = http_post_json(
+                    endpoint,
+                    {
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {"responseMimeType": "application/json", "temperature": 0.3},
+                    },
+                )
+                raw_text = resp["candidates"][0]["content"]["parts"][0]["text"]
+                return extract_json_object(raw_text)
+            except Exception as exc:
+                last_err = exc
+                print(f"[warn] 模型 {candidate_model} 调用失败: {exc}", file=sys.stderr)
+        raise last_err or RuntimeError("所有 Gemini 模型均调用失败")
 
     if provider == "openai":
         if not base_url:
