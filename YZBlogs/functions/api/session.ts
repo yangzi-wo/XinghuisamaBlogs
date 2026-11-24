@@ -1,4 +1,4 @@
-import { Env, calculateLevel, getNextLevelExp, getSessionUser, getUtc8DateString, jsonResponse } from "../_shared/auth";
+import { Env, calculateLevel, getLevelTitle, getNextLevelExp, getSessionUser, getUtc8DateString, jsonResponse } from "../_shared/auth";
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const oauthConfigured = Boolean(env.GITHUB_CLIENT_ID);
@@ -22,6 +22,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       avatar_url: user.avatar_url,
       exp: user.exp,
       level: actualLevel,
+      level_title: getLevelTitle(actualLevel),
       checkin_streak: user.checkin_streak || 0,
       next_level_exp: getNextLevelExp(actualLevel),
       checked_in_today: user.last_checkin_date === today,

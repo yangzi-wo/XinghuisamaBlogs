@@ -3,6 +3,7 @@ import {
   Env,
   STREAK_7_BONUS_EXP,
   calculateLevel,
+  getLevelTitle,
   getNextLevelExp,
   getSessionUser,
   getUtc8DateString,
@@ -59,8 +60,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   const leveledUp = newLevel > user.level;
+  const newTitle = getLevelTitle(newLevel);
   const bonusNote = bonusExp > 0 ? `（含连续第 ${newStreak} 天额外 +${bonusExp} EXP！）` : "";
-  const levelNote = leveledUp ? ` 恭喜升到 Lv.${newLevel}！` : "";
+  const levelNote = leveledUp ? ` 恭喜升到 Lv.${newLevel}「${newTitle}」！` : "";
 
   return jsonResponse({
     success: true,
@@ -72,6 +74,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     message: `签到成功！+${gainedExp} EXP${bonusNote}${levelNote}`,
     exp: newExp,
     level: newLevel,
+    level_title: newTitle,
     next_level_exp: getNextLevelExp(newLevel),
   });
 };

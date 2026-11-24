@@ -21,6 +21,23 @@ export const SESSION_COOKIE_NAME = "babel_session";
 export const DAILY_CHECKIN_EXP = 30;
 export const STREAK_7_BONUS_EXP = 60;
 export const LEVEL_THRESHOLDS = [0, 80, 400, 1120, 2400, 4400, 7280, 11200, 16320, 22800];
+export const LEVEL_TITLES = [
+  "敬啟",
+  "花水電車",
+  "狼少年",
+  "花降",
+  "花青綠",
+  "四瓣",
+  "茜雲",
+  "苦夏临风",
+  "繁春倚水",
+  "風華鳥月",
+];
+
+export function getLevelTitle(level: number): string {
+  const idx = Math.max(1, Math.min(10, level)) - 1;
+  return LEVEL_TITLES[idx] ?? "敬啟";
+}
 
 export function calculateLevel(exp: number): number {
   let lvl = 1;

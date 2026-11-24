@@ -10,24 +10,29 @@ export interface AuthUser {
   avatar_url: string;
   exp: number;
   level: number;
+  level_title?: string;
   checkin_streak?: number;
   next_level_exp: number | null;
   checked_in_today: boolean;
   is_admin: boolean;
 }
 
-const LEVEL_TABLE = [
-  { level: 1, total: 0, nextNeed: "80" },
-  { level: 2, total: 80, nextNeed: "320" },
-  { level: 3, total: 400, nextNeed: "720" },
-  { level: 4, total: 1120, nextNeed: "1280" },
-  { level: 5, total: 2400, nextNeed: "2000" },
-  { level: 6, total: 4400, nextNeed: "2880" },
-  { level: 7, total: 7280, nextNeed: "3920" },
-  { level: 8, total: 11200, nextNeed: "5120" },
-  { level: 9, total: 16320, nextNeed: "6480" },
-  { level: 10, total: 22800, nextNeed: "已满级" },
+export const LEVEL_TABLE = [
+  { level: 1, title: "敬啟", total: 0, nextNeed: "80" },
+  { level: 2, title: "花水電車", total: 80, nextNeed: "320" },
+  { level: 3, title: "狼少年", total: 400, nextNeed: "720" },
+  { level: 4, title: "花降", total: 1120, nextNeed: "1280" },
+  { level: 5, title: "花青綠", total: 2400, nextNeed: "2000" },
+  { level: 6, title: "四瓣", total: 4400, nextNeed: "2880" },
+  { level: 7, title: "茜雲", total: 7280, nextNeed: "3920" },
+  { level: 8, title: "苦夏临风", total: 11200, nextNeed: "5120" },
+  { level: 9, title: "繁春倚水", total: 16320, nextNeed: "6480" },
+  { level: 10, title: "風華鳥月", total: 22800, nextNeed: "已满级" },
 ];
+
+export function getLevelTitle(level: number): string {
+  return LEVEL_TABLE[Math.max(1, Math.min(10, level)) - 1]?.title || "敬啟";
+}
 
 export default function AuthWidget() {
   const pathname = usePathname() || "/";
@@ -86,6 +91,7 @@ export default function AuthWidget() {
                 ...prev,
                 exp: data.exp,
                 level: data.level,
+                level_title: data.level_title ?? getLevelTitle(data.level),
                 checkin_streak: data.checkin_streak ?? prev.checkin_streak,
                 next_level_exp: data.next_level_exp ?? null,
                 checked_in_today: true,
@@ -141,6 +147,7 @@ export default function AuthWidget() {
     );
   }
 
+  const levelTitle = user.level_title || getLevelTitle(user.level);
   const progressPct = user.next_level_exp
     ? Math.min(100, Math.round((user.exp / user.next_level_exp) * 100))
     : 100;
@@ -159,7 +166,7 @@ export default function AuthWidget() {
             className="w-6 h-6 rounded-full object-cover"
           />
           <span className="text-[11px] font-black text-indigo-600 dark:text-indigo-400">
-            Lv.{user.level}
+            Lv.{user.level} · {levelTitle}
           </span>
         </button>
 
@@ -195,8 +202,11 @@ export default function AuthWidget() {
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Lv.{user.level} · {user.exp} / {user.next_level_exp ?? "MAX"} EXP
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap">
+                  <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                    Lv.{user.level} {levelTitle}
+                  </span>
+                  <span>· {user.exp} / {user.next_level_exp ?? "MAX"} EXP</span>
                 </div>
                 <div className="text-[10px] text-indigo-500 dark:text-indigo-400 mt-0.5">
                   已连续签到 {user.checkin_streak ?? 0} 天（满7天额外+60）
@@ -248,7 +258,7 @@ export default function AuthWidget() {
           onClick={() => setShowRules(false)}
         >
           <div
-            className="w-full max-w-md max-h-[85vh] flex flex-col rounded-3xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl p-6 text-slate-800 dark:text-slate-100"
+            className="w-full max-w-lg max-h-[85vh] flex flex-col rounded-3xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl p-6 text-slate-800 dark:text-slate-100"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -256,7 +266,7 @@ export default function AuthWidget() {
                 <span className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-rose-500 text-white text-xs flex items-center justify-center">
                   ?
                 </span>
-                签到规则与等级区间
+                签到规则与等级称号
               </h3>
               <button
                 type="button"
@@ -278,38 +288,41 @@ export default function AuthWidget() {
               </p>
             </div>
 
-            <div className="max-h-64 overflow-y-auto pr-1 space-y-1.5">
-              <div className="grid grid-cols-3 text-[11px] font-bold text-slate-400 px-3 pb-1">
-                <span>等级</span>
-                <span>累计经验门槛</span>
-                <span className="text-right">升级还需</span>
+            <div className="overflow-y-auto pr-1 space-y-1.5">
+              <div className="grid grid-cols-12 text-[11px] font-bold text-slate-400 px-3 pb-1">
+                <span className="col-span-5">等级与称号</span>
+                <span className="col-span-4">累计经验</span>
+                <span className="col-span-3 text-right">升级还需</span>
               </div>
               {LEVEL_TABLE.map((row) => {
                 const isCurrent = user.level === row.level;
                 return (
                   <div
                     key={row.level}
-                    className={`grid grid-cols-3 items-center px-3 py-2 rounded-xl text-xs transition-colors ${
+                    className={`grid grid-cols-12 items-center px-3 py-2 rounded-xl text-xs transition-colors ${
                       isCurrent
                         ? "bg-gradient-to-r from-indigo-500/20 to-rose-500/20 border border-indigo-400/40 font-bold"
                         : "bg-white/50 dark:bg-slate-800/40 border border-white/30 dark:border-white/5"
                     }`}
                   >
-                    <span className="flex items-center gap-1.5">
+                    <span className="col-span-5 flex items-center gap-1.5 min-w-0">
                       <span className="text-indigo-600 dark:text-indigo-400 font-black">
                         Lv.{row.level}
                       </span>
+                      <span className="truncate text-slate-700 dark:text-slate-200">
+                        {row.title}
+                      </span>
                       {isCurrent && (
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500 text-white">
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500 text-white flex-shrink-0">
                           当前
                         </span>
                       )}
                     </span>
-                    <span className="font-mono text-slate-600 dark:text-slate-300">
+                    <span className="col-span-4 font-mono text-slate-600 dark:text-slate-300">
                       {row.total} EXP
                     </span>
-                    <span className="text-right text-slate-500 dark:text-slate-400">
-                      {row.nextNeed === "已满级" ? "满级" : `+${row.nextNeed} EXP`}
+                    <span className="col-span-3 text-right text-slate-500 dark:text-slate-400">
+                      {row.nextNeed === "已满级" ? "满级" : `+${row.nextNeed}`}
                     </span>
                   </div>
                 );

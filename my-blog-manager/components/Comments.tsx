@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import type { AuthUser } from "./AuthWidget";
+import { getLevelTitle, type AuthUser } from "./AuthWidget";
 
 interface CommentItem {
   id: number;
@@ -198,7 +198,7 @@ export default function Comments({ targetPath }: { targetPath?: string } = {}) {
                               {item.username}
                             </span>
                             <span className="px-1.5 py-0.5 text-[10px] font-black rounded bg-indigo-500/15 text-indigo-600 dark:text-indigo-400">
-                              Lv.{item.level}
+                              Lv.{item.level} · {getLevelTitle(item.level)}
                             </span>
                             {item.is_admin === 1 && (
                               <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/15 text-rose-500">
