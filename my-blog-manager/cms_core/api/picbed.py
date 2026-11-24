@@ -1,7 +1,15 @@
+from pathlib import Path
+import re
+import time
 from fastapi import APIRouter, Body, UploadFile, File, Form
 import httpx
 
 router = APIRouter()
+
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif", ".svg", ".bmp"}
+MAX_LOCAL_IMAGE_BYTES = 20 * 1024 * 1024  # 20 MB (safely below Cloudflare Pages 25 MiB limit)
+MANAGER_ROOT = Path(__file__).resolve().parents[2]
+SITE_ROOT = MANAGER_ROOT.parent / "XHBlogs"
 
 
 @router.post("/test")
@@ -34,15 +42,46 @@ async def test_picbed_connection(payload: dict = Body(...)):
         return {"success": False, "message": f"网络异常: {str(e)}"}
 
 
-# 👇 【全新追加】：真实的图床图片上传接口
+# 👇 【全新追加】：支持云端图床与本地 public/uploads 双模式上传
 @router.post("/upload")
 async def upload_image(
         file: UploadFile = File(...),
-        url: str = Form(...),
-        token: str = Form(...)
+        url: str = Form(""),
+        token: str = Form("")
 ):
     url = url.strip().rstrip('/')
     token = token.strip()
+
+    try:
+        content = await file.read()
+    except Exception as e:
+        return {"success": False, "message": f"读取文件失败: {str(e)}"}
+
+    if not token:
+        if len(content) > MAX_LOCAL_IMAGE_BYTES:
+            return {"success": False, "message": "图片超过 20MB 限制，请压缩后再上传"}
+
+        raw_name = Path(file.filename or "image.png").name
+        ext = Path(raw_name).suffix.lower()
+        if ext not in ALLOWED_IMAGE_EXTENSIONS:
+            return {"success": False, "message": f"不支持的图片格式: {ext or '未知'}"}
+
+        safe_stem = re.sub(r"[^a-zA-Z0-9_-]", "_", Path(raw_name).stem).strip("_") or "img"
+        saved_name = f"{int(time.time() * 1000)}_{safe_stem[:40]}{ext}"
+
+        try:
+            manager_upload_dir = MANAGER_ROOT / "public" / "uploads"
+            manager_upload_dir.mkdir(parents=True, exist_ok=True)
+            (manager_upload_dir / saved_name).write_bytes(content)
+
+            if SITE_ROOT.is_dir():
+                site_upload_dir = SITE_ROOT / "public" / "uploads"
+                site_upload_dir.mkdir(parents=True, exist_ok=True)
+                (site_upload_dir / saved_name).write_bytes(content)
+
+            return {"success": True, "message": "已保存至本地目录", "url": f"/uploads/{saved_name}"}
+        except Exception as e:
+            return {"success": False, "message": f"本地保存失败: {str(e)}"}
 
     if not token.startswith("Bearer "):
         token = f"Bearer {token}"
@@ -54,7 +93,6 @@ async def upload_image(
     }
 
     try:
-        content = await file.read()
         # 封装为 httpx 支持的文件上传格式
         files = {'file': (file.filename, content, file.content_type)}
 

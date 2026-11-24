@@ -20,18 +20,13 @@ export default function FloatingImageTool({ isOpen, onClose, onInsert }: Floatin
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 处理文件上传逻辑 (保持不变)
+  // 处理文件上传逻辑（未配置云端图床 Token 时自动保存至本地 public/uploads）
   const handleFileUpload = async (file: File) => {
-    const picUrl = (siteConfig as any).picBedUrl || "https://pic.dusays.com";
-    const picToken = (siteConfig as any).picBedToken;
-
-    if (!picToken) {
-      showToast("未配置图床 Token！", "error");
-      return;
-    }
+    const picUrl = (siteConfig as any).picBedUrl || "";
+    const picToken = ((siteConfig as any).picBedToken || "").trim();
 
     setIsUploading(true);
-    showToast("正在将图片传送至云端...", "success");
+    showToast(picToken ? "正在将图片传送至云端..." : "未配置云端图床，正在保存至本地...", "success");
 
     try {
       const configRes = await fetch(`/backend_config.json?t=${Date.now()}`);
