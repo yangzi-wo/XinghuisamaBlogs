@@ -293,6 +293,31 @@ def build_prompt(
     )
 
 
+def should_run_on_schedule(config: dict, now: dt.datetime) -> tuple[bool, str]:
+    force = "--force" in sys.argv[1:] or os.environ.get("GITHUB_EVENT_NAME", "") != "schedule"
+    if force:
+        return True, "手动或强制模式，立即执行"
+    sched = config.get("schedule") or {}
+    if not sched.get("enabled", True):
+        return False, "云端定时更新已关闭，跳过本次调度"
+    preferred = str(sched.get("preferredTime") or "08:00").strip()
+    try:
+        pref_hour = int(preferred.split(":", 1)[0])
+    except ValueError:
+        pref_hour = 8
+    today_dot = now.strftime("%Y.%m.%d")
+    if LATEST_PATH.is_file():
+        try:
+            latest = json.loads(LATEST_PATH.read_text(encoding="utf-8"))
+            if latest.get("edition", {}).get("date") == today_dot and latest.get("items"):
+                return False, f"今日 ({today_dot}) 选刊已生成，跳过重复执行"
+        except Exception:
+            pass
+    if now.hour < pref_hour:
+        return False, f"当前北京时间 {now.strftime('%H:%M')} 未到设定时间 {preferred}，跳过"
+    return True, f"已到设定时间 {preferred}，开始执行每日选刊"
+
+
 def main() -> int:
     if not CONFIG_PATH.is_file():
         print("找不到 briefingConfig.json，跳过执行。")
@@ -301,6 +326,12 @@ def main() -> int:
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     if not config.get("display", {}).get("enabled", False):
         print("每日选刊首页展示已关闭，跳过生成。")
+        return 0
+
+    now = beijing_now()
+    can_run, reason = should_run_on_schedule(config, now)
+    print(reason)
+    if not can_run:
         return 0
 
     ai_cfg = config.get("aiProvider") or {
@@ -315,7 +346,6 @@ def main() -> int:
         print(f"未检测到环境变量 {secret_name}，请在 GitHub Repository Secrets 中配置后重试。", file=sys.stderr)
         return 1
 
-    now = beijing_now()
     today_dot = now.strftime("%Y.%m.%d")
     today_iso = now.strftime("%Y-%m-%d")
     weekday_zh = WEEKDAYS_ZH[now.weekday()]

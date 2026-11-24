@@ -2,8 +2,8 @@ name: Daily Briefing Auto Update
 
 on:
   schedule:
-    # 每天北京时间 08:00（UTC 00:00）自动更新每日选刊
-    - cron: "0 0 * * *"
+    # 每小时整点检查一次，是否执行由 briefingConfig.json 中的 schedule.preferredTime 决定
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -23,6 +23,7 @@ jobs:
 
       - name: Generate daily briefing
         env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}

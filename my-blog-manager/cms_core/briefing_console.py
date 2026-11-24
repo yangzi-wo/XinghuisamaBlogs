@@ -33,6 +33,10 @@ def default_config():
             'model': 'gemini-2.5-flash',
             'secretName': 'GEMINI_API_KEY',
         },
+        'schedule': {
+            'enabled': True,
+            'preferredTime': '08:00',
+        },
     }
 
 
@@ -48,6 +52,8 @@ def validate_config(value):
         result[key].update({k: v for k, v in value[key].items() if k in result[key]})
     if isinstance(value.get('aiProvider'), dict):
         result['aiProvider'].update({k: v for k, v in value['aiProvider'].items() if k in result['aiProvider']})
+    if isinstance(value.get('schedule'), dict):
+        result['schedule'].update({k: v for k, v in value['schedule'].items() if k in result['schedule']})
     display = result['display']
     for key in ('enabled', 'autoPlay', 'showCovers', 'showTerraNotes'):
         if type(display[key]) is not bool:
@@ -102,6 +108,11 @@ def validate_config(value):
         ai[k] = ai[k].strip()
     if not re.fullmatch(r'[A-Z][A-Z0-9_]{0,63}', ai['secretName']):
         raise ValueError('Secret 名称只能包含大写字母、数字和下划线，且以字母开头')
+    sched = result['schedule']
+    if type(sched.get('enabled')) is not bool:
+        raise ValueError('定时更新开关无效')
+    if not isinstance(sched.get('preferredTime'), str) or not re.fullmatch(r'(?:[01]\d|2[0-3]):[0-5]\d', sched['preferredTime']):
+        raise ValueError('定时更新时间格式无效')
     return result
 
 
@@ -112,6 +123,7 @@ def public_config(config):
         'selection': config['selection'],
         'channels': config['channels'],
         'aiProvider': config['aiProvider'],
+        'schedule': config['schedule'],
     }
 
 
@@ -150,6 +162,8 @@ class BriefingStore:
                 value['channels'] = public.get('channels', value['channels'])
                 if isinstance(public.get('aiProvider'), dict):
                     value['aiProvider'].update(public['aiProvider'])
+                if isinstance(public.get('schedule'), dict):
+                    value['schedule'].update(public['schedule'])
             return validate_config(value)
         return validate_config(json.loads(self.config_path.read_text(encoding='utf-8')))
 

@@ -8,12 +8,18 @@ import type { BriefingIssue } from './briefingApi';
 import { ArrowUpRight, BookOpen, Check, CircleHelp, Cpu, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles, Workflow, X } from 'lucide-react';
 
 type AiProviderConfig = { provider: 'gemini' | 'openai'; baseUrl: string; model: string; secretName: string };
+type ScheduleConfig = { enabled: boolean; preferredTime: string };
 const defaultAiProvider: AiProviderConfig = {
   provider: 'gemini',
   baseUrl: 'https://generativelanguage.googleapis.com',
   model: 'gemini-2.5-flash',
   secretName: 'GEMINI_API_KEY',
 };
+const defaultSchedule: ScheduleConfig = {
+  enabled: true,
+  preferredTime: '08:00',
+};
+const scheduleHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 const aiPresets: { id: 'gemini' | 'deepseek' | 'custom-openai'; label: string; badge: string; desc: string; config: Partial<AiProviderConfig> }[] = [
   { id: 'gemini', label: 'Google AI Studio', badge: 'Gemini', desc: '免费层（海外直连稳定）', config: { provider: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com', model: 'gemini-2.5-flash', secretName: 'GEMINI_API_KEY' } },
   { id: 'deepseek', label: 'DeepSeek 官方', badge: 'OpenAI 兼容', desc: '高性价比按量计费', config: { provider: 'openai', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', secretName: 'OPENAI_API_KEY' } },
@@ -27,6 +33,7 @@ type Config = {
   channels: { id: string; name: string; enabled: boolean }[];
   agent: { enabled: boolean; publishMode: string; preferredTime: string };
   aiProvider?: AiProviderConfig;
+  schedule?: ScheduleConfig;
 };
 type Issue = BriefingIssue;
 type Status = { latestDate: string; issueCount: number; sitePreview: string };
@@ -66,7 +73,11 @@ export default function BriefingSection() {
   const [connection, setConnection] = useState<'checking' | 'ready' | 'offline'>('checking');
 
   function apply(value: Config) {
-    const normalized: Config = { ...value, aiProvider: { ...defaultAiProvider, ...(value.aiProvider || {}) } };
+    const normalized: Config = {
+      ...value,
+      aiProvider: { ...defaultAiProvider, ...(value.aiProvider || {}) },
+      schedule: { ...defaultSchedule, ...(value.schedule || {}) },
+    };
     setConfig(normalized);
     setTerms({ topics: normalized.selection.topics.join('\n'), excludedKeywords: normalized.selection.excludedKeywords.join('\n'), preferredSources: normalized.selection.preferredSources.join('\n') });
     setBaseline(JSON.stringify(normalized));
@@ -135,6 +146,9 @@ export default function BriefingSection() {
   function updateAiProvider(patch: Partial<AiProviderConfig>) {
     setConfig(previous => previous ? { ...previous, aiProvider: { ...defaultAiProvider, ...(previous.aiProvider || {}), ...patch } } : previous);
   }
+  function updateSchedule(patch: Partial<ScheduleConfig>) {
+    setConfig(previous => previous ? { ...previous, schedule: { ...defaultSchedule, ...(previous.schedule || {}), ...patch } } : previous);
+  }
 
   return <section aria-label="每日选刊管理" className="min-w-0 rounded-3xl border border-slate-200/80 bg-slate-50/95 p-4 text-slate-700 shadow-sm md:p-6 dark:border-white/10 dark:bg-slate-900/95 dark:text-slate-200">
     <div>
@@ -176,6 +190,8 @@ export default function BriefingSection() {
             <div hidden={tab !== 'agents'}><BriefingAgentPanel settings={config.agent} onChange={value => setConfig({ ...config, agent: value })} /></div>
             {tab === 'api' && (() => {
               const ai = { ...defaultAiProvider, ...(config.aiProvider || {}) };
+              const sched = { ...defaultSchedule, ...(config.schedule || {}) };
+              const debugCmd = `$env:${ai.secretName}="你的API_KEY"; python scripts/generate_daily_briefing.py --force`;
               return <div className="space-y-5">
                 <Panel title="模型提供商与快速预设" description="选择每日选刊自动生成时调用的大模型接口。点击下方预设可一键填入常用免费或低成本平台参数。">
                   <div className="grid gap-3 sm:grid-cols-3">
@@ -231,6 +247,50 @@ export default function BriefingSection() {
                   </div>
                   <div className="mt-6 rounded-2xl border border-amber-200/70 bg-amber-50/80 p-4 text-xs leading-6 text-amber-800 dark:border-amber-400/20 dark:bg-amber-950/30 dark:text-amber-200">
                     安全提示：当前切换的是接口地址与模型名称，不会将任何密钥写入仓库。切换后请点击右上角 <strong>保存本地设置</strong> 并推送至 GitHub，下一次定时或手动运行选刊任务时即自动生效。
+                  </div>
+                </Panel>
+                <Panel title="定时更新与调试" description="直接控制 GitHub Actions 的每日自动更新时间（北京时间），并提供本地命令行调试入口。">
+                  <Toggle
+                    title="启用云端每日自动更新"
+                    description="开启后，GitHub Actions 会在每天设定时段自动抓取资讯并更新选刊；关闭则仅保留手动触发。"
+                    checked={sched.enabled}
+                    onChange={value => updateSchedule({ enabled: value })}
+                  />
+                  <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                    <Field label="期望更新时间（北京时间）" hint="云端每小时整点检查一次，到达或超过该整点且今日尚未生成时自动执行（每日仅生成 1 期）。">
+                      <select
+                        className={fieldClass}
+                        value={scheduleHours.includes(sched.preferredTime) ? sched.preferredTime : `${sched.preferredTime.slice(0, 2)}:00`}
+                        onChange={e => updateSchedule({ preferredTime: e.target.value })}
+                      >
+                        {scheduleHours.map(t => <option key={t} value={t}>每天 {t}（UTC+8）</option>)}
+                      </select>
+                    </Field>
+                    <Field label="最近一期与调试入口" hint="修改时间或模型后请先保存并推送；云端可随时手动点 Run workflow 立即测试。">
+                      <div className="flex flex-wrap items-center gap-2 pt-1">
+                        <a
+                          href="https://github.com/yangzi-wo/XinghuisamaBlogs/actions/workflows/daily-briefing.yml"
+                          target="_blank"
+                          rel="noreferrer"
+                          className={buttonClass}
+                        >
+                          打开 GitHub Actions 手动运行 <ArrowUpRight size={13} />
+                        </a>
+                        <button
+                          type="button"
+                          className={buttonClass}
+                          onClick={() => {
+                            navigator.clipboard?.writeText(debugCmd);
+                            setMessage('已复制 PowerShell 本地调试命令，替换 API_KEY 后在仓库根目录运行即可。');
+                          }}
+                        >
+                          复制本地调试命令
+                        </button>
+                      </div>
+                    </Field>
+                  </div>
+                  <div className="mt-4 rounded-2xl border border-slate-200/70 bg-slate-100/70 px-4 py-3 font-mono text-[11px] text-slate-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300">
+                    {debugCmd}
                   </div>
                 </Panel>
               </div>;
