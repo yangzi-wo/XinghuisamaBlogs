@@ -81,11 +81,10 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
   };
 
   const handleFileUpload = async (files: FileList | File[]) => {
-    const picUrl = (siteConfig as any).picBedUrl || "https://pic.dusays.com";
-    const picToken = (siteConfig as any).picBedToken;
-    if (!picToken) { showToast("未配置图床 Token！", "error"); return; }
+    const picUrl = (siteConfig as any).picBedUrl || "";
+    const picToken = ((siteConfig as any).picBedToken || "").trim();
     setIsUploading(true);
-    showToast(`正在上传 ${files.length} 张图片...`, "info");
+    showToast(picToken ? `正在上传 ${files.length} 张图片...` : `未配置云端图床，正在保存 ${files.length} 张图片至本地...`, "info");
     try {
       const configRes = await fetch(`/backend_config.json?t=${Date.now()}`);
       const configData = await configRes.json();

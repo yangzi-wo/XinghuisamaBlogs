@@ -100,22 +100,18 @@ export default function BackgroundSection({ formData, handleUpdate, pushToQueue 
     showToast("✅ 成功添加壁纸！", "success");
   };
 
-  // 【核心功能】：真实的图床上传逻辑
+  // 【核心功能】：支持云端图床与本地 public/uploads 双模式上传
   const handleFileUpload = async (file: File) => {
-    const picUrl = formData.picBedUrl || "https://pic.dusays.com";
-    const picToken = formData.picBedToken;
+    const picUrl = formData.picBedUrl || "";
+    const picToken = (formData.picBedToken || "").trim();
 
-    if (!picToken) {
-      showToast("⛔ 无法上传！请先在【图库配置管理】中填写图床 Token", "error");
-      return;
-    }
     if (!file.type.startsWith('image/')) {
       showToast("只能上传图片文件哦！", "warning");
       return;
     }
 
     setIsUploading(true);
-    showToast("正在将图片传送至图床引擎...", "info");
+    showToast(picToken ? "正在将图片传送至图床引擎..." : "未配置云端图床，正在保存至本地目录...", "info");
 
     try {
       const configRes = await fetch(`/backend_config.json?t=${Date.now()}`);
