@@ -12,7 +12,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const endpoint = parts.join('/');
   const valid = request.method === 'GET' ? parts.length === 1 && readable.has(endpoint)
     : request.method === 'PUT' ? endpoint === 'settings' || /^drafts\/[a-f0-9]{24}$/.test(endpoint)
-    : request.method === 'POST' && (['drafts', 'agents', 'covers'].includes(endpoint) || /^issues\/\d{4}\.\d{2}\.\d{2}\/draft$/.test(endpoint) || /^drafts\/[a-f0-9]{24}\/(publish|withdraw)$/.test(endpoint) || /^agents\/[a-f0-9]{16}\/revoke$/.test(endpoint));
+    : request.method === 'POST' && (['drafts', 'agents', 'covers', 'sync-remote'].includes(endpoint) || /^issues\/\d{4}\.\d{2}\.\d{2}\/draft$/.test(endpoint) || /^drafts\/[a-f0-9]{24}\/(publish|withdraw)$/.test(endpoint) || /^agents\/[a-f0-9]{16}\/revoke$/.test(endpoint));
   if (!valid) return Response.json({ detail: '接口或操作不存在' }, { status: 404 });
   if (request.method !== 'GET') {
     const origin = request.headers.get('origin');
@@ -30,7 +30,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       method: request.method,
       headers: { 'Content-Type': 'application/json', 'X-Briefing-Admin': token.trim() },
       body,
-      cache: 'no-store', signal: AbortSignal.timeout(8000),
+      cache: 'no-store', signal: AbortSignal.timeout(endpoint === 'sync-remote' ? 25000 : 8000),
     });
     return new Response(await response.text(), { status: response.status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   } catch {
