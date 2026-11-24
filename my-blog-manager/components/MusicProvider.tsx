@@ -3,34 +3,44 @@
 import { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { siteConfig } from '../siteConfig';
 
-// 【增强版 LRC 歌词解析】
+// 【增强版 LRC 歌词解析：支持同时间戳双语原文+翻译合并】
 function parseLrc(lrcText: string) {
-  if (!lrcText || lrcText.length > 30000) return [];
+  if (!lrcText || lrcText.length > 50000) return [];
 
   const lines = lrcText.split(/\r?\n/);
-  const result = [];
+  const rawEntries: { time: number; text: string }[] = [];
 
-  for (let line of lines) {
+  for (const line of lines) {
     const matches = [...line.matchAll(/\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?\]/g)];
     if (matches.length > 0) {
-      let text = line.replace(/\[\d{2,}:\d{2}(?:\.\d{2,3})?\]/g, '').trim();
-
-      // 剔除控制字符
+      const text = line.replace(/\[\d{2,}:\d{2}(?:\.\d{2,3})?\]/g, '').trim();
       const cleanText = text.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "");
 
       if (cleanText) {
         for (const match of matches) {
-          const min = parseInt(match[1]);
-          const sec = parseInt(match[2]);
-          const ms = match[3] ? parseInt(match[3]) : 0;
+          const min = parseInt(match[1], 10);
+          const sec = parseInt(match[2], 10);
+          const ms = match[3] ? parseInt(match[3], 10) : 0;
           const divisor = match[3] && match[3].length === 3 ? 1000 : 100;
           const time = min * 60 + sec + ms / divisor;
-          result.push({ time, text: cleanText });
+          rawEntries.push({ time, text: cleanText });
         }
       }
     }
   }
-  return result.sort((a, b) => a.time - b.time);
+
+  rawEntries.sort((a, b) => a.time - b.time);
+
+  const grouped: { time: number; text: string; translation?: string }[] = [];
+  for (const entry of rawEntries) {
+    const last = grouped[grouped.length - 1];
+    if (last && Math.abs(last.time - entry.time) < 0.05 && !last.translation) {
+      last.translation = entry.text;
+    } else {
+      grouped.push({ time: entry.time, text: entry.text });
+    }
+  }
+  return grouped;
 }
 
 // 🌟 1. 扩充 Context 类型，加入 MusicPage 需要的所有属性
