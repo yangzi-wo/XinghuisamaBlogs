@@ -34,6 +34,7 @@ export const siteConfig = {
   // 5. 首页照片墙预览图
   photoWallImage: "",
   cloudMusicIds: [] as string[],
+  localTracks: [] as { id: string; title: string; artist: string; src: string; cover?: string; lrcUrl?: string }[],
   social: {
     github: "https://github.com/yangzi-wo",
     gitee: "",

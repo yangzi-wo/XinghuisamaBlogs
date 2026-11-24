@@ -81,38 +81,26 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    let isMounted = true;
-    const fetchMusicData = async () => {
-      try {
-        const res = await fetch(`/api/music?ids=${siteConfig.cloudMusicIds.join(',')}`);
-        const rawResults = await res.json();
+    const localTracks = Array.isArray((siteConfig as any).localTracks) ? (siteConfig as any).localTracks : [];
+    const localPlaylist = localTracks
+      .filter((t: any) => t && t.src)
+      .map((t: any) => ({
+        id: t.id || Math.random().toString(),
+        title: t.title || '未知歌曲',
+        artist: t.artist || '未知歌手',
+        cover: t.cover || '/avatar.jpg',
+        src: t.src,
+        lrcUrl: t.lrcUrl || null,
+        lyrics: [] as { time: number; text: string }[],
+      }));
 
-        const mergedPlaylist = rawResults
-          .filter((song: any) => song && song.url && !song.error)
-          .map((song: any) => ({
-            id: song.id || Math.random().toString(),
-            title: song.name || '未知歌曲',
-            artist: song.artist || song.author || '未知歌手',
-            cover: song.cover || song.pic || 'https://bu.dusays.com/2026/03/24/69c24230a5ff8.jpg',
-            src: song.url,
-            lrcUrl: null,
-            lyrics: song.lrc ? parseLrc(song.lrc) : []
-          }));
-
-        if (isMounted) {
-          if (mergedPlaylist.length > 0) setPlaylist(mergedPlaylist);
-          else setCurrentLyric("云端链路受阻");
-          setIsLoading(false);
-        }
-      } catch (error) {
-        if (isMounted) { setCurrentLyric("网络初始化失败"); setIsLoading(false); }
-      }
-    };
-
-    if (siteConfig.cloudMusicIds?.length > 0) fetchMusicData();
-    else setIsLoading(false);
-
-    return () => { isMounted = false; };
+    if (localPlaylist.length > 0) {
+      setPlaylist(localPlaylist);
+      setIsLoading(false);
+    } else {
+      setCurrentLyric("请在控制台添加本地音乐");
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -120,7 +108,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
     const currentSong = playlist[currentIndex];
     setLyrics([]);
-    setCurrentLyric("♪ 正在缓冲 ♪");
+    setCurrentLyric(currentSong.lrcUrl ? "♪ 正在加载歌词 ♪" : "♪ 纯享音乐 ♪");
     if (currentSong.lyrics && currentSong.lyrics.length > 0) {
       if (isMounted) {
         setLyrics(currentSong.lyrics);
@@ -133,9 +121,12 @@ export function MusicProvider({ children }: { children: ReactNode }) {
           if (isMounted) {
              const parsed = parseLrc(text);
              setLyrics(parsed);
+             setCurrentLyric(parsed[0]?.text || "\u266a \u7eaf\u4eab\u97f3\u4e50 \u266a");
              setPlaylist(prev => {
                 const newPlaylist = [...prev];
-                newPlaylist[currentIndex].lyrics = parsed;
+                if (newPlaylist[currentIndex]) {
+                  newPlaylist[currentIndex].lyrics = parsed;
+                }
                 return newPlaylist;
              });
           }

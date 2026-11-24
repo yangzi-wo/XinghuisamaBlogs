@@ -208,74 +208,12 @@ export default function RepoSection() {
             <input type="text" value={deployData.blogPath} onChange={e => setDeployData({...deployData, blogPath: e.target.value})} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-mono outline-none focus:ring-2 focus:ring-indigo-500" placeholder="F:/Projects/my-blog" />
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-800/30 p-5 rounded-3xl border border-slate-100 dark:border-slate-700/50">
-            <div className="flex justify-between items-center mb-4">
-               <label className="text-[11px] font-black text-slate-600 dark:text-slate-300 uppercase flex items-center gap-1"><GitBranch size={14} className="text-emerald-500" /> 2. GitHub 双轨自动化配置</label>
-               <button onClick={testGitConnection} disabled={isCheckingGit} className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-3 py-1 rounded-full font-bold hover:bg-emerald-500/20 transition-colors">
-                 {isCheckingGit ? "探测中..." : "校验 Git 环境 ⚡"}
-               </button>
-            </div>
-
-            {/* 🌟 A线：静态部署配置区 */}
-            <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl mb-4 relative">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase flex items-center gap-1"><Rocket size={12}/> A 线：静态资源库 (用于 GitHub Pages)</h4>
-                <button onClick={(e) => { e.preventDefault(); handleGetSSH('static'); }} className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-black hover:bg-emerald-500 hover:text-white transition-all">
-                  <Key size={12} /> 获取 A 线专属密匙
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">SSH 仓库地址 (存放静态 html)</label>
-                  <input type="text" value={deployData.staticRepoUrl} onChange={e => setDeployData({...deployData, staticRepoUrl: e.target.value})} className="w-full bg-white dark:bg-slate-900/50 border border-emerald-200/50 dark:border-emerald-700/50 rounded-xl px-4 py-2 text-xs mt-1 outline-none font-mono focus:ring-2 focus:ring-emerald-500" placeholder="git@github.com:..." />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">目标分支</label>
-                  <input type="text" value={deployData.staticBranch} onChange={e => setDeployData({...deployData, staticBranch: e.target.value})} className="w-full bg-white dark:bg-slate-900/50 border border-emerald-200/50 dark:border-emerald-700/50 rounded-xl px-4 py-2 text-xs mt-1 outline-none font-mono focus:ring-2 focus:ring-emerald-500" placeholder="gh-pages" />
-                </div>
-              </div>
-            </div>
-
-            {/* 🌟 B线：源码同步配置区 */}
-            <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-2xl mb-6 relative">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase flex items-center gap-1"><Code size={12}/> B 线：源码托管库 (用于 Vercel 触发)</h4>
-                <button onClick={(e) => { e.preventDefault(); handleGetSSH('source'); }} className="flex items-center gap-1 px-3 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full text-[10px] font-black hover:bg-blue-500 hover:text-white transition-all">
-                  <Key size={12} /> 获取 B 线专属密匙
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">SSH 仓库地址 (存放 src 源码)</label>
-                  <input type="text" value={deployData.sourceRepoUrl} onChange={e => setDeployData({...deployData, sourceRepoUrl: e.target.value})} className="w-full bg-white dark:bg-slate-900/50 border border-blue-200/50 dark:border-blue-700/50 rounded-xl px-4 py-2 text-xs mt-1 outline-none font-mono focus:ring-2 focus:ring-blue-500" placeholder="git@github-source:..." />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">源码分支</label>
-                  <input type="text" value={deployData.sourceBranch} onChange={e => setDeployData({...deployData, sourceBranch: e.target.value})} className="w-full bg-white dark:bg-slate-900/50 border border-blue-200/50 dark:border-blue-700/50 rounded-xl px-4 py-2 text-xs mt-1 outline-none font-mono focus:ring-2 focus:ring-blue-500" placeholder="main" />
-                </div>
-              </div>
-            </div>
-
-            {/* 操作按钮区 */}
-            <div className="pt-6 border-t border-slate-200 dark:border-slate-700/50 flex flex-col gap-3">
-               <button onClick={() => setModalConfig({isOpen: true, type: 'init'})} disabled={isInitializing} className="w-full flex items-center justify-center gap-2 py-4 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-2xl text-sm font-black shadow-sm active:scale-95 transition-all hover:bg-indigo-100 dark:hover:bg-indigo-900/50">
-                  <Wand2 size={18} className={isInitializing ? "animate-spin" : ""} /> {isInitializing ? "初始化中..." : "🪄 智能初始化双轨环境"}
-               </button>
-
-               <div className="flex gap-3 flex-col md:flex-row">
-                 <button onClick={() => setModalConfig({isOpen: true, type: 'deploy'})} disabled={isDeploying || isUploading} className="flex-1 flex items-center justify-center gap-2 py-4 bg-emerald-500 text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-500/30 active:scale-95 transition-all hover:bg-emerald-600">
-                    <Rocket size={18} className={isDeploying ? "animate-bounce" : ""} /> {isDeploying ? "飞升中..." : "🚀 编译并推静态页"}
-                 </button>
-
-                 <button onClick={() => setModalConfig({isOpen: true, type: 'upload'})} disabled={isDeploying || isUploading} className="flex-1 flex items-center justify-center gap-2 py-4 bg-blue-500 text-white rounded-2xl text-sm font-black shadow-lg shadow-blue-500/30 active:scale-95 transition-all hover:bg-blue-600">
-                    <CloudUpload size={18} className={isUploading ? "animate-pulse" : ""} /> {isUploading ? "同步中..." : "☁️ 仅同步源码 (Vercel)"}
-                 </button>
-               </div>
-            </div>
+          <div className="rounded-2xl bg-indigo-500/10 border border-indigo-400/20 p-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            💡 已接入 <strong>Cloudflare Pages 自动发布</strong>：在右上角点击同步按钮时，控制台会自动将内容镜像到上方配置的物理路径并推送到 GitHub，约 1 分钟内自动更新线上网站。
           </div>
 
           <button onClick={handleSaveConfig} disabled={isSaving} className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl text-sm font-black shadow-xl active:scale-95 transition-all hover:shadow-2xl hover:-translate-y-1">
-            <Save size={18} className="inline mr-2" /> {isSaving ? "正在保存..." : "保存双轨配置"}
+            <Save size={18} className="inline mr-2" /> {isSaving ? "正在保存..." : "保存路径配置"}
           </button>
         </div>
       </motion.section>

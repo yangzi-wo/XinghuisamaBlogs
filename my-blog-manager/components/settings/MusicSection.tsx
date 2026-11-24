@@ -1,70 +1,216 @@
-import { motion, AnimatePresence } from 'framer-motion';
+"use client";
 
-export default function MusicSection({ formData, handleUpdate, pushToQueue, musicDetails, queryMusic, queryLoading, queryResult, confirmAddMusic, removeSong }: any) {
+import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+
+export default function MusicSection({ formData, handleUpdate, pushToQueue, showToast }: any) {
+  const tracks = Array.isArray(formData.localTracks) ? formData.localTracks : [];
+  const [title, setTitle] = useState('');
+  const [artist, setArtist] = useState('');
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [lrcFile, setLrcFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const audioInputRef = useRef<HTMLInputElement>(null);
+  const lrcInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadTrack = async () => {
+    if (!audioFile) {
+      showToast?.("请先选择音频文件（支持 MP3 / M4A / FLAC / OGG / WAV）", "warning");
+      return;
+    }
+
+    setIsUploading(true);
+    showToast?.("正在保存本地音乐与歌词...", "info");
+
+    try {
+      const configRes = await fetch(`/backend_config.json?t=${Date.now()}`);
+      const configData = await configRes.json();
+
+      const fd = new FormData();
+      fd.append('audio', audioFile);
+      if (lrcFile) fd.append('lrc', lrcFile);
+      if (coverFile) fd.append('cover', coverFile);
+      fd.append('title', title.trim());
+      fd.append('artist', artist.trim());
+
+      const res = await fetch(`http://127.0.0.1:${configData.api_port}/api/music/upload-local`, {
+        method: 'POST',
+        body: fd,
+      });
+      const data = await res.json();
+
+      if (data.success && data.track) {
+        const nextTracks = [...tracks, data.track];
+        handleUpdate('localTracks', nextTracks);
+        setTitle('');
+        setArtist('');
+        setAudioFile(null);
+        setLrcFile(null);
+        setCoverFile(null);
+        if (audioInputRef.current) audioInputRef.current.value = '';
+        if (lrcInputRef.current) lrcInputRef.current.value = '';
+        if (coverInputRef.current) coverInputRef.current.value = '';
+        showToast?.("✅ 已加入本地歌单，别忘了点击下方「暂存音乐修改」", "success");
+      } else {
+        showToast?.(`上传失败: ${data.message || '未知错误'}`, "error");
+      }
+    } catch (error: any) {
+      showToast?.(`连接异常: ${error.message}`, "error");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeTrack = (index: number) => {
+    const nextTracks = tracks.filter((_: any, i: number) => i !== index);
+    handleUpdate('localTracks', nextTracks);
+  };
+
   return (
-    <motion.section initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/50 dark:border-slate-800/50 rounded-[40px] p-8 shadow-2xl">
-      <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8">🎵 歌单管理与查询</h2>
+    <motion.section
+      initial={{ opacity: 0, x: 10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/50 dark:border-slate-800/50 rounded-[40px] p-8 shadow-2xl"
+    >
+      <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8">🎵 本地音乐与歌词管理</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* 左侧：当前本地歌单 */}
         <div className="space-y-3">
-          <p className="text-[10px] font-black text-slate-400 uppercase ml-1 mb-4">当前绑定的网易云 ID ({formData.cloudMusicIds.length})</p>
-          <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-            {formData.cloudMusicIds.map((id: string, index: number) => {
-              const detail = musicDetails[id];
-              return (
-                <div key={index} className="flex justify-between items-center p-3 bg-white/40 dark:bg-slate-800/40 rounded-2xl border border-white/20 group">
-                  <div className="flex items-center gap-3">
-                    {detail?.cover ? (
-                      <img src={detail.cover} alt="cover" className="w-10 h-10 rounded-lg object-cover shadow-sm" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse flex items-center justify-center text-xs">💿</div>
-                    )}
-                    <div className="flex flex-col">
-                      {detail ? (
-                        <>
-                          <span className={`text-sm font-bold line-clamp-1 ${detail.error ? 'text-red-500' : 'text-slate-800 dark:text-white'}`}>{detail.name}</span>
-                          {!detail.error && <span className="text-[10px] text-slate-500 font-medium">{detail.artist}</span>}
-                        </>
-                      ) : (
-                        <span className="text-xs text-slate-400">正在解析...</span>
-                      )}
-                      <span className="text-[10px] font-mono text-pink-500 mt-0.5">#{id}</span>
+          <p className="text-[10px] font-black text-slate-400 uppercase ml-1 mb-4">
+            当前本地歌单 ({tracks.length})
+          </p>
+          <div className="max-h-[420px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+            {tracks.length === 0 ? (
+              <div className="p-8 rounded-3xl border border-dashed border-slate-300/60 dark:border-slate-700/60 text-center text-xs text-slate-400">
+                暂无本地歌曲，请在右侧上传 MP3 与 LRC 歌词~
+              </div>
+            ) : (
+              tracks.map((track: any, index: number) => (
+                <div
+                  key={track.id || index}
+                  className="flex justify-between items-center p-3 bg-white/40 dark:bg-slate-800/40 rounded-2xl border border-white/20 group"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src={track.cover || '/avatar.jpg'}
+                      alt={track.title}
+                      className="w-10 h-10 rounded-lg object-cover shadow-sm flex-shrink-0"
+                    />
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-sm font-bold text-slate-800 dark:text-white truncate">
+                        {track.title}
+                      </span>
+                      <div className="flex items-center gap-2 text-[10px] text-slate-500 font-medium">
+                        <span className="truncate">{track.artist || '未知歌手'}</span>
+                        {track.lrcUrl && (
+                          <span className="px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-500 font-bold flex-shrink-0">
+                            LRC歌词
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <button onClick={() => removeSong(index)} className="w-8 h-8 shrink-0 rounded-lg bg-red-500/10 text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white flex items-center justify-center">✕</button>
+                  <button
+                    onClick={() => removeTrack(index)}
+                    className="w-8 h-8 shrink-0 rounded-lg bg-red-500/10 text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white flex items-center justify-center"
+                    title="移除歌曲"
+                  >
+                    ✕
+                  </button>
                 </div>
-              );
-            })}
+              ))
+            )}
           </div>
         </div>
 
-        <div className="bg-slate-100/50 dark:bg-slate-800/50 rounded-3xl p-6 space-y-6">
-          <p className="text-[10px] font-black text-slate-400 uppercase">校验并添加新 ID</p>
-          <div className="flex gap-2">
-            <input type="text" placeholder="输入歌曲 ID" value={formData.newMusicId} onChange={e => handleUpdate('newMusicId', e.target.value)} className="flex-1 bg-white dark:bg-slate-900 border-none rounded-2xl px-4 py-3 text-sm outline-none shadow-sm" />
-            <button onClick={queryMusic} disabled={queryLoading} className="px-6 py-3 bg-pink-500 text-white rounded-2xl text-xs font-black shadow-lg shadow-pink-500/20 disabled:opacity-50">
-              {queryLoading ? "请求中..." : "真实查询"}
-            </button>
+        {/* 右侧：上传本地音频与 LRC 歌词 */}
+        <div className="bg-slate-100/50 dark:bg-slate-800/50 rounded-3xl p-6 space-y-4">
+          <p className="text-[10px] font-black text-slate-400 uppercase">上传本地音乐与歌词</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input
+              type="text"
+              placeholder="歌曲名称（留空则用文件名）"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full bg-white dark:bg-slate-900 border-none rounded-2xl px-4 py-3 text-xs outline-none shadow-sm"
+            />
+            <input
+              type="text"
+              placeholder="歌手（选填）"
+              value={artist}
+              onChange={(e) => setArtist(e.target.value)}
+              className="w-full bg-white dark:bg-slate-900 border-none rounded-2xl px-4 py-3 text-xs outline-none shadow-sm"
+            />
           </div>
 
-          <AnimatePresence>
-            {queryResult && !queryResult.error && (
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="p-3 bg-white dark:bg-slate-900 rounded-2xl border-2 border-green-500/30 flex justify-between items-center shadow-xl">
-                <div className="flex items-center gap-3">
-                  <img src={queryResult.cover} alt="cover" className="w-10 h-10 rounded-lg object-cover" />
-                  <div>
-                    <p className="text-[10px] font-black text-green-600">获取成功</p>
-                    <p className="text-xs font-bold line-clamp-1">{queryResult.name}</p>
-                  </div>
-                </div>
-                <button onClick={confirmAddMusic} className="px-3 py-2 bg-green-500 text-white rounded-xl text-[10px] font-black shrink-0 hover:bg-green-600 transition-colors">存入列表</button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="space-y-2.5 text-xs">
+            <label className="block p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-dashed border-indigo-300 dark:border-indigo-700 cursor-pointer hover:border-indigo-500 transition-colors">
+              <span className="font-bold text-indigo-600 dark:text-indigo-400 block mb-1">
+                1. 选择音频文件（必填，≤ 20MB）
+              </span>
+              <span className="text-slate-500 text-[11px] truncate block">
+                {audioFile ? `已选：${audioFile.name}` : "支持 .mp3 / .m4a / .flac / .ogg / .wav"}
+              </span>
+              <input
+                ref={audioInputRef}
+                type="file"
+                accept=".mp3,.m4a,.ogg,.wav,.flac,.aac,audio/*"
+                className="hidden"
+                onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
+              />
+            </label>
 
-          {/* 【核心修复】：加上了真正的更新 key (cloudMusicIds) 和新数组 */}
+            <label className="block p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-dashed border-slate-300 dark:border-slate-700 cursor-pointer hover:border-indigo-400 transition-colors">
+              <span className="font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                2. 选择歌词文件（可选，.lrc）
+              </span>
+              <span className="text-slate-500 text-[11px] truncate block">
+                {lrcFile ? `已选：${lrcFile.name}` : "支持标准 LRC 时间轴歌词文件"}
+              </span>
+              <input
+                ref={lrcInputRef}
+                type="file"
+                accept=".lrc,.txt"
+                className="hidden"
+                onChange={(e) => setLrcFile(e.target.files?.[0] || null)}
+              />
+            </label>
+
+            <label className="block p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-dashed border-slate-300 dark:border-slate-700 cursor-pointer hover:border-indigo-400 transition-colors">
+              <span className="font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                3. 选择专辑封面（可选）
+              </span>
+              <span className="text-slate-500 text-[11px] truncate block">
+                {coverFile ? `已选：${coverFile.name}` : "留空则默认使用站长头像"}
+              </span>
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
+              />
+            </label>
+          </div>
+
           <button
-            onClick={() => pushToQueue('网易云歌单', 'cloudMusicIds', formData.cloudMusicIds)}
-            className="w-full py-4 bg-indigo-500 text-white rounded-2xl text-sm font-black shadow-xl mt-4 active:scale-95 transition-all"
+            type="button"
+            onClick={handleUploadTrack}
+            disabled={isUploading}
+            className="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-pink-500/20 disabled:opacity-50 transition-all"
+          >
+            {isUploading ? "正在上传保存..." : "上传并加入歌单"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => pushToQueue('本地歌单', 'localTracks', tracks)}
+            className="w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-2xl text-sm font-black shadow-xl active:scale-95 transition-all"
           >
             暂存音乐修改
           </button>
