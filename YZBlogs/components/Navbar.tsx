@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, PanInfo } from 'framer-motion';
 import { siteConfig } from '../siteConfig';
+import AuthWidget from './AuthWidget';
 
 export default function Navbar() {
   const [showNav, setShowNav] = useState(true);
@@ -92,7 +93,7 @@ export default function Navbar() {
             <span className="text-indigo-500 mx-1">{siteConfig.navSuffix || 'の'}</span>
             {siteConfig.navAfter || '宝藏之地'}
           </Link>
-          <nav className="flex gap-8 text-sm font-bold">
+          <nav className="flex items-center gap-6 text-sm font-bold">
             {/* PC端依然使用全量的 navLinks */}
             {navLinks.map((link) => {
               const isActive = pathname === link.href || pathname === `${link.href}/`;
@@ -103,6 +104,7 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            <AuthWidget />
           </nav>
         </div>
       </header>

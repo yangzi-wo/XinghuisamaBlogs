@@ -9,7 +9,7 @@ router = APIRouter()
 ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif", ".svg", ".bmp"}
 MAX_LOCAL_IMAGE_BYTES = 20 * 1024 * 1024  # 20 MB (safely below Cloudflare Pages 25 MiB limit)
 MANAGER_ROOT = Path(__file__).resolve().parents[2]
-SITE_ROOT = MANAGER_ROOT.parent / "XHBlogs"
+SITE_ROOT = MANAGER_ROOT.parent / "YZBlogs"
 
 
 @router.post("/test")
