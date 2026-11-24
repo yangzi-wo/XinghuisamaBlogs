@@ -15,12 +15,26 @@ export interface AuthUser {
   is_admin: boolean;
 }
 
+const LEVEL_TABLE = [
+  { level: 1, total: 0, nextNeed: "80" },
+  { level: 2, total: 80, nextNeed: "320" },
+  { level: 3, total: 400, nextNeed: "720" },
+  { level: 4, total: 1120, nextNeed: "1280" },
+  { level: 5, total: 2400, nextNeed: "2000" },
+  { level: 6, total: 4400, nextNeed: "2880" },
+  { level: 7, total: 7280, nextNeed: "3920" },
+  { level: 8, total: 11200, nextNeed: "5120" },
+  { level: 9, total: 16320, nextNeed: "6480" },
+  { level: 10, total: 22800, nextNeed: "已满级" },
+];
+
 export default function AuthWidget() {
   const pathname = usePathname() || "/";
   const [user, setUser] = useState<AuthUser | null>(null);
   const [oauthConfigured, setOauthConfigured] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   const [checkinMsg, setCheckinMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -131,86 +145,178 @@ export default function AuthWidget() {
     : 100;
 
   return (
-    <div className="relative" ref={menuRef}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-white/50 dark:bg-slate-800/60 border border-white/40 dark:border-white/10 hover:border-indigo-400/60 transition-all shadow-sm"
-      >
-        <img
-          src={user.avatar_url || "/avatar.jpg"}
-          alt={user.username}
-          className="w-6 h-6 rounded-full object-cover"
-        />
-        <span className="text-[11px] font-black text-indigo-600 dark:text-indigo-400">
-          Lv.{user.level}
-        </span>
-      </button>
+    <>
+      <div className="relative" ref={menuRef}>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-white/50 dark:bg-slate-800/60 border border-white/40 dark:border-white/10 hover:border-indigo-400/60 transition-all shadow-sm"
+        >
+          <img
+            src={user.avatar_url || "/avatar.jpg"}
+            alt={user.username}
+            className="w-6 h-6 rounded-full object-cover"
+          />
+          <span className="text-[11px] font-black text-indigo-600 dark:text-indigo-400">
+            Lv.{user.level}
+          </span>
+        </button>
 
-      {open && (
-        <div className="absolute right-0 mt-3 w-64 rounded-2xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl p-4 z-50">
-          <div className="flex items-center gap-3 mb-3">
-            <img
-              src={user.avatar_url || "/avatar.jpg"}
-              alt={user.username}
-              className="w-10 h-10 rounded-full object-cover border border-indigo-400/50"
-            />
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm font-bold text-slate-800 dark:text-white truncate">
-                  {user.username}
-                </span>
-                {user.is_admin && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/20 text-rose-500">
-                    站长
+        {open && (
+          <div className="absolute right-0 mt-3 w-72 rounded-2xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl p-4 z-50">
+            <button
+              type="button"
+              title="查看签到规则与等级区间"
+              aria-label="查看签到规则与等级区间"
+              onClick={() => {
+                setShowRules(true);
+                setOpen(false);
+              }}
+              className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-800/70 border border-white/50 dark:border-white/10 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-400/60 transition-all"
+            >
+              ?
+            </button>
+
+            <div className="flex items-center gap-3 mb-3 pr-6">
+              <img
+                src={user.avatar_url || "/avatar.jpg"}
+                alt={user.username}
+                className="w-10 h-10 rounded-full object-cover border border-indigo-400/50"
+              />
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-bold text-slate-800 dark:text-white truncate">
+                    {user.username}
                   </span>
-                )}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                Lv.{user.level} · {user.exp} / {user.next_level_exp ?? "MAX"} EXP
-              </div>
-              <div className="text-[10px] text-indigo-500 dark:text-indigo-400 mt-0.5">
-                已连续签到 {user.checkin_streak ?? 0} 天（满7天额外+60）
+                  {user.is_admin && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/20 text-rose-500">
+                      站长
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Lv.{user.level} · {user.exp} / {user.next_level_exp ?? "MAX"} EXP
+                </div>
+                <div className="text-[10px] text-indigo-500 dark:text-indigo-400 mt-0.5">
+                  已连续签到 {user.checkin_streak ?? 0} 天（满7天额外+60）
+                </div>
               </div>
             </div>
+
+            <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mb-3">
+              <div
+                className="h-full bg-gradient-to-r from-indigo-500 to-rose-500 transition-all duration-500"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={busy || user.checked_in_today}
+              onClick={handleCheckin}
+              className={`w-full py-2 rounded-xl text-xs font-bold transition-all mb-2 ${
+                user.checked_in_today
+                  ? "bg-slate-200/70 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
+                  : "bg-indigo-500 hover:bg-indigo-600 text-white shadow-md shadow-indigo-500/25"
+              }`}
+            >
+              {user.checked_in_today ? "今日已签到 ✓" : busy ? "签到中..." : "每日签到领经验 (+30 EXP)"}
+            </button>
+
+            {checkinMsg && (
+              <p className="text-[11px] text-center text-indigo-600 dark:text-indigo-400 mb-2">
+                {checkinMsg}
+              </p>
+            )}
+
+            <button
+              type="button"
+              disabled={busy}
+              onClick={handleLogout}
+              className="w-full py-1.5 rounded-xl text-xs font-medium text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+            >
+              退出登录
+            </button>
           </div>
+        )}
+      </div>
 
-          <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mb-3">
-            <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-rose-500 transition-all duration-500"
-              style={{ width: `${progressPct}%` }}
-            />
+      {showRules && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md"
+          onClick={() => setShowRules(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-3xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl p-6 text-slate-800 dark:text-slate-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-black tracking-wide flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-rose-500 text-white text-xs flex items-center justify-center">
+                  ?
+                </span>
+                签到规则与等级区间
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowRules(false)}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/15 border border-indigo-400/20 p-3.5 mb-4 text-xs space-y-1.5 leading-relaxed">
+              <p>
+                <span className="font-bold text-indigo-600 dark:text-indigo-400">• 每日基础签到：</span>
+                每次签到固定获得 <strong>+30 EXP</strong>（按东八区自然日计算）。
+              </p>
+              <p>
+                <span className="font-bold text-rose-500">• 连续签到奖励：</span>
+                连续签到第 7 天（每满 7 天）当天额外再加 <strong>+60 EXP</strong>；断签则连续天数重置，重新从 1 开始计数。
+              </p>
+            </div>
+
+            <div className="max-h-64 overflow-y-auto pr-1 space-y-1.5">
+              <div className="grid grid-cols-3 text-[11px] font-bold text-slate-400 px-3 pb-1">
+                <span>等级</span>
+                <span>累计经验门槛</span>
+                <span className="text-right">升级还需</span>
+              </div>
+              {LEVEL_TABLE.map((row) => {
+                const isCurrent = user.level === row.level;
+                return (
+                  <div
+                    key={row.level}
+                    className={`grid grid-cols-3 items-center px-3 py-2 rounded-xl text-xs transition-colors ${
+                      isCurrent
+                        ? "bg-gradient-to-r from-indigo-500/20 to-rose-500/20 border border-indigo-400/40 font-bold"
+                        : "bg-white/50 dark:bg-slate-800/40 border border-white/30 dark:border-white/5"
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-indigo-600 dark:text-indigo-400 font-black">
+                        Lv.{row.level}
+                      </span>
+                      {isCurrent && (
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500 text-white">
+                          当前
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-mono text-slate-600 dark:text-slate-300">
+                      {row.total} EXP
+                    </span>
+                    <span className="text-right text-slate-500 dark:text-slate-400">
+                      {row.nextNeed === "已满级" ? "满级" : `+${row.nextNeed} EXP`}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-
-          <button
-            type="button"
-            disabled={busy || user.checked_in_today}
-            onClick={handleCheckin}
-            className={`w-full py-2 rounded-xl text-xs font-bold transition-all mb-2 ${
-              user.checked_in_today
-                ? "bg-slate-200/70 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
-                : "bg-indigo-500 hover:bg-indigo-600 text-white shadow-md shadow-indigo-500/25"
-            }`}
-          >
-            {user.checked_in_today ? "今日已签到 ✓" : busy ? "签到中..." : "每日签到领经验 (+30 EXP)"}
-          </button>
-
-          {checkinMsg && (
-            <p className="text-[11px] text-center text-indigo-600 dark:text-indigo-400 mb-2">
-              {checkinMsg}
-            </p>
-          )}
-
-          <button
-            type="button"
-            disabled={busy}
-            onClick={handleLogout}
-            className="w-full py-1.5 rounded-xl text-xs font-medium text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
-          >
-            退出登录
-          </button>
         </div>
       )}
-    </div>
+    </>
   );
 }
