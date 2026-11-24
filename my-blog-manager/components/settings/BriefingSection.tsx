@@ -5,7 +5,22 @@ import BriefingGuide from '../../app/briefing/BriefingGuide';
 import BriefingContentManager from './BriefingContentManager';
 import BriefingAgentPanel from './BriefingAgentPanel';
 import type { BriefingIssue } from './briefingApi';
-import { ArrowUpRight, BookOpen, Check, CircleHelp, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles, Workflow, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Check, CircleHelp, Cpu, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles, Workflow, X } from 'lucide-react';
+
+type AiProviderConfig = { provider: 'gemini' | 'openai'; baseUrl: string; model: string; secretName: string };
+const defaultAiProvider: AiProviderConfig = {
+  provider: 'gemini',
+  baseUrl: 'https://generativelanguage.googleapis.com',
+  model: 'gemini-2.5-flash',
+  secretName: 'GEMINI_API_KEY',
+};
+const aiPresets: { label: string; desc: string; config: AiProviderConfig }[] = [
+  { label: 'Google AI Studio', desc: '免费层（海外直连稳定）', config: { provider: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com', model: 'gemini-2.5-flash', secretName: 'GEMINI_API_KEY' } },
+  { label: '智谱 BigModel', desc: 'GLM-4-Flash 免费小模型', config: { provider: 'openai', baseUrl: 'https://open.bigmodel.cn/api/paas/v4', model: 'glm-4-flash', secretName: 'OPENAI_API_KEY' } },
+  { label: '硅基流动 SiliconFlow', desc: '聚合 Qwen / GLM 等免费/低价模型', config: { provider: 'openai', baseUrl: 'https://api.siliconflow.cn/v1', model: 'Qwen/Qwen2.5-7B-Instruct', secretName: 'OPENAI_API_KEY' } },
+  { label: '阿里云百炼 DashScope', desc: 'Qwen 免费体验额度', config: { provider: 'openai', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-turbo', secretName: 'OPENAI_API_KEY' } },
+  { label: 'DeepSeek 官方', desc: '高性价比按量计费', config: { provider: 'openai', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', secretName: 'OPENAI_API_KEY' } },
+];
 
 type Config = {
   version: number; revision: number;
@@ -13,16 +28,18 @@ type Config = {
   selection: { topics: string[]; excludedKeywords: string[]; preferredSources: string[]; language: string; maxItems: number };
   channels: { id: string; name: string; enabled: boolean }[];
   agent: { enabled: boolean; publishMode: string; preferredTime: string };
+  aiProvider?: AiProviderConfig;
 };
 type Issue = BriefingIssue;
 type Status = { latestDate: string; issueCount: number; sitePreview: string };
-type Tab = 'overview' | 'display' | 'selection' | 'issues' | 'agents';
+type Tab = 'overview' | 'display' | 'selection' | 'issues' | 'agents' | 'api';
 const tabs = [
   { id: 'overview' as Tab, label: '选刊总览', icon: Layers3 },
   { id: 'display' as Tab, label: '首页展示', icon: Eye },
   { id: 'selection' as Tab, label: '选题与栏目', icon: Settings2 },
   { id: 'issues' as Tab, label: '内容与审核', icon: BookOpen },
   { id: 'agents' as Tab, label: 'Agent 与更新', icon: Workflow },
+  { id: 'api' as Tab, label: '模型与 API', icon: Cpu },
 ];
 const fieldClass = 'w-full rounded-2xl border border-slate-200/80 bg-white/70 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/60 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-200 dark:focus:ring-indigo-950';
 const buttonClass = 'inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-300';
@@ -51,9 +68,10 @@ export default function BriefingSection() {
   const [connection, setConnection] = useState<'checking' | 'ready' | 'offline'>('checking');
 
   function apply(value: Config) {
-    setConfig(value);
-    setTerms({ topics: value.selection.topics.join('\n'), excludedKeywords: value.selection.excludedKeywords.join('\n'), preferredSources: value.selection.preferredSources.join('\n') });
-    setBaseline(JSON.stringify(value));
+    const normalized: Config = { ...value, aiProvider: { ...defaultAiProvider, ...(value.aiProvider || {}) } };
+    setConfig(normalized);
+    setTerms({ topics: normalized.selection.topics.join('\n'), excludedKeywords: normalized.selection.excludedKeywords.join('\n'), preferredSources: normalized.selection.preferredSources.join('\n') });
+    setBaseline(JSON.stringify(normalized));
   }
   async function load() {
     setBusy(true); setError(''); setConnection('checking');
@@ -116,6 +134,9 @@ export default function BriefingSection() {
   function selection<K extends keyof Config['selection']>(key: K, value: Config['selection'][K]) {
     setConfig(previous => previous ? { ...previous, selection: { ...previous.selection, [key]: value } } : previous);
   }
+  function updateAiProvider(patch: Partial<AiProviderConfig>) {
+    setConfig(previous => previous ? { ...previous, aiProvider: { ...defaultAiProvider, ...(previous.aiProvider || {}), ...patch } } : previous);
+  }
 
   return <section aria-label="每日选刊管理" className="min-w-0 rounded-3xl border border-slate-200/80 bg-slate-50/95 p-4 text-slate-700 shadow-sm md:p-6 dark:border-white/10 dark:bg-slate-900/95 dark:text-slate-200">
     <div>
@@ -155,6 +176,49 @@ export default function BriefingSection() {
             </div>}
             <div hidden={tab !== 'issues'}><BriefingContentManager issues={issues} channels={config.channels} maxItems={config.selection.maxItems} onPublished={() => void refreshPublished()} /></div>
             <div hidden={tab !== 'agents'}><BriefingAgentPanel settings={config.agent} onChange={value => setConfig({ ...config, agent: value })} /></div>
+            {tab === 'api' && (() => {
+              const ai = { ...defaultAiProvider, ...(config.aiProvider || {}) };
+              return <div className="space-y-5">
+                <Panel title="模型提供商与快速预设" description="选择每日选刊自动生成时调用的大模型接口。点击下方预设可一键填入常用免费或低成本平台参数。">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {aiPresets.map(preset => {
+                      const active = ai.provider === preset.config.provider && ai.baseUrl === preset.config.baseUrl;
+                      return <button key={preset.label} type="button" onClick={() => updateAiProvider(preset.config)} className={`rounded-2xl border p-4 text-left transition ${active ? 'border-indigo-500 bg-indigo-50/80 shadow-sm dark:border-indigo-400 dark:bg-indigo-950/40' : 'border-slate-200/80 bg-white/50 hover:border-indigo-300 dark:border-white/10 dark:bg-slate-900/30'}`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-semibold text-slate-800 dark:text-white">{preset.label}</span>
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-300">{preset.config.provider === 'gemini' ? 'Gemini' : 'OpenAI 兼容'}</span>
+                        </div>
+                        <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">{preset.desc}</p>
+                      </button>;
+                    })}
+                  </div>
+                </Panel>
+                <Panel title="接口连接参数" description="保存后会同步写入 briefingConfig.json；API 密钥（Key）不在此处保存，请放在 GitHub Actions Secrets 中以防泄露。">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field label="接口协议类型">
+                      <select className={fieldClass} value={ai.provider} onChange={e => updateAiProvider({ provider: e.target.value as 'gemini' | 'openai' })}>
+                        <option value="gemini">Google AI Studio (Gemini 原生接口)</option>
+                        <option value="openai">OpenAI 兼容接口（智谱 / 硅基流动 / 百炼 / DeepSeek）</option>
+                      </select>
+                    </Field>
+                    <Field label="GitHub Secret 环境变量名" hint="在 GitHub 仓库 Settings → Secrets → Actions 中配置对应名称的密钥。">
+                      <input className={fieldClass} value={ai.secretName} maxLength={64} onChange={e => updateAiProvider({ secretName: e.target.value.toUpperCase() })} placeholder="例如 GEMINI_API_KEY 或 OPENAI_API_KEY" />
+                    </Field>
+                  </div>
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                    <Field label="API Base URL" hint="OpenAI 兼容平台通常以 /v1 或 /v4 结尾。">
+                      <input className={fieldClass} value={ai.baseUrl} maxLength={200} onChange={e => updateAiProvider({ baseUrl: e.target.value })} placeholder="https://api.siliconflow.cn/v1" />
+                    </Field>
+                    <Field label="模型名称（Model ID）" hint="不同平台对模型 ID 大小写敏感，请以平台控制台为准。">
+                      <input className={fieldClass} value={ai.model} maxLength={100} onChange={e => updateAiProvider({ model: e.target.value })} placeholder="gemini-2.5-flash" />
+                    </Field>
+                  </div>
+                  <div className="mt-6 rounded-2xl border border-amber-200/70 bg-amber-50/80 p-4 text-xs leading-6 text-amber-800 dark:border-amber-400/20 dark:bg-amber-950/30 dark:text-amber-200">
+                    安全提示：当前切换的是接口地址与模型名称，不会将任何密钥写入仓库。切换后请点击右上角 <strong>保存本地设置</strong> 并推送至 GitHub，下一次定时或手动运行选刊任务时即自动生效。
+                  </div>
+                </Panel>
+              </div>;
+            })()}
           </>}
         </div>
       </div>

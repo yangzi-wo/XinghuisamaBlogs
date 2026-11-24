@@ -1,6 +1,6 @@
 {
   "display": {
-    "enabled": false,
+    "enabled": true,
     "title": "每日选刊",
     "subtitle": "为兴趣留一点时间",
     "archiveDays": 90,
@@ -10,7 +10,18 @@
     "showCovers": true,
     "showTerraNotes": false
   },
-  "topics": [],
+  "topics": [
+    "AI大模型",
+    "ACGN",
+    "GitHub开源热门",
+    "网络技术"
+  ],
+  "aiProvider": {
+    "provider": "gemini",
+    "baseUrl": "https://generativelanguage.googleapis.com",
+    "model": "gemini-2.5-flash",
+    "secretName": "GEMINI_API_KEY"
+  },
   "channels": [
     {
       "id": "news",

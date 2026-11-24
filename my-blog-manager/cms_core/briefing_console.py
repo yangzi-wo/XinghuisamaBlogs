@@ -27,6 +27,12 @@ def default_config():
         'channels': [{'id': 'news', 'name': '动态精选', 'enabled': True},
                      {'id': 'reading', 'name': '深度阅读', 'enabled': True}],
         'agent': {'enabled': False, 'publishMode': 'review', 'preferredTime': '09:00'},
+        'aiProvider': {
+            'provider': 'gemini',
+            'baseUrl': 'https://generativelanguage.googleapis.com',
+            'model': 'gemini-2.5-flash',
+            'secretName': 'GEMINI_API_KEY',
+        },
     }
 
 
@@ -40,6 +46,8 @@ def validate_config(value):
         if not isinstance(value.get(key), dict):
             raise ValueError('缺少配置项：' + key)
         result[key].update({k: v for k, v in value[key].items() if k in result[key]})
+    if isinstance(value.get('aiProvider'), dict):
+        result['aiProvider'].update({k: v for k, v in value['aiProvider'].items() if k in result['aiProvider']})
     display = result['display']
     for key in ('enabled', 'autoPlay', 'showCovers', 'showTerraNotes'):
         if type(display[key]) is not bool:
@@ -85,11 +93,25 @@ def validate_config(value):
     if type(revision) is not int or revision < 0:
         raise ValueError('配置版本无效，请重新读取')
     result['revision'] = revision
+    ai = result['aiProvider']
+    if ai.get('provider') not in ('gemini', 'openai'):
+        raise ValueError('模型接口类型仅支持 gemini 或 openai')
+    for k, maximum in (('baseUrl', 200), ('model', 100), ('secretName', 64)):
+        if not isinstance(ai.get(k), str) or not ai[k].strip() or len(ai[k]) > maximum:
+            raise ValueError('模型连接参数无效：' + k)
+        ai[k] = ai[k].strip()
+    if not re.fullmatch(r'[A-Z][A-Z0-9_]{0,63}', ai['secretName']):
+        raise ValueError('Secret 名称只能包含大写字母、数字和下划线，且以字母开头')
     return result
 
 
 def public_config(config):
-    return {'display': config['display'], 'topics': config['selection']['topics'], 'channels': config['channels']}
+    return {
+        'display': config['display'],
+        'topics': config['selection']['topics'],
+        'channels': config['channels'],
+        'aiProvider': config['aiProvider'],
+    }
 
 
 def atomic_json(path, value):
@@ -122,6 +144,8 @@ class BriefingStore:
                 value['display'].update(public.get('display', {}))
                 value['selection']['topics'] = public.get('topics', [])
                 value['channels'] = public.get('channels', value['channels'])
+                if isinstance(public.get('aiProvider'), dict):
+                    value['aiProvider'].update(public['aiProvider'])
             return validate_config(value)
         return validate_config(json.loads(self.config_path.read_text(encoding='utf-8')))
 
