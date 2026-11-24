@@ -34,7 +34,7 @@ export const siteConfig = {
   // 5. 首页照片墙预览图
   photoWallImage: "",
   cloudMusicIds: [] as string[],
-  localTracks: [] as { id: string; title: string; artist: string; src: string; cover?: string; lrcUrl?: string }[],
+  localTracks: [{"id": "local_1795514121095", "title": "花も騒めく", "artist": "ヨルシカ", "src": "/music/1795514121095_Hi-Res.mp3", "cover": "/music/1795514121095_178201173.jpg", "lrcUrl": "/music/1795514121095_-.lrc"}] as { id: string; title: string; artist: string; src: string; cover?: string; lrcUrl?: string }[],
   social: {
     github: "https://github.com/yangzi-wo",
     gitee: "",

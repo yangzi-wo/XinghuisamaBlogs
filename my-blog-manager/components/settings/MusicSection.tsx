@@ -55,7 +55,7 @@ export default function MusicSection({ formData, handleUpdate, pushToQueue, show
         if (coverInputRef.current) coverInputRef.current.value = '';
         showToast?.("✅ 已加入本地歌单，别忘了点击下方「暂存音乐修改」", "success");
       } else {
-        showToast?.(`上传失败: ${data.message || '未知错误'}`, "error");
+        showToast?.(`上传失败: ${data.message || (typeof data.detail === 'string' ? data.detail : `HTTP ${res.status}（请重启管理后台后再试）`)}`, "error");
       }
     } catch (error: any) {
       showToast?.(`连接异常: ${error.message}`, "error");
