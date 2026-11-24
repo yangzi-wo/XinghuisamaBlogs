@@ -42,7 +42,6 @@ export const siteConfig = {
     telegram: "",
     email: "",
     qq: "2829415774",
-    wechat: "a334221a",
   },
   counts: {
     photos: 0, // 照片墙数量可以手动写死或动态计算

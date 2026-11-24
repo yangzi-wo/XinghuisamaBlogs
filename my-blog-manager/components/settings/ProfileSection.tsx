@@ -126,10 +126,6 @@ export default function ProfileSection({ formData, handleUpdate, pushToQueue }: 
                   <input type="text" value={safeSocial.email || ''} onChange={e => handleSocialUpdate('email', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">微信 ID</label>
-                  <input type="text" value={safeSocial.wechat || ''} onChange={e => handleSocialUpdate('wechat', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
-                </div>
-                <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase ml-1">QQ 号码</label>
                   <input type="text" value={safeSocial.qq || ''} onChange={e => handleSocialUpdate('qq', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
                 </div>
