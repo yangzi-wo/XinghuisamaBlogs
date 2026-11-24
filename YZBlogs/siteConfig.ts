@@ -37,8 +37,9 @@ export const siteConfig = {
   localTracks: [{"id": "local_1795514121095", "title": "花も騒めく", "artist": "ヨルシカ", "src": "/music/1795514121095_Hi-Res.mp3", "cover": "/music/1795514121095_178201173.jpg", "lrcUrl": "/music/1795514121095_-.lrc"}] as { id: string; title: string; artist: string; src: string; cover?: string; lrcUrl?: string }[],
   social: {
     github: "https://github.com/yangzi-wo",
-    gitee: "",
-    google: "",
+    discord: "",
+    x: "",
+    telegram: "",
     email: "",
     qq: "2829415774",
     wechat: "a334221a",

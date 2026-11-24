@@ -126,10 +126,6 @@ export default function ProfileSection({ formData, handleUpdate, pushToQueue }: 
                   <input type="text" value={safeSocial.email || ''} onChange={e => handleSocialUpdate('email', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Google 邮箱/链接</label>
-                  <input type="text" value={safeSocial.google || ''} onChange={e => handleSocialUpdate('google', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
-                </div>
-                <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase ml-1">微信 ID</label>
                   <input type="text" value={safeSocial.wechat || ''} onChange={e => handleSocialUpdate('wechat', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
                 </div>
@@ -140,6 +136,18 @@ export default function ProfileSection({ formData, handleUpdate, pushToQueue }: 
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase ml-1">GitHub 地址</label>
                   <input type="text" value={safeSocial.github || ''} onChange={e => handleSocialUpdate('github', e.target.value)} className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Discord（链接或用户名）</label>
+                  <input type="text" value={safeSocial.discord || ''} onChange={e => handleSocialUpdate('discord', e.target.value)} placeholder="https://discord.com/... 或用户名" className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">X (Twitter) 链接或用户名</label>
+                  <input type="text" value={safeSocial.x || ''} onChange={e => handleSocialUpdate('x', e.target.value)} placeholder="https://x.com/..." className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Telegram 链接或用户名</label>
+                  <input type="text" value={safeSocial.telegram || ''} onChange={e => handleSocialUpdate('telegram', e.target.value)} placeholder="https://t.me/... 或 @username" className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm mt-1 outline-none" />
                 </div>
               </div>
 
