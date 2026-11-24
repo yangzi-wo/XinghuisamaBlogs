@@ -1,102 +1,172 @@
 {
   "edition": {
-    "date": "2026.11.24",
-    "weekday": "星期二",
+    "date": "2026.11.25",
+    "weekday": "星期三",
     "label": "每日选刊",
-    "notice": "今日聚焦：AI模型幻觉研究、开源游戏兼容层进展及ACGN行业动态与新番资讯。"
+    "notice": "今日聚焦GPT-6生物设计突破、CIA安全事件及前沿AI进展。"
   },
   "items": [
     {
-      "id": "brief-20261124-1-67d54e34",
+      "id": "brief-20261125-1-35ef6850",
       "category": "reading",
-      "title": "大模型在后训练阶段会记忆自身的幻觉",
-      "originalTitle": "LLMs Memorize Their Own Hallucinations During Post-Training",
-      "source": "Hugging Face Papers",
-      "sourceOrg": "Hugging Face",
+      "title": "OpenAI 宣布 GPT-6 展现出原生蛋白质设计能力",
+      "originalTitle": "GPT-6 models demonstrate intrinsic protein-design capabilities",
+      "source": "Hacker News",
+      "sourceOrg": "OpenAI / Hacker News",
       "sourceDate": "2026.11.24",
-      "url": "https://huggingface.co/papers/2611.26863",
+      "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/",
       "tags": [
         "AI大模型"
       ],
-      "summary": "本研究探讨了直接采用推理导向的后训练方案对大模型的潜在负面影响。研究发现，模型在非数学和代码领域部署时，会错误地记忆并内化其在推理任务中产生的幻觉，从而影响模型整体的可靠性。",
+      "summary": "OpenAI 最新推出的 GPT-6 模型在生物科学领域取得突破，无需额外微调即可展现出原生的蛋白质结构设计与序列生成能力，为药物研发与生物工程开辟了新路径。",
       "highlights": [
-        "推理导向训练的副作用",
-        "幻觉记忆机制分析"
+        "模型具备无监督的蛋白质结构理解与生成能力",
+        "极大降低了计算生物学领域的技术门槛与研发周期"
       ],
-      "readingNote": "深度解析大模型训练中“推理能力”与“知识准确性”之间的权衡，值得AI开发者关注。",
-      "verifiedAt": "2026.11.24",
+      "readingNote": "前沿大模型正在跨越纯文本生成，逐步深入科学探索与生命科学的底层构建。",
+      "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://huggingface.co/papers/2611.26863"
+        "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/"
       ]
     },
     {
-      "id": "brief-20261124-2-30cdd4ec",
+      "id": "brief-20261125-2-0746e911",
       "category": "news",
-      "title": "开源项目 VIctory：尝试在PC上运行GTA 6",
-      "originalTitle": "Marvisak/VIctory (★9194)",
-      "source": "GitHub Trending",
-      "sourceOrg": "GitHub",
-      "sourceDate": "2026.11.23",
-      "url": "https://github.com/Marvisak/VIctory",
-      "tags": [
-        "github开源热门",
-        "ACGN"
-      ],
-      "summary": "GitHub热门项目VIctory旨在通过兼容层技术，尝试让主机大作《GTA 6》在Windows平台上运行。该项目近期在社区引发广泛关注，展示了跨平台游戏移植技术的最新进展。",
-      "highlights": [
-        "GTA 6 PC运行尝试",
-        "跨平台兼容层技术"
-      ],
-      "readingNote": "游戏移植领域的硬核开源尝试，关注其后续对底层图形API的适配进展。",
-      "verifiedAt": "2026.11.24",
-      "verificationUrls": [
-        "https://github.com/Marvisak/VIctory"
-      ]
-    },
-    {
-      "id": "brief-20261124-3-20eabf9d",
-      "category": "news",
-      "title": "《魔法使之夜》动画电影续作正式确认",
-      "originalTitle": "Witch on the Holy Night Anime Film's Sequel Confrmed",
-      "source": "Anime News Network",
-      "sourceOrg": "ANN",
+      "title": "美情报机构 CIA 未分类网络系统遭攻击入侵",
+      "originalTitle": "An unclassified CIA system was breached in a cyberattack",
+      "source": "Hacker News",
+      "sourceOrg": "AP News / Hacker News",
       "sourceDate": "2026.11.24",
-      "url": "https://www.animenewsnetwork.com/news/2026-11-24/witch-on-the-holy-night-anime-film-sequel-confrmed/.244151",
+      "url": "https://apnews.com/article/cia-cyberattack-unclassified-system-bfa6d3b02e3b0e2779dfb613c900bd77",
       "tags": [
-        "ACGN"
+        "网络",
+        "时政"
       ],
-      "summary": "继首部动画电影取得优异票房成绩后，官方正式确认《魔法使之夜》动画电影续作制作决定。该系列凭借精良的制作水准，在粉丝群体中拥有极高期待值。",
+      "summary": "据美联社报道，美国中央情报局（CIA）的一个非机密系统遭遇网络攻击并被攻破。目前官方已启动应急响应，以评估漏洞影响并追查潜在攻击源头。",
       "highlights": [
-        "续作制作确认",
-        "首部票房表现优异"
+        "受袭击系统属于非机密范畴，但仍暴露政企网络安全隐患",
+        "黑客攻击手段与安全漏洞溯源仍在调查中"
       ],
-      "readingNote": "型月粉丝不容错过的重磅消息，期待续作延续高水准制作。",
-      "verifiedAt": "2026.11.24",
+      "readingNote": "重要机构的外部网络安全防御再次面临严峻考验。",
+      "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://www.animenewsnetwork.com/news/2026-11-24/witch-on-the-holy-night-anime-film-sequel-confrmed/.244151"
+        "https://apnews.com/article/cia-cyberattack-unclassified-system-bfa6d3b02e3b0e2779dfb613c900bd77"
       ]
     },
     {
-      "id": "brief-20261124-4-48e9fadc",
-      "category": "news",
-      "title": "Cloudflare WAF发布针对ruby2shell等关键漏洞的防御机制",
-      "originalTitle": "How Cloudflare WAF protects against ruby2shell (CVE-2026-132825)",
+      "id": "brief-20261125-3-c81d005a",
+      "category": "reading",
+      "title": "前沿大模型仅凭单篇文章即可准确鉴别作者身分与模型来源",
+      "originalTitle": "Frontier models need only one text to unmask its human or AI author",
+      "source": "Hugging Face Papers",
+      "sourceOrg": "Hugging Face",
+      "sourceDate": "2026.11.25",
+      "url": "https://huggingface.com/papers/2611.26216",
+      "tags": [
+        "AI大模型"
+      ],
+      "summary": "最新研究表明，在无网络检索及无示例提示的情况下，前沿大模型仅需阅读单篇文章，即可精准识别文本是人类还是 AI 撰写，甚至能分辨出具体的模型提供商及系列。",
+      "highlights": [
+        "零样本提示下高准确率辨别 AI 与人类文本",
+        "可进一步追溯至特定的开源或闭源大模型厂商"
+      ],
+      "readingNote": "AI 生成文本的隐性指纹特征已成为前沿模型内部可以轻松识别的规律。",
+      "verifiedAt": "2026.11.25",
+      "verificationUrls": [
+        "https://huggingface.com/papers/2611.26216"
+      ]
+    },
+    {
+      "id": "brief-20261125-4-6cffb1ba",
+      "category": "reading",
+      "title": "nginx2root：详解 Nginx 严重内存破坏漏洞及防护方案",
+      "originalTitle": "nginx2root: Five new nginx vulnerabilities, and how Cloudflare protects origins from the worst of them",
       "source": "Cloudflare Blog",
       "sourceOrg": "Cloudflare",
       "sourceDate": "2026.11.20",
-      "url": "https://blog.cloudflare.com/ruby2shell-waf-protection/",
+      "url": "https://blog.cloudflare.com/nginx2root/",
       "tags": [
         "网络"
       ],
-      "summary": "针对近期爆发的ruby2shell（CVE-2026-132825）及phpAfterShell等关键漏洞，Cloudflare更新了WAF规则，为所有层级的用户（包括免费版）提供自动防御，有效阻断了未经身份验证的代码执行风险。",
+      "summary": "Nginx 近期曝光的五个内存破坏漏洞（统称 nginx2root）可能允许未经身份验证的攻击者在服务器上执行远程代码。文章详细分析了漏洞成因以及 Cloudflare WAF 的防御机制。",
       "highlights": [
-        "全网防御覆盖",
-        "针对CVE-2026-132825的修复"
+        "披露 5 个针对 Nginx 内存的安全漏洞",
+        "解释了云端代理如何为源站遮蔽最严重的 RCE 风险"
       ],
-      "readingNote": "网络安全从业者应及时检查相关组件，并利用WAF作为应急防护手段。",
-      "verifiedAt": "2026.11.24",
+      "readingNote": "运维与安全人员需高度关注服务器基础设施的更新与防护配置。",
+      "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://blog.cloudflare.com/ruby2shell-waf-protection/"
+        "https://blog.cloudflare.com/nginx2root/"
+      ]
+    },
+    {
+      "id": "brief-20261125-5-1309ffd7",
+      "category": "reading",
+      "title": "VideoJSON：超轻量设计击败复杂记忆图谱的超长视频理解方案",
+      "originalTitle": "VideoJSON: A Minimal Harness Beats Purpose-Built Memory for Ultra-Long Video Understanding",
+      "source": "Hugging Face Papers",
+      "sourceOrg": "Hugging Face",
+      "sourceDate": "2026.11.25",
+      "url": "https://huggingface.com/papers/2611.28167",
+      "tags": [
+        "AI大模型"
+      ],
+      "summary": "在长达数天或数周的视频问答任务中，传统方法依赖复杂的记忆图谱与固定检索管线。新研究提出 VideoJSON 框架，以极简的结构提供了超越专用记忆机制的准确率与灵活性。",
+      "highlights": [
+        "摒弃繁琐的记忆图谱设计，采用轻量化检索框架",
+        "在长视频时序问答与跨事件检索中达到 SOTA 表现"
+      ],
+      "readingNote": "重新审视 AI Agent 的记忆设计，大道至简的架构往往能发挥更大威力。",
+      "verifiedAt": "2026.11.25",
+      "verificationUrls": [
+        "https://huggingface.com/papers/2611.28167"
+      ]
+    },
+    {
+      "id": "brief-20261125-6-4f5eefd8",
+      "category": "news",
+      "title": "Versine 发布：基于 MCP 协议的 AI 对话直接收付款工具",
+      "originalTitle": "Launch HN: Versine (YC F26) – MCP to send and receive money",
+      "source": "Hacker News",
+      "sourceOrg": "Y Combinator / Hacker News",
+      "sourceDate": "2026.11.24",
+      "url": "https://news.ycombinator.com/item?id=50634426",
+      "tags": [
+        "AI大模型",
+        "网络"
+      ],
+      "summary": "YC 孵化项目 Versine 正式亮相，它借助 Model Context Protocol (MCP) 让用户能够直接通过与 AI 的自然语言对话进行转账与收款，构建 AI 时代的新型支付入口。",
+      "highlights": [
+        "基于 MCP 协议实现对话式支付与结算",
+        "探索了 AI Agent 接入现实金融设施的新途径"
+      ],
+      "readingNote": "随着 MCP 协议普及，AI 正在从纯文本交互向金融交易等深度场景延伸。",
+      "verifiedAt": "2026.11.25",
+      "verificationUrls": [
+        "https://news.ycombinator.com/item?id=50634426"
+      ]
+    },
+    {
+      "id": "brief-20261125-7-27555f15",
+      "category": "news",
+      "title": "《青春猪头少年不会梦到亲友》剧场版影评发布",
+      "originalTitle": "Rascal Does Not Dream of a Dear Friend Anime Film Review",
+      "source": "Anime News Network",
+      "sourceOrg": "Anime News Network",
+      "sourceDate": "2026.11.24",
+      "url": "https://www.animenewsnetwork.com/review/rascal-does-not-dream-of-a-dear-friend-anime-film/.243539",
+      "tags": [
+        "ACGN"
+      ],
+      "summary": "ANN 发布了《青春猪头少年》系列全新剧场版《青春猪头少年不会梦到亲友》的详细影评。影评指出该片不仅妥善收尾了前作悬念，更为整个系列画上了极为饱满的句点。",
+      "highlights": [
+        "收束前季核心未解悬念",
+        "作为系列阶段性总结的高质量剧场版动画"
+      ],
+      "readingNote": "经典青春奇幻系列迎来了感人至深的阶段性总结，粉丝不容错过。",
+      "verifiedAt": "2026.11.25",
+      "verificationUrls": [
+        "https://www.animenewsnetwork.com/review/rascal-does-not-dream-of-a-dear-friend-anime-film/.243539"
       ]
     }
   ]
