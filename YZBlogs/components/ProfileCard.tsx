@@ -71,15 +71,6 @@ export default function ProfileCard({ postCount, chatterCount, photoCount }: { p
 }
 
 function StatItem({ count, label, color }: { count: number, label: string, color: string }) {
-  const social = (siteConfig.social || {}) as Record<string, string>;
-  const renderSmart = (type: string, label: string, val?: string) => {
-    const v = (val || '').trim();
-    if (v.startsWith('http://') || v.startsWith('https://')) {
-      return <SocialBtn type={type} url={v} />;
-    }
-    return <SocialBtn type={type} onClick={() => copyToClipboard(v, label)} />;
-  };
-
   return (
     <div className="text-center group/stat px-2">
       <div className={`text-xl md:text-2xl font-black ${color} transition-transform group-hover/stat:scale-110`}>{count}</div>
