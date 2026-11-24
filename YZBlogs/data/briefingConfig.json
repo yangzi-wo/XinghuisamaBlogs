@@ -17,6 +17,19 @@
     "网络",
     "时政"
   ],
+  "selection": {
+    "topics": [
+      "AI大模型",
+      "ACGN",
+      "github开源热门",
+      "网络",
+      "时政"
+    ],
+    "excludedKeywords": [],
+    "preferredSources": [],
+    "language": "zh-CN",
+    "maxItems": 6
+  },
   "channels": [
     {
       "id": "news",
@@ -37,6 +50,6 @@
   },
   "schedule": {
     "enabled": true,
-    "preferredTime": "08:00"
+    "preferredTime": "00:00"
   }
 }
