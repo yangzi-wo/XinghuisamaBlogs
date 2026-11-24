@@ -14,12 +14,10 @@ const defaultAiProvider: AiProviderConfig = {
   model: 'gemini-2.5-flash',
   secretName: 'GEMINI_API_KEY',
 };
-const aiPresets: { label: string; desc: string; config: AiProviderConfig }[] = [
-  { label: 'Google AI Studio', desc: '免费层（海外直连稳定）', config: { provider: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com', model: 'gemini-2.5-flash', secretName: 'GEMINI_API_KEY' } },
-  { label: '智谱 BigModel', desc: 'GLM-4-Flash 免费小模型', config: { provider: 'openai', baseUrl: 'https://open.bigmodel.cn/api/paas/v4', model: 'glm-4-flash', secretName: 'OPENAI_API_KEY' } },
-  { label: '硅基流动 SiliconFlow', desc: '聚合 Qwen / GLM 等免费/低价模型', config: { provider: 'openai', baseUrl: 'https://api.siliconflow.cn/v1', model: 'Qwen/Qwen2.5-7B-Instruct', secretName: 'OPENAI_API_KEY' } },
-  { label: '阿里云百炼 DashScope', desc: 'Qwen 免费体验额度', config: { provider: 'openai', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-turbo', secretName: 'OPENAI_API_KEY' } },
-  { label: 'DeepSeek 官方', desc: '高性价比按量计费', config: { provider: 'openai', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', secretName: 'OPENAI_API_KEY' } },
+const aiPresets: { id: 'gemini' | 'deepseek' | 'custom-openai'; label: string; badge: string; desc: string; config: Partial<AiProviderConfig> }[] = [
+  { id: 'gemini', label: 'Google AI Studio', badge: 'Gemini', desc: '免费层（海外直连稳定）', config: { provider: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com', model: 'gemini-2.5-flash', secretName: 'GEMINI_API_KEY' } },
+  { id: 'deepseek', label: 'DeepSeek 官方', badge: 'OpenAI 兼容', desc: '高性价比按量计费', config: { provider: 'openai', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', secretName: 'OPENAI_API_KEY' } },
+  { id: 'custom-openai', label: '自定义 OpenAI 兼容', badge: '自定义', desc: '填写任意 OpenAI 格式接口（如硅基流动、智谱、中转站等）', config: { provider: 'openai', secretName: 'OPENAI_API_KEY' } },
 ];
 
 type Config = {
@@ -180,13 +178,31 @@ export default function BriefingSection() {
               const ai = { ...defaultAiProvider, ...(config.aiProvider || {}) };
               return <div className="space-y-5">
                 <Panel title="模型提供商与快速预设" description="选择每日选刊自动生成时调用的大模型接口。点击下方预设可一键填入常用免费或低成本平台参数。">
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid gap-3 sm:grid-cols-3">
                     {aiPresets.map(preset => {
-                      const active = ai.provider === preset.config.provider && ai.baseUrl === preset.config.baseUrl;
-                      return <button key={preset.label} type="button" onClick={() => updateAiProvider(preset.config)} className={`rounded-2xl border p-4 text-left transition ${active ? 'border-indigo-500 bg-indigo-50/80 shadow-sm dark:border-indigo-400 dark:bg-indigo-950/40' : 'border-slate-200/80 bg-white/50 hover:border-indigo-300 dark:border-white/10 dark:bg-slate-900/30'}`}>
+                      const active =
+                        preset.id === 'gemini'
+                          ? ai.provider === 'gemini'
+                          : preset.id === 'deepseek'
+                            ? ai.provider === 'openai' && ai.baseUrl.includes('api.deepseek.com')
+                            : ai.provider === 'openai' && !ai.baseUrl.includes('api.deepseek.com');
+                      const handleSelect = () => {
+                        if (preset.id === 'custom-openai') {
+                          const isKnownPreset = ai.baseUrl.includes('generativelanguage.googleapis.com') || ai.baseUrl.includes('api.deepseek.com');
+                          updateAiProvider({
+                            provider: 'openai',
+                            baseUrl: isKnownPreset ? 'https://api.openai.com/v1' : ai.baseUrl,
+                            model: isKnownPreset ? 'gpt-4o-mini' : ai.model,
+                            secretName: ai.secretName === 'GEMINI_API_KEY' ? 'OPENAI_API_KEY' : ai.secretName,
+                          });
+                        } else {
+                          updateAiProvider(preset.config);
+                        }
+                      };
+                      return <button key={preset.id} type="button" onClick={handleSelect} className={`rounded-2xl border p-4 text-left transition ${active ? 'border-indigo-500 bg-indigo-50/80 shadow-sm dark:border-indigo-400 dark:bg-indigo-950/40' : 'border-slate-200/80 bg-white/50 hover:border-indigo-300 dark:border-white/10 dark:bg-slate-900/30'}`}>
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-semibold text-slate-800 dark:text-white">{preset.label}</span>
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-300">{preset.config.provider === 'gemini' ? 'Gemini' : 'OpenAI 兼容'}</span>
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-300">{preset.badge}</span>
                         </div>
                         <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">{preset.desc}</p>
                       </button>;
