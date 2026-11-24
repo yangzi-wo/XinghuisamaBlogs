@@ -171,7 +171,7 @@ export default function AuthWidget() {
         </button>
 
         {open && (
-          <div className="absolute right-0 mt-3 w-72 rounded-2xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl p-4 z-50">
+          <div className="absolute right-0 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-2xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl p-4 z-50">
             <button
               type="button"
               title="查看签到规则与等级区间"

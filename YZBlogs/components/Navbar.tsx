@@ -109,8 +109,11 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* 📱 手机端：可拖拽吸附的触发球 */}
+      {/* 📱 手机端：右上角悬浮登录/签到入口 + 可拖拽吸附的触发球 */}
       <div className="md:hidden">
+        <div className="fixed top-4 right-4 z-[60]">
+          <AuthWidget />
+        </div>
         <motion.button
           drag="y"
           dragConstraints={constraints}
