@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 from fastapi import APIRouter, Request
 
 router = APIRouter()
@@ -96,6 +97,33 @@ async def execute_sync(request: Request):
                     # 其他普通文件，直接物理拷贝
                     shutil.copy2(src_file, dst_file)
 
-        return {"success": True, "message": "🎉 完美撒花！所有文章与配置已镜像覆盖至目标博客。"}
+        # 3. 自动提交并推送到 GitHub（触发 Cloudflare Pages 自动部署）
+        git_env = os.environ.copy()
+        git_env["GIT_TERMINAL_PROMPT"] = "0"
+        repo_root = os.path.dirname(os.path.abspath(target_path))
+        if not os.path.exists(os.path.join(repo_root, ".git")):
+            repo_root = target_path
+
+        try:
+            subprocess.run(["git", "-C", repo_root, "add", "-A"], check=True, env=git_env, timeout=15)
+            status_res = subprocess.run(
+                ["git", "-C", repo_root, "status", "--porcelain"],
+                check=True, capture_output=True, text=True, env=git_env, timeout=15
+            )
+            if not status_res.stdout.strip():
+                return {"success": True, "message": "🎉 本地已同步（仓库无新改动需要推送）"}
+
+            subprocess.run(
+                ["git", "-C", repo_root, "commit", "-m", "chore: sync content from manager"],
+                check=True, capture_output=True, text=True, env=git_env, timeout=20
+            )
+            subprocess.run(
+                ["git", "-C", repo_root, "push"],
+                check=True, capture_output=True, text=True, env=git_env, timeout=45
+            )
+            return {"success": True, "message": "🎉 已同步并自动推送至 GitHub！Cloudflare 约 1 分钟内自动更新。"}
+        except Exception as git_err:
+            err_detail = getattr(git_err, "stderr", None) or str(git_err)
+            return {"success": True, "message": f"✅ 本地已同步，但自动推送 GitHub 失败（{err_detail.strip()[:80]}），可稍后让 AI 代推。"}
     except Exception as e:
         return {"success": False, "message": f"同步过程中发生致命错误: {str(e)}"}
