@@ -4,6 +4,7 @@ import json
 import os
 import re
 import secrets
+import subprocess
 import tempfile
 import threading
 from pathlib import Path
@@ -241,6 +242,34 @@ def create_app(store, admin_token):
     @app.get('/api/briefing/issues')
     def issues():
         return {'issues': store.issues()}
+
+    @app.post('/api/briefing/sync-remote')
+    def sync_remote():
+        repo_root = store.site.parent
+        env = {**os.environ, 'GIT_TERMINAL_PROMPT': '0'}
+        try:
+            fetch = subprocess.run(
+                ['git', 'fetch', 'origin', 'main'],
+                cwd=str(repo_root),
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=20,
+            )
+            if fetch.returncode != 0:
+                return {'synced': False, 'message': '云端拉取失败，已刷新本地列表（' + (fetch.stderr.strip() or '网络异常')[:80] + '）'}
+            rel_site = store.site.name
+            subprocess.run(
+                ['git', 'checkout', 'origin/main', '--', f'{rel_site}/data/dailyBriefing.json', f'{rel_site}/data/dailyBriefingArchive.json'],
+                cwd=str(repo_root),
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=15,
+            )
+            return {'synced': True, 'message': '已同步云端最新选刊并刷新列表'}
+        except Exception as exc:
+            return {'synced': False, 'message': f'已刷新本地列表（云端同步跳过: {exc}）'}
 
     @app.get('/api/briefing/status')
     def status():

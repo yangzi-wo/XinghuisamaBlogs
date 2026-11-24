@@ -25,6 +25,12 @@ export default function BriefingContentManager({ issues, channels, maxItems, onP
     const [result, images] = await Promise.all([briefingApi<{ drafts: EditorialDraft[] }>('drafts'), briefingApi<{ assets: typeof assets }>('assets')]);
     setDrafts(result.drafts); setAssets(images.assets);
   }
+  async function syncAndRefresh() {
+    const sync = await briefingApi<{ synced: boolean; message: string }>('sync-remote', {});
+    await refresh();
+    onPublished();
+    setMessage(sync.message);
+  }
   useEffect(() => { refresh().catch(exception => setError(exception.message)); }, []);
   useEffect(() => {
     if (!dirty) return;
@@ -80,7 +86,7 @@ export default function BriefingContentManager({ issues, channels, maxItems, onP
   }
 
   return <section aria-label="选刊内容与审核" className="space-y-5">
-    <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="text-lg font-semibold text-slate-800 dark:text-white">内容与审核</h3><p className="mt-2 text-xs leading-6 text-slate-500 dark:text-slate-400">草稿、人工编辑和发布都在这里管理。发布只更新本地网站目录。</p></div><div className="flex gap-2"><button className={actionStyle} disabled={busy} onClick={() => void execute(refresh)}>刷新列表</button><button className={actionStyle} disabled={busy} onClick={newDraft}><FilePlus size={14} />新建一期</button></div></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="text-lg font-semibold text-slate-800 dark:text-white">内容与审核</h3><p className="mt-2 text-xs leading-6 text-slate-500 dark:text-slate-400">草稿、人工编辑和发布都在这里管理。发布只更新本地网站目录。</p></div><div className="flex gap-2"><button className={actionStyle} disabled={busy} onClick={() => void execute(syncAndRefresh)}>同步云端并刷新</button><button className={actionStyle} disabled={busy} onClick={newDraft}><FilePlus size={14} />新建一期</button></div></div>
     {error && <p role="alert" className="rounded-xl bg-rose-50 p-4 text-xs leading-6 text-rose-700">{error}</p>}
     {message && <p role="status" className="rounded-xl bg-emerald-50 p-4 text-xs leading-6 text-emerald-700">{message}</p>}
     {editing ? <div className="space-y-5 rounded-3xl border border-white/60 bg-white/65 p-5 backdrop-blur-xl sm:p-7 dark:border-white/10 dark:bg-slate-800/70">
