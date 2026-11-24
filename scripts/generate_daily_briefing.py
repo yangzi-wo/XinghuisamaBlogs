@@ -206,7 +206,7 @@ def extract_json_object(text: str) -> dict:
 def call_model(ai_cfg: dict, api_key: str, prompt: str) -> dict:
     provider = ai_cfg.get("provider", "gemini")
     base_url = (ai_cfg.get("baseUrl") or "").rstrip("/")
-    model = ai_cfg.get("model") or "gemini-2.5-flash"
+    model = ai_cfg.get("model") or "gemini-3.8-flash"
 
     if provider == "gemini":
         if not base_url:
@@ -337,7 +337,7 @@ def main() -> int:
     ai_cfg = config.get("aiProvider") or {
         "provider": "gemini",
         "baseUrl": "https://generativelanguage.googleapis.com",
-        "model": "gemini-2.5-flash",
+        "model": "gemini-3.8-flash",
         "secretName": "GEMINI_API_KEY",
     }
     secret_name = ai_cfg.get("secretName") or "GEMINI_API_KEY"

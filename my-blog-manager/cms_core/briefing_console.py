@@ -30,7 +30,7 @@ def default_config():
         'aiProvider': {
             'provider': 'gemini',
             'baseUrl': 'https://generativelanguage.googleapis.com',
-            'model': 'gemini-2.5-flash',
+            'model': 'gemini-3.8-flash',
             'secretName': 'GEMINI_API_KEY',
         },
         'schedule': {

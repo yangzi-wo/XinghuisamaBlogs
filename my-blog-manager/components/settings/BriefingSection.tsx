@@ -12,7 +12,7 @@ type ScheduleConfig = { enabled: boolean; preferredTime: string };
 const defaultAiProvider: AiProviderConfig = {
   provider: 'gemini',
   baseUrl: 'https://generativelanguage.googleapis.com',
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3.8-flash',
   secretName: 'GEMINI_API_KEY',
 };
 const defaultSchedule: ScheduleConfig = {
@@ -21,7 +21,7 @@ const defaultSchedule: ScheduleConfig = {
 };
 const scheduleHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 const aiPresets: { id: 'gemini' | 'deepseek' | 'custom-openai'; label: string; badge: string; desc: string; config: Partial<AiProviderConfig> }[] = [
-  { id: 'gemini', label: 'Google AI Studio', badge: 'Gemini', desc: '免费层（海外直连稳定）', config: { provider: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com', model: 'gemini-2.5-flash', secretName: 'GEMINI_API_KEY' } },
+  { id: 'gemini', label: 'Google AI Studio', badge: 'Gemini', desc: '免费层（海外直连稳定）', config: { provider: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com', model: 'gemini-3.8-flash', secretName: 'GEMINI_API_KEY' } },
   { id: 'deepseek', label: 'DeepSeek 官方', badge: 'OpenAI 兼容', desc: '高性价比按量计费', config: { provider: 'openai', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', secretName: 'OPENAI_API_KEY' } },
   { id: 'custom-openai', label: '自定义 OpenAI 兼容', badge: '自定义', desc: '填写任意 OpenAI 格式接口（如硅基流动、智谱、中转站等）', config: { provider: 'openai', secretName: 'OPENAI_API_KEY' } },
 ];
@@ -242,7 +242,7 @@ export default function BriefingSection() {
                       <input className={fieldClass} value={ai.baseUrl} maxLength={200} onChange={e => updateAiProvider({ baseUrl: e.target.value })} placeholder="https://api.siliconflow.cn/v1" />
                     </Field>
                     <Field label="模型名称（Model ID）" hint="不同平台对模型 ID 大小写敏感，请以平台控制台为准。">
-                      <input className={fieldClass} value={ai.model} maxLength={100} onChange={e => updateAiProvider({ model: e.target.value })} placeholder="gemini-2.5-flash" />
+                      <input className={fieldClass} value={ai.model} maxLength={100} onChange={e => updateAiProvider({ model: e.target.value })} placeholder="gemini-3.8-flash" />
                     </Field>
                   </div>
                   <div className="mt-6 rounded-2xl border border-amber-200/70 bg-amber-50/80 p-4 text-xs leading-6 text-amber-800 dark:border-amber-400/20 dark:bg-amber-950/30 dark:text-amber-200">
