@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 
 export interface AuthUser {
@@ -241,13 +242,13 @@ export default function AuthWidget() {
         )}
       </div>
 
-      {showRules && (
+      {showRules && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 pt-20 bg-slate-900/50 backdrop-blur-md"
           onClick={() => setShowRules(false)}
         >
           <div
-            className="w-full max-w-md rounded-3xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl p-6 text-slate-800 dark:text-slate-100"
+            className="w-full max-w-md max-h-[85vh] flex flex-col rounded-3xl bg-white/85 dark:bg-slate-900/90 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl p-6 text-slate-800 dark:text-slate-100"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -315,7 +316,8 @@ export default function AuthWidget() {
               })}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
