@@ -316,22 +316,43 @@ export default function BriefingSection() {
                     checked={img.enabled}
                     onChange={value => updateImageGen({ enabled: value })}
                   />
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className={buttonClass}
-                      onClick={() => updateImageGen({ provider: 'openai-images', baseUrl: 'https://api.siliconflow.cn/v1', model: 'Kwai-Kolors/Kolors', secretName: 'IMAGE_API_KEY', size: '1280x720' })}
-                    >
-                      预设：硅基流动 Kolors / FLUX
-                    </button>
-                    <button
-                      type="button"
-                      className={buttonClass}
-                      onClick={() => updateImageGen({ provider: 'pollinations', baseUrl: 'https://gen.pollinations.ai', model: 'flux', secretName: '', size: '1280x720' })}
-                    >
-                      预设：Pollinations 免费生图
-                    </button>
-                  </div>
+                  {(() => {
+                    const isSilicon = img.provider === 'openai-images' && img.baseUrl.includes('siliconflow.cn');
+                    const isPollinations = img.provider === 'pollinations';
+                    const isCustom = !isSilicon && !isPollinations;
+                    const activeBtn = 'inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-500 bg-indigo-50/90 px-4 py-2.5 text-xs font-semibold text-indigo-700 shadow-sm transition dark:border-indigo-400 dark:bg-indigo-950/50 dark:text-indigo-200';
+                    return <div className="mt-5 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className={isSilicon ? activeBtn : buttonClass}
+                        onClick={() => updateImageGen({ provider: 'openai-images', baseUrl: 'https://api.siliconflow.cn/v1', model: 'Kwai-Kolors/Kolors', secretName: 'IMAGE_API_KEY', size: '1280x720' })}
+                      >
+                        预设：硅基流动 Kolors / FLUX
+                      </button>
+                      <button
+                        type="button"
+                        className={isPollinations ? activeBtn : buttonClass}
+                        onClick={() => updateImageGen({ provider: 'pollinations', baseUrl: 'https://gen.pollinations.ai', model: 'flux', secretName: '', size: '1280x720' })}
+                      >
+                        预设：Pollinations 免费生图
+                      </button>
+                      <button
+                        type="button"
+                        className={isCustom ? activeBtn : buttonClass}
+                        onClick={() => {
+                          const fromKnown = img.baseUrl.includes('siliconflow.cn') || img.baseUrl.includes('pollinations.ai');
+                          updateImageGen({
+                            provider: 'openai-images',
+                            baseUrl: fromKnown ? 'https://api.openai.com/v1' : img.baseUrl,
+                            model: fromKnown ? 'dall-e-3' : img.model,
+                            secretName: img.secretName || 'IMAGE_API_KEY',
+                          });
+                        }}
+                      >
+                        预设：自定义 OpenAI 生图
+                      </button>
+                    </div>;
+                  })()}
                   <div className="mt-5 grid gap-5 sm:grid-cols-2">
                     <Field label="生图接口协议">
                       <select className={fieldClass} value={img.provider} onChange={e => updateImageGen({ provider: e.target.value as ImageGenConfig['provider'] })}>
