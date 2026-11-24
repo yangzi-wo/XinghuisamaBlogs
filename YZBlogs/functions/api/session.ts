@@ -1,4 +1,4 @@
-import { Env, getNextLevelExp, getSessionUser, getUtc8DateString, jsonResponse } from "../../_shared/auth";
+import { Env, getNextLevelExp, getSessionUser, getUtc8DateString, jsonResponse } from "../_shared/auth";
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const oauthConfigured = Boolean(env.GITHUB_CLIENT_ID);

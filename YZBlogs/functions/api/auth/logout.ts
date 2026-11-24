@@ -1,4 +1,4 @@
-import { Env, SESSION_COOKIE_NAME, isValidSameOrigin, jsonResponse, parseCookies } from "../../../_shared/auth";
+import { Env, SESSION_COOKIE_NAME, isValidSameOrigin, jsonResponse, parseCookies } from "../../_shared/auth";
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!isValidSameOrigin(request)) {

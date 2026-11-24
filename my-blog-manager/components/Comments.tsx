@@ -16,9 +16,10 @@ interface CommentItem {
   is_admin: number;
 }
 
-export default function Comments() {
+export default function Comments({ targetPath }: { targetPath?: string } = {}) {
   const rawPathname = usePathname() || "/";
-  const pagePath = rawPathname === "/" ? "/" : rawPathname.replace(/\/+$/, "");
+  const base = targetPath || rawPathname;
+  const pagePath = base === "/" ? "/" : base.replace(/\/+$/, "");
 
   const [user, setUser] = useState<AuthUser | null>(null);
   const [oauthConfigured, setOauthConfigured] = useState(true);
