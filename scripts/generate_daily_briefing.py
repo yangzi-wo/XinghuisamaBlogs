@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import base64
 import datetime as dt
 import hashlib
 import json
@@ -11,6 +12,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -20,6 +22,8 @@ SITE_DATA = ROOT / "YZBlogs" / "data"
 CONFIG_PATH = SITE_DATA / "briefingConfig.json"
 LATEST_PATH = SITE_DATA / "dailyBriefing.json"
 ARCHIVE_PATH = SITE_DATA / "dailyBriefingArchive.json"
+COVERS_PATH = SITE_DATA / "dailyBriefingCovers.json"
+COVERS_DIR = ROOT / "YZBlogs" / "public" / "images" / "briefing"
 
 USER_AGENT = "XinghuisamaBlogs-BriefingBot/1.0 (+https://github.com/yangzi-wo/XinghuisamaBlogs)"
 WEEKDAYS_ZH = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
@@ -314,6 +318,7 @@ def build_prompt(
         f"必须返回严格 JSON，格式如下：\n"
         "{\n"
         '  "notice": "一句话导语（15-30字，概括今日看点）",\n'
+        '  "coverTags": "根据今日选刊内容提取的3-6个英文画面元素Tag（逗号分隔，用于AI配图，如 glowing neural network, cyber window, warm desk）",\n'
         '  "items": [\n'
         "    {\n"
         '      "category": "news 或 reading",\n'
@@ -480,7 +485,83 @@ def main() -> int:
     }
     LATEST_PATH.write_text(json.dumps(new_issue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"成功生成 {today_dot} 每日选刊，共 {len(normalized_items)} 条。")
+
+    image_cfg = config.get("imageGen") or {}
+    if image_cfg.get("enabled"):
+        try_generate_cover(image_cfg, today_dot, today_iso, str(generated.get("coverTags") or ""))
+
     return 0
+
+
+def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_tags: str) -> None:
+    provider = image_cfg.get("provider") or "openai-images"
+    base_url = (image_cfg.get("baseUrl") or "").rstrip("/")
+    model = image_cfg.get("model") or "Kwai-Kolors/Kolors"
+    secret_name = (image_cfg.get("secretName") or "").strip()
+    api_key = (os.environ.get(secret_name) or "").strip() if secret_name else ""
+    base_tags = (image_cfg.get("baseTags") or "").strip()
+    size = (image_cfg.get("size") or "1280x720").strip()
+
+    prompt_parts = [p for p in (base_tags, cover_tags.strip()) if p]
+    full_prompt = ", ".join(prompt_parts) or "anime illustration, peaceful digital reading corner, soft light, no text"
+    if provider == "openai-images" and secret_name and not api_key:
+        print(f"[warn] 未检测到生图密钥环境变量 {secret_name}，跳过 AI 封面生成。", file=sys.stderr)
+        return
+
+    try:
+        img_bytes: bytes | None = None
+        ext = "jpg"
+        if provider == "openai-images":
+            endpoint = f"{base_url}/images/generations"
+            payload = {"model": model, "prompt": full_prompt, "size": size, "n": 1}
+            headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
+            resp = http_post_json(endpoint, payload, headers=headers, timeout=90, retries=2)
+            first = (resp.get("data") or [{}])[0]
+            if first.get("b64_json"):
+                img_bytes = base64.b64decode(first["b64_json"])
+                ext = "png"
+            elif first.get("url"):
+                img_bytes = http_get(first["url"], timeout=60)
+                if ".png" in first["url"].lower():
+                    ext = "png"
+        elif provider == "pollinations":
+            w, _, h = size.partition("x")
+            encoded = urllib.parse.quote(full_prompt, safe="")
+            params = urllib.parse.urlencode({"model": model, "width": w or "1280", "height": h or "720", "nologo": "true"})
+            url = f"{base_url or 'https://gen.pollinations.ai'}/image/{encoded}?{params}"
+            headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
+            img_bytes = http_get(url, timeout=90, headers=headers)
+        else:
+            print(f"[warn] 不支持的生图 provider: {provider}", file=sys.stderr)
+            return
+
+        if not img_bytes or len(img_bytes) < 1024:
+            print("[warn] 生图返回内容过小或为空，已保留默认封面。", file=sys.stderr)
+            return
+
+        COVERS_DIR.mkdir(parents=True, exist_ok=True)
+        filename = f"{today_iso}.{ext}"
+        target = COVERS_DIR / filename
+        target.write_bytes(img_bytes)
+
+        sha = hashlib.sha256(img_bytes).hexdigest()
+        covers_doc = json.loads(COVERS_PATH.read_text(encoding="utf-8")) if COVERS_PATH.is_file() else {"version": 1, "covers": {}}
+        covers_map = covers_doc.setdefault("covers", {})
+        covers_map[today_dot] = {
+            "src": f"/images/briefing/{filename}",
+            "alt": f"{today_dot} 每日选刊封面",
+            "theme": cover_tags[:120],
+            "model": model,
+            "sha256": sha,
+            "sourceSha256": sha,
+        }
+        # 仅保留最近 90 期封面记录
+        sorted_dates = sorted(covers_map.keys(), reverse=True)[:90]
+        covers_doc["covers"] = {k: covers_map[k] for k in sorted_dates}
+        COVERS_PATH.write_text(json.dumps(covers_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"成功生成并登记今日 AI 封面: /images/briefing/{filename}")
+    except Exception as exc:
+        print(f"[warn] AI 封面生成失败，已自动回退默认封面: {exc}", file=sys.stderr)
 
 
 if __name__ == "__main__":

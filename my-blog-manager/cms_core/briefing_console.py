@@ -38,6 +38,15 @@ def default_config():
             'enabled': True,
             'preferredTime': '08:00',
         },
+        'imageGen': {
+            'enabled': False,
+            'provider': 'openai-images',
+            'baseUrl': 'https://api.siliconflow.cn/v1',
+            'model': 'Kwai-Kolors/Kolors',
+            'secretName': 'IMAGE_API_KEY',
+            'baseTags': 'anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text',
+            'size': '1280x720',
+        },
     }
 
 
@@ -55,6 +64,8 @@ def validate_config(value):
         result['aiProvider'].update({k: v for k, v in value['aiProvider'].items() if k in result['aiProvider']})
     if isinstance(value.get('schedule'), dict):
         result['schedule'].update({k: v for k, v in value['schedule'].items() if k in result['schedule']})
+    if isinstance(value.get('imageGen'), dict):
+        result['imageGen'].update({k: v for k, v in value['imageGen'].items() if k in result['imageGen']})
     display = result['display']
     for key in ('enabled', 'autoPlay', 'showCovers', 'showTerraNotes'):
         if type(display[key]) is not bool:
@@ -114,6 +125,22 @@ def validate_config(value):
         raise ValueError('定时更新开关无效')
     if not isinstance(sched.get('preferredTime'), str) or not re.fullmatch(r'(?:[01]\d|2[0-3]):[0-5]\d', sched['preferredTime']):
         raise ValueError('定时更新时间格式无效')
+    img = result['imageGen']
+    if type(img.get('enabled')) is not bool:
+        raise ValueError('AI 配图开关无效')
+    if img.get('provider') not in ('openai-images', 'pollinations'):
+        raise ValueError('生图接口类型仅支持 openai-images 或 pollinations')
+    for k, maximum in (('baseUrl', 200), ('model', 120), ('baseTags', 600), ('size', 32)):
+        if not isinstance(img.get(k), str) or len(img[k]) > maximum:
+            raise ValueError('AI 配图参数无效：' + k)
+        img[k] = img[k].strip()
+    if img.get('enabled') and (not img['baseUrl'] or not img['model']):
+        raise ValueError('启用 AI 配图时，请填写生图接口地址与模型名称')
+    if not isinstance(img.get('secretName'), str) or len(img['secretName']) > 64:
+        raise ValueError('AI 配图 Secret 名称无效')
+    img['secretName'] = img['secretName'].strip()
+    if img['secretName'] and not re.fullmatch(r'[A-Z][A-Z0-9_]{0,63}', img['secretName']):
+        raise ValueError('AI 配图 Secret 名称只能包含大写字母、数字和下划线，且以字母开头')
     return result
 
 
@@ -125,6 +152,7 @@ def public_config(config):
         'channels': config['channels'],
         'aiProvider': config['aiProvider'],
         'schedule': config['schedule'],
+        'imageGen': config['imageGen'],
     }
 
 
@@ -165,6 +193,8 @@ class BriefingStore:
                     value['aiProvider'].update(public['aiProvider'])
                 if isinstance(public.get('schedule'), dict):
                     value['schedule'].update(public['schedule'])
+                if isinstance(public.get('imageGen'), dict):
+                    value['imageGen'].update(public['imageGen'])
             return validate_config(value)
         return validate_config(json.loads(self.config_path.read_text(encoding='utf-8')))
 

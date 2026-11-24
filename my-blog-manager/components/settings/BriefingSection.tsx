@@ -9,6 +9,7 @@ import { ArrowUpRight, BookOpen, Check, CircleHelp, Cpu, Eye, Layers3, Loader2, 
 
 type AiProviderConfig = { provider: 'gemini' | 'openai'; baseUrl: string; model: string; secretName: string };
 type ScheduleConfig = { enabled: boolean; preferredTime: string };
+type ImageGenConfig = { enabled: boolean; provider: 'openai-images' | 'pollinations'; baseUrl: string; model: string; secretName: string; baseTags: string; size: string };
 const defaultAiProvider: AiProviderConfig = {
   provider: 'gemini',
   baseUrl: 'https://generativelanguage.googleapis.com',
@@ -18,6 +19,15 @@ const defaultAiProvider: AiProviderConfig = {
 const defaultSchedule: ScheduleConfig = {
   enabled: true,
   preferredTime: '08:00',
+};
+const defaultImageGen: ImageGenConfig = {
+  enabled: false,
+  provider: 'openai-images',
+  baseUrl: 'https://api.siliconflow.cn/v1',
+  model: 'Kwai-Kolors/Kolors',
+  secretName: 'IMAGE_API_KEY',
+  baseTags: 'anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text',
+  size: '1280x720',
 };
 const scheduleHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 const aiPresets: { id: 'gemini' | 'deepseek' | 'custom-openai'; label: string; badge: string; desc: string; config: Partial<AiProviderConfig> }[] = [
@@ -34,6 +44,7 @@ type Config = {
   agent: { enabled: boolean; publishMode: string; preferredTime: string };
   aiProvider?: AiProviderConfig;
   schedule?: ScheduleConfig;
+  imageGen?: ImageGenConfig;
 };
 type Issue = BriefingIssue;
 type Status = { latestDate: string; issueCount: number; sitePreview: string };
@@ -77,6 +88,7 @@ export default function BriefingSection() {
       ...value,
       aiProvider: { ...defaultAiProvider, ...(value.aiProvider || {}) },
       schedule: { ...defaultSchedule, ...(value.schedule || {}) },
+      imageGen: { ...defaultImageGen, ...(value.imageGen || {}) },
     };
     setConfig(normalized);
     setTerms({ topics: normalized.selection.topics.join('\n'), excludedKeywords: normalized.selection.excludedKeywords.join('\n'), preferredSources: normalized.selection.preferredSources.join('\n') });
@@ -149,6 +161,9 @@ export default function BriefingSection() {
   function updateSchedule(patch: Partial<ScheduleConfig>) {
     setConfig(previous => previous ? { ...previous, schedule: { ...defaultSchedule, ...(previous.schedule || {}), ...patch } } : previous);
   }
+  function updateImageGen(patch: Partial<ImageGenConfig>) {
+    setConfig(previous => previous ? { ...previous, imageGen: { ...defaultImageGen, ...(previous.imageGen || {}), ...patch } } : previous);
+  }
 
   return <section aria-label="每日选刊管理" className="min-w-0 rounded-3xl border border-slate-200/80 bg-slate-50/95 p-4 text-slate-700 shadow-sm md:p-6 dark:border-white/10 dark:bg-slate-900/95 dark:text-slate-200">
     <div>
@@ -191,6 +206,7 @@ export default function BriefingSection() {
             {tab === 'api' && (() => {
               const ai = { ...defaultAiProvider, ...(config.aiProvider || {}) };
               const sched = { ...defaultSchedule, ...(config.schedule || {}) };
+              const img = { ...defaultImageGen, ...(config.imageGen || {}) };
               const debugCmd = `$env:${ai.secretName}="你的API_KEY"; python scripts/generate_daily_briefing.py --force`;
               return <div className="space-y-5">
                 <Panel title="模型提供商与快速预设" description="选择每日选刊自动生成时调用的大模型接口。点击下方预设可一键填入常用免费或低成本平台参数。">
@@ -291,6 +307,61 @@ export default function BriefingSection() {
                   </div>
                   <div className="mt-4 rounded-2xl border border-slate-200/70 bg-slate-100/70 px-4 py-3 font-mono text-[11px] text-slate-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300">
                     {debugCmd}
+                  </div>
+                </Panel>
+                <Panel title="AI 自动封面配图与基本 Tag" description="Gemini 总结完当日选刊后，会自动提取画面元素并与下方基本画风 Tag 组合成 Prompt 生成封面图（失败时自动回退默认封面，不影响选刊发布）。">
+                  <Toggle
+                    title="启用每日选刊 AI 自动生图"
+                    description="开启后，每次自动生成选刊时会同步生成封面并写入 dailyBriefingCovers.json。"
+                    checked={img.enabled}
+                    onChange={value => updateImageGen({ enabled: value })}
+                  />
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className={buttonClass}
+                      onClick={() => updateImageGen({ provider: 'openai-images', baseUrl: 'https://api.siliconflow.cn/v1', model: 'Kwai-Kolors/Kolors', secretName: 'IMAGE_API_KEY', size: '1280x720' })}
+                    >
+                      预设：硅基流动 Kolors / FLUX
+                    </button>
+                    <button
+                      type="button"
+                      className={buttonClass}
+                      onClick={() => updateImageGen({ provider: 'pollinations', baseUrl: 'https://gen.pollinations.ai', model: 'flux', secretName: '', size: '1280x720' })}
+                    >
+                      预设：Pollinations 免费生图
+                    </button>
+                  </div>
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                    <Field label="生图接口协议">
+                      <select className={fieldClass} value={img.provider} onChange={e => updateImageGen({ provider: e.target.value as ImageGenConfig['provider'] })}>
+                        <option value="openai-images">OpenAI 兼容 Images API (/images/generations)</option>
+                        <option value="pollinations">Pollinations 接口 (gen.pollinations.ai)</option>
+                      </select>
+                    </Field>
+                    <Field label="GitHub Secret 环境变量名" hint="免 Key 接口（如 Pollinations 匿名模式）可留空；需要密钥则填 IMAGE_API_KEY。">
+                      <input className={fieldClass} value={img.secretName} maxLength={64} onChange={e => updateImageGen({ secretName: e.target.value.toUpperCase() })} placeholder="IMAGE_API_KEY" />
+                    </Field>
+                  </div>
+                  <div className="mt-5 grid gap-5 sm:grid-cols-3">
+                    <Field label="生图 API Base URL">
+                      <input className={fieldClass} value={img.baseUrl} maxLength={200} onChange={e => updateImageGen({ baseUrl: e.target.value })} placeholder="https://api.siliconflow.cn/v1" />
+                    </Field>
+                    <Field label="生图模型名称">
+                      <input className={fieldClass} value={img.model} maxLength={120} onChange={e => updateImageGen({ model: e.target.value })} placeholder="Kwai-Kolors/Kolors" />
+                    </Field>
+                    <Field label="图片尺寸（宽x高）">
+                      <select className={fieldClass} value={img.size} onChange={e => updateImageGen({ size: e.target.value })}>
+                        <option value="1280x720">1280x720（16:9 横幅）</option>
+                        <option value="1024x576">1024x576（16:9 轻量）</option>
+                        <option value="1024x1024">1024x1024（1:1 通用）</option>
+                      </select>
+                    </Field>
+                  </div>
+                  <div className="mt-5">
+                    <Field label="基本画风 Tag（Base Tags）" hint="建议使用英文逗号分隔的画风词（如二次元插画、光影、无文字等），每次会自动与 Gemini 根据今日选刊内容生成的画面 Tag 拼接。">
+                      <textarea className={fieldClass} rows={3} value={img.baseTags} maxLength={600} onChange={e => updateImageGen({ baseTags: e.target.value })} placeholder="anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text" />
+                    </Field>
                   </div>
                 </Panel>
               </div>;

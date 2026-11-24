@@ -30,7 +30,7 @@
     "excludedKeywords": [],
     "preferredSources": [],
     "language": "zh-CN",
-    "maxItems": 6
+    "maxItems": 9
   },
   "channels": [
     {
@@ -58,5 +58,14 @@
   "schedule": {
     "enabled": true,
     "preferredTime": "00:00"
+  },
+  "imageGen": {
+    "enabled": false,
+    "provider": "openai-images",
+    "baseUrl": "https://api.siliconflow.cn/v1",
+    "model": "Kwai-Kolors/Kolors",
+    "secretName": "IMAGE_API_KEY",
+    "baseTags": "anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text",
+    "size": "1280x720"
   }
 }

@@ -28,13 +28,15 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           SILICONFLOW_API_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
+          IMAGE_API_KEY: ${{ secrets.IMAGE_API_KEY }}
         run: python scripts/generate_daily_briefing.py
 
       - name: Commit and push updated briefing data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add YZBlogs/data/dailyBriefing.json YZBlogs/data/dailyBriefingArchive.json
+          git add YZBlogs/data/dailyBriefing.json YZBlogs/data/dailyBriefingArchive.json YZBlogs/data/dailyBriefingCovers.json
+          if [ -d YZBlogs/public/images/briefing ]; then git add YZBlogs/public/images/briefing; fi
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
