@@ -256,7 +256,7 @@ export default function DailyBriefing() {
               )}
               <div className="px-6 py-6 sm:px-8 sm:py-7">
 
-              <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px]"><span className="font-mono tracking-[0.18em] text-indigo-500 dark:text-indigo-300">{categoryName(selected.category)}</span><span className="text-slate-400">原文 {selected.sourceDate}</span><span className="ml-auto text-slate-400">约 1 分钟</span></div>
+              <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px]"><span className="font-medium tracking-[0.12em] text-indigo-500 dark:text-indigo-300">{categoryName(selected.category)}</span><span className="text-slate-400">原文 {selected.sourceDate}</span><span className="ml-auto text-slate-400">约 1 分钟</span></div>
               <h2 id="daily-reading-title" className="text-xl leading-relaxed text-slate-800 dark:text-white sm:text-2xl">{selected.title}</h2>
               <p className="mt-3 break-words text-[10px] leading-6 text-slate-500 dark:text-slate-400">{selected.originalTitle}</p>
               <p className="mt-2 text-[10px] text-slate-400">{selected.source}</p>
