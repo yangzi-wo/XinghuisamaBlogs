@@ -121,6 +121,16 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   const [playMode, setPlayMode] = useState<PlayMode>('loop');
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  const randomHistoryRef = useRef<number[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('blog-music-play-mode');
+      if (saved === 'loop' || saved === 'single' || saved === 'random') {
+        setPlayMode(saved);
+      }
+    } catch { /* ignore storage errors */ }
+  }, []);
 
   useEffect(() => {
     const localTracks = Array.isArray((siteConfig as any).localTracks) ? (siteConfig as any).localTracks : [];
@@ -200,18 +210,52 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // 🌟 5. 重写 nextSong，加入对随机模式的处理
+  const pickRandomIndex = (excludeIndex: number, length: number) => {
+    if (length <= 1) return 0;
+    let nextIdx = excludeIndex;
+    while (nextIdx === excludeIndex) {
+      nextIdx = Math.floor(Math.random() * length);
+    }
+    return nextIdx;
+  };
+
+  // 🌟 5. 重写 nextSong，加入对随机模式（不重复当前曲目）及单曲边界的处理
   const nextSong = () => {
+    if (playlist.length === 0) return;
+    if (playlist.length === 1) {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        if (isPlaying) audioRef.current.play().catch(() => setIsPlaying(false));
+      }
+      return;
+    }
     if (playMode === 'random') {
-      setCurrentIndex(Math.floor(Math.random() * playlist.length));
+      randomHistoryRef.current.push(currentIndex);
+      if (randomHistoryRef.current.length > 50) randomHistoryRef.current.shift();
+      setCurrentIndex(pickRandomIndex(currentIndex, playlist.length));
     } else {
       setCurrentIndex((prev) => (prev + 1) % playlist.length);
     }
   };
 
   const prevSong = () => {
+    if (playlist.length === 0) return;
+    if (playlist.length === 1) {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        if (isPlaying) audioRef.current.play().catch(() => setIsPlaying(false));
+      }
+      return;
+    }
     if (playMode === 'random') {
-      setCurrentIndex(Math.floor(Math.random() * playlist.length));
+      while (randomHistoryRef.current.length > 0) {
+        const prevIdx = randomHistoryRef.current.pop()!;
+        if (prevIdx >= 0 && prevIdx < playlist.length && prevIdx !== currentIndex) {
+          setCurrentIndex(prevIdx);
+          return;
+        }
+      }
+      setCurrentIndex(pickRandomIndex(currentIndex, playlist.length));
     } else {
       setCurrentIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
     }
@@ -241,11 +285,11 @@ export function MusicProvider({ children }: { children: ReactNode }) {
 
   // 🌟 7. 处理歌曲结束
   const handleEnded = () => {
-    if (playMode === 'single' && audioRef.current) {
-       audioRef.current.currentTime = 0;
-       audioRef.current.play();
+    if ((playMode === 'single' || playlist.length <= 1) && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => setIsPlaying(false));
     } else {
-       nextSong();
+      nextSong();
     }
   };
 
@@ -266,9 +310,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
 
   const togglePlayMode = () => {
     setPlayMode(prev => {
-      if (prev === 'loop') return 'single';
-      if (prev === 'single') return 'random';
-      return 'loop';
+      const next: PlayMode = prev === 'loop' ? 'single' : prev === 'single' ? 'random' : 'loop';
+      try { localStorage.setItem('blog-music-play-mode', next); } catch { /* ignore */ }
+      return next;
     });
   };
 
