@@ -151,9 +151,17 @@ def fetch_candidates(now: dt.datetime, preferred_sources: list[str] | None = Non
         if src.startswith("http://") or src.startswith("https://"):
             rss_sources.insert(0, (src, src.split("/")[2], "偏好来源", 6))
 
+    seen_urls: set[str] = set()
     for url, source_name, topic, limit in rss_sources:
+        norm_url = url.split("?")[0].rstrip("/")
+        if norm_url in seen_urls:
+            continue
+        seen_urls.add(norm_url)
         try:
-            raw = http_get(url)
+            raw = http_get(
+                url,
+                headers={"Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml, */*"},
+            )
             candidates.extend(parse_rss_or_atom(raw, source_name, topic, limit))
         except Exception as exc:
             print(f"[warn] RSS 抓取失败 ({source_name}): {exc}", file=sys.stderr)
