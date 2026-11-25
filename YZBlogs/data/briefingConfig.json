@@ -73,7 +73,8 @@
     "baseUrl": "https://api.openai.com/v1",
     "model": "",
     "secretName": "IMAGE_API_KEY",
-    "baseTags": "anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text",
+    "baseTags": "anime illustration, clean composition, atmospheric lighting, digital art, high detail",
+    "negativeTags": "lowres, bad anatomy, bad hands, text, watermark, signature, blurry",
     "size": "1280x720"
   }
 }

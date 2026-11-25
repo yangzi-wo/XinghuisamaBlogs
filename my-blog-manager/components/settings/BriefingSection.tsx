@@ -7,7 +7,7 @@ import { ArrowDown, ArrowUp, ArrowUpRight, BookOpen, Check, CircleHelp, Cpu, Eye
 
 type AiProviderConfig = { provider: 'gemini' | 'openai'; baseUrl: string; model: string; secretName: string };
 type ScheduleConfig = { enabled: boolean; preferredTime: string };
-type ImageGenConfig = { enabled: boolean; provider: 'openai-images' | 'pollinations'; baseUrl: string; model: string; secretName: string; baseTags: string; size: string };
+type ImageGenConfig = { enabled: boolean; provider: 'openai-images' | 'pollinations'; baseUrl: string; model: string; secretName: string; baseTags: string; negativeTags?: string; size: string };
 const defaultAiProvider: AiProviderConfig = {
   provider: 'gemini',
   baseUrl: 'https://generativelanguage.googleapis.com',
@@ -24,7 +24,8 @@ const defaultImageGen: ImageGenConfig = {
   baseUrl: 'https://api.siliconflow.cn/v1',
   model: 'Kwai-Kolors/Kolors',
   secretName: 'IMAGE_API_KEY',
-  baseTags: 'anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text',
+  baseTags: 'anime illustration, clean composition, atmospheric lighting, digital art, high detail',
+  negativeTags: 'lowres, bad anatomy, bad hands, text, watermark, signature, blurry',
   size: '1280x720',
 };
 const scheduleHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
@@ -446,9 +447,12 @@ export default function BriefingSection() {
                       </select>
                     </Field>
                   </div>
-                  <div className="mt-5">
-                    <Field label="基本画风 Tag（Base Tags）" hint="建议使用英文逗号分隔的画风词（如二次元插画、光影、无文字等），每次会自动与 Gemini 根据今日选刊内容生成的画面 Tag 拼接。">
-                      <textarea className={fieldClass} rows={3} value={img.baseTags} maxLength={600} onChange={e => updateImageGen({ baseTags: e.target.value })} placeholder="anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text" />
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                    <Field label="正面画风 Tag（Positive Tags）" hint="希望画面包含的风格（英文逗号分隔），每次会自动与 Gemini 提取的今日画面 Tag 拼接。">
+                      <textarea className={fieldClass} rows={3} value={img.baseTags} maxLength={600} onChange={e => updateImageGen({ baseTags: e.target.value })} placeholder="anime illustration, clean composition, atmospheric lighting, digital art, high detail" />
+                    </Field>
+                    <Field label="负面排除 Tag（Negative Tags）" hint="不希望画面出现的元素（如文字、水印、模糊等），兼容接口会自动传给 negative_prompt。">
+                      <textarea className={fieldClass} rows={3} value={img.negativeTags ?? ''} maxLength={600} onChange={e => updateImageGen({ negativeTags: e.target.value })} placeholder="lowres, bad anatomy, bad hands, text, watermark, signature, blurry" />
                     </Field>
                   </div>
                 </Panel>

@@ -503,6 +503,7 @@ def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_ta
     secret_name = (image_cfg.get("secretName") or "").strip()
     api_key = (os.environ.get(secret_name) or "").strip() if secret_name else ""
     base_tags = (image_cfg.get("baseTags") or "").strip()
+    negative_tags = (image_cfg.get("negativeTags") or "").strip()
     size = (image_cfg.get("size") or "1280x720").strip()
 
     prompt_parts = [p for p in (base_tags, cover_tags.strip()) if p]
@@ -516,9 +517,18 @@ def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_ta
         ext = "jpg"
         if provider == "openai-images":
             endpoint = f"{base_url}/images/generations"
-            payload = {"model": model, "prompt": full_prompt, "size": size, "n": 1}
+            payload: dict = {"model": model, "prompt": full_prompt, "size": size, "n": 1}
+            if negative_tags:
+                payload["negative_prompt"] = negative_tags
             headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
-            resp = http_post_json(endpoint, payload, headers=headers, timeout=90, retries=2)
+            try:
+                resp = http_post_json(endpoint, payload, headers=headers, timeout=90, retries=2)
+            except RuntimeError as exc:
+                if negative_tags and "HTTP 400" in str(exc):
+                    payload.pop("negative_prompt", None)
+                    resp = http_post_json(endpoint, payload, headers=headers, timeout=90, retries=2)
+                else:
+                    raise
             first = (resp.get("data") or [{}])[0]
             if first.get("b64_json"):
                 img_bytes = base64.b64decode(first["b64_json"])
@@ -530,7 +540,10 @@ def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_ta
         elif provider == "pollinations":
             w, _, h = size.partition("x")
             encoded = urllib.parse.quote(full_prompt, safe="")
-            params = urllib.parse.urlencode({"model": model, "width": w or "1280", "height": h or "720", "nologo": "true"})
+            query_obj: dict[str, str] = {"model": model, "width": w or "1280", "height": h or "720", "nologo": "true"}
+            if negative_tags:
+                query_obj["negative_prompt"] = negative_tags
+            params = urllib.parse.urlencode(query_obj)
             url = f"{base_url or 'https://gen.pollinations.ai'}/image/{encoded}?{params}"
             headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
             img_bytes = http_get(url, timeout=90, headers=headers)
