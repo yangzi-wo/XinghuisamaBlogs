@@ -518,14 +518,18 @@ def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_ta
         if provider == "openai-images":
             endpoint = f"{base_url}/images/generations"
             payload: dict = {"model": model, "prompt": full_prompt, "size": size, "n": 1}
+            if "volces.com" in base_url:
+                payload["watermark"] = False
             if negative_tags:
                 payload["negative_prompt"] = negative_tags
             headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
             try:
                 resp = http_post_json(endpoint, payload, headers=headers, timeout=90, retries=2)
             except RuntimeError as exc:
-                if negative_tags and "HTTP 400" in str(exc):
+                if "HTTP 400" in str(exc):
                     payload.pop("negative_prompt", None)
+                    if "volces.com" in base_url and payload.get("size") == "1280x720":
+                        payload["size"] = "2K"
                     resp = http_post_json(endpoint, payload, headers=headers, timeout=90, retries=2)
                 else:
                     raise

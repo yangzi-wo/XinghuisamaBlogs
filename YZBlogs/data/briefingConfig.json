@@ -30,7 +30,7 @@
     "excludedKeywords": [],
     "preferredSources": [
       "https://huggingface.co/blog/feed.xml",
-      "https://openai.com/news/rss.xm",
+      "https://openai.com/news/rss.xml",
       "https://rsshub.app/github/trending/daily/any",
       "https://www.animenewsnetwork.com/all/rss.xml",
       "https://store.steampowered.com/feeds/news/?l=schinese",
