@@ -110,13 +110,28 @@ async def execute_sync(request: Request):
                 ["git", "-C", repo_root, "status", "--porcelain"],
                 check=True, capture_output=True, text=True, env=git_env, timeout=15
             )
-            if not status_res.stdout.strip():
-                return {"success": True, "message": "🎉 本地已同步（仓库无新改动需要推送）"}
+            if status_res.stdout.strip():
+                subprocess.run(
+                    ["git", "-C", repo_root, "commit", "-m", "chore: sync content from manager"],
+                    check=True, capture_output=True, text=True, env=git_env, timeout=20
+                )
 
-            subprocess.run(
-                ["git", "-C", repo_root, "commit", "-m", "chore: sync content from manager"],
-                check=True, capture_output=True, text=True, env=git_env, timeout=20
+            pull_res = subprocess.run(
+                ["git", "-C", repo_root, "pull", "--rebase", "--autostash", "origin", "main"],
+                capture_output=True, text=True, env=git_env, timeout=30
             )
+            if pull_res.returncode != 0:
+                subprocess.run(["git", "-C", repo_root, "rebase", "--abort"], capture_output=True, env=git_env, timeout=10)
+                err_msg = (pull_res.stderr or pull_res.stdout or "拉取合并冲突").strip()[:100]
+                return {"success": True, "message": f"✅ 本地已同步，但拉取云端更新冲突（{err_msg}），请检查或让 AI 处理。"}
+
+            ahead_res = subprocess.run(
+                ["git", "-C", repo_root, "rev-list", "--count", "origin/main..HEAD"],
+                capture_output=True, text=True, env=git_env, timeout=10
+            )
+            if ahead_res.returncode == 0 and ahead_res.stdout.strip() == "0":
+                return {"success": True, "message": "🎉 本地与云端已同步（无新改动需要推送）"}
+
             subprocess.run(
                 ["git", "-C", repo_root, "push"],
                 check=True, capture_output=True, text=True, env=git_env, timeout=45
