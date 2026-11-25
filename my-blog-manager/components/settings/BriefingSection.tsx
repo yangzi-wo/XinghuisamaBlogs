@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import BriefingContentManager from './BriefingContentManager';
 import type { BriefingIssue } from './briefingApi';
-import { ArrowDown, ArrowUp, ArrowUpRight, BookOpen, Check, Cpu, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpRight, BookOpen, Check, CircleHelp, Cpu, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles, Trash2 } from 'lucide-react';
 
 type AiProviderConfig = { provider: 'gemini' | 'openai'; baseUrl: string; model: string; secretName: string };
 type ScheduleConfig = { enabled: boolean; preferredTime: string };
