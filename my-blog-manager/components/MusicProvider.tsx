@@ -3,9 +3,16 @@
 import { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { siteConfig } from '../siteConfig';
 
-const LYRIC_CREDIT_RE = /^(?:作词|作曲|编曲|词|曲|词曲|演唱|歌手|曲名|歌名|原唱|翻唱|制作人?|混音|母带|吉他|贝斯|鼓|键盘|和声|录音|监制|企划|出品|Lyrics?|Lyricist|Composed?\s*by|Composer|Arranged?\s*by|Arranger|Vocal|Producer|Mixing|Mastering|Title|Artist)\s*[:：]/i;
+const LRC_META_LABELS: Record<string, string> = {
+  ti: '曲名',
+  ar: '歌手',
+  al: '专辑',
+  lyricist: '作词',
+  composer: '作曲',
+  arranger: '编曲',
+};
 
-// 【增强版 LRC 歌词解析：支持同时间戳双语、原文【翻译】、原文 // 翻译，并过滤词曲作者行】
+// 【增强版 LRC 歌词解析：支持头部曲名/作者/编曲显示 + 同时间戳双语、原文【翻译】、原文 // 翻译】
 function splitBilingualLine(raw: string): { text: string; translation?: string } {
   const bracketMatch = raw.match(/^(.*?)\s*【([^】]+)】\s*$/);
   if (bracketMatch && bracketMatch[1].trim() && bracketMatch[2].trim()) {
@@ -22,15 +29,25 @@ function parseLrc(lrcText: string) {
   if (!lrcText || lrcText.length > 50000) return [];
 
   const lines = lrcText.split(/\r?\n/);
+  const metaEntries: { time: number; text: string }[] = [];
   const rawEntries: { time: number; text: string; translation?: string }[] = [];
 
   for (const line of lines) {
+    const metaMatch = line.trim().match(/^\[(ti|ar|al|lyricist|composer|arranger):(.+)\]$/i);
+    if (metaMatch) {
+      const label = LRC_META_LABELS[metaMatch[1].toLowerCase()];
+      const val = metaMatch[2].trim();
+      if (label && val) {
+        metaEntries.push({ time: 0, text: `${label}：${val}` });
+      }
+      continue;
+    }
     const matches = [...line.matchAll(/\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?\]/g)];
     if (matches.length > 0) {
       const text = line.replace(/\[\d{2,}:\d{2}(?:\.\d{2,3})?\]/g, '').trim();
       const cleanText = text.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "");
 
-      if (cleanText && !LYRIC_CREDIT_RE.test(cleanText)) {
+      if (cleanText) {
         const parsedLine = splitBilingualLine(cleanText);
         for (const match of matches) {
           const min = parseInt(match[1], 10);
@@ -55,7 +72,7 @@ function parseLrc(lrcText: string) {
       grouped.push({ time: entry.time, text: entry.text, ...(entry.translation ? { translation: entry.translation } : {}) });
     }
   }
-  return grouped;
+  return [...metaEntries, ...grouped];
 }
 
 // 🌟 1. 扩充 Context 类型，加入 MusicPage 需要的所有属性

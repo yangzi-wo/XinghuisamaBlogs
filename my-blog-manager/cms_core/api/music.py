@@ -32,12 +32,7 @@ def _safe_filename(prefix: int, raw_name: str, fallback_stem: str, ext: str) -> 
     return f"{prefix}_{stem[:40]}{ext}"
 
 
-_CREDIT_RE = re.compile(
-    r"^(?:作词|作曲|编曲|词|曲|词曲|演唱|歌手|曲名|歌名|原唱|翻唱|制作人?|混音|母带|吉他|贝斯|鼓|键盘|和声|录音|监制|企划|出品|"
-    r"Lyrics?|Lyricist|Composed?\s*by|Composer|Arranged?\s*by|Arranger|Vocal|Producer|Mixing|Mastering|Title|Artist)\s*[:：]",
-    re.IGNORECASE,
-)
-_META_TAG_RE = re.compile(r"^\[(?:ti|ar|al|by|offset|re|ve|lyricist|composer|arranger|length):.*\]$", re.IGNORECASE)
+_META_TAG_RE = re.compile(r"^\[(ti|ar|al|by|lyricist|composer|arranger):(.+)\]$", re.IGNORECASE)
 _TIME_TAG_RE = re.compile(r"\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?\]")
 
 
@@ -51,18 +46,21 @@ def _decode_lrc(raw: bytes) -> str:
 
 
 def _normalize_lrc_bytes(raw: bytes) -> bytes:
-    """统一清洗 LRC 格式：转 UTF-8、移除曲名/作词/作曲/编曲行、统一双语同时间戳格式"""
+    """统一清洗 LRC 格式：转 UTF-8、保留曲名/作词/作曲/编曲信息、统一双语同时间戳格式"""
     text = _decode_lrc(raw)
     out_lines: list[str] = []
     for line in text.splitlines():
         stripped = line.strip()
-        if not stripped or _META_TAG_RE.match(stripped):
+        if not stripped:
+            continue
+        if _META_TAG_RE.match(stripped):
+            out_lines.append(stripped)
             continue
         tags = _TIME_TAG_RE.findall(stripped)
         if not tags:
             continue
         body = _TIME_TAG_RE.sub("", stripped).strip()
-        if not body or _CREDIT_RE.match(body):
+        if not body:
             continue
         # 统一标准时间戳前缀 [mm:ss.xx]
         norm_tags = "".join(f"[{m[0]}:{m[1]}.{m[2] or '00'}]" for m in tags)
