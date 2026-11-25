@@ -9,7 +9,7 @@ export async function briefingApi<T>(endpoint: string, value?: unknown, method =
 
 export type BriefingItem = {
   id: string; category: string; title: string; originalTitle: string; summary: string; source: string;
-  sourceOrg?: string; sourceDate: string; verifiedAt?: string; url: string; tags: string[];
+  sourceOrg?: string; sourceDate: string; verifiedAt?: string; url: string; cover?: string; tags: string[];
   highlights: string[]; readingNote: string; verificationUrls?: string[]; doi?: string;
 };
 export type BriefingIssue = { edition: { date: string; weekday: string; label: string; notice: string }; items: BriefingItem[] };

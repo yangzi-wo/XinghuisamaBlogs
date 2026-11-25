@@ -181,7 +181,7 @@ export default function BriefingSection() {
               <Panel title="栏目设置" description="可自由编辑栏目名称、归属编号（小写字母/数字/短横线）、显示顺序，或删除不需要的栏目（至少保留并启用 1 个）。">
                 <div className="space-y-4">
                   {config.channels.map((channel, index) => (
-                    <div key={index} className="flex flex-col gap-4 rounded-2xl border border-slate-200/60 bg-white/30 p-4 sm:flex-row sm:items-end dark:border-white/10">
+                    <div key={index} className="flex flex-col gap-4 rounded-2xl border border-slate-200/70 bg-white/60 p-4 sm:flex-row sm:items-end dark:border-white/10 dark:bg-slate-900/45">
                       <div className="min-w-36 flex-1">
                         <label className="mb-1.5 block text-[11px] font-medium text-slate-500 dark:text-slate-400" htmlFor={`channel-name-${index}`}>栏目名称</label>
                         <input
