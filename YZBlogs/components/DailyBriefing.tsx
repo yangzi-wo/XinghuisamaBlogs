@@ -226,15 +226,35 @@ export default function DailyBriefing() {
         </div>
 
         <AnimatedDisclosure open={archiveOpen}>
-        <div id="daily-letter-archive" className="border-b border-slate-200/50 bg-white/20 px-5 py-4 sm:px-7 dark:border-white/10 dark:bg-slate-950/10">
-          <div className="flex flex-wrap items-center gap-3 text-[11px]">
-            <label htmlFor="daily-issue-date" className="text-slate-500 dark:text-slate-400">翻阅日期</label>
-            <select id="daily-issue-date" aria-label="选择选刊日期" value={briefingEdition.date} onChange={event => changeIssue(event.target.value)} className="min-w-0 rounded-lg border border-slate-200/70 bg-white/60 px-3 py-2 text-slate-700 outline-offset-2 focus-visible:outline-indigo-400 dark:border-white/15 dark:bg-slate-900 dark:text-slate-200">{briefingIssues.map((entry,index)=><option key={entry.edition.date} value={entry.edition.date}>{entry.edition.date} · {index === 0 ? '最新' : '已归档'}</option>)}</select>
-            <button type="button" disabled={!issue || issueIndex === briefingIssues.length - 1} onClick={()=>changeIssue(briefingIssues[issueIndex + 1].edition.date)} className="px-1 py-2 text-slate-500 hover:text-indigo-500 disabled:cursor-default disabled:opacity-30 dark:text-slate-400">上一期</button>
-            <button type="button" disabled={!issue || isLatest} onClick={()=>changeIssue(briefingIssues[issueIndex - 1].edition.date)} className="px-1 py-2 text-slate-500 hover:text-indigo-500 disabled:cursor-default disabled:opacity-30 dark:text-slate-400">下一期</button>
-            {!isLatest && <button type="button" onClick={()=>changeIssue(briefingIssues[0].edition.date)} className="ml-auto px-1 py-2 text-indigo-500 dark:text-indigo-300">回到最新</button>}
+        <div id="daily-letter-archive" className="border-b border-white/20 px-5 py-4 sm:px-7 dark:border-white/10">
+          <div className="flex flex-wrap items-center gap-2 text-[11px]">
+            <span className="mr-1 text-slate-500 dark:text-slate-400">翻阅日期</span>
+            <div className="flex flex-wrap items-center gap-2">
+              {briefingIssues.map((entry, index) => {
+                const active = entry.edition.date === briefingEdition.date;
+                return (
+                  <button
+                    key={entry.edition.date}
+                    type="button"
+                    onClick={() => changeIssue(entry.edition.date)}
+                    className={`rounded-full border px-3.5 py-1.5 font-mono transition backdrop-blur-md ${
+                      active
+                        ? 'border-indigo-400/50 bg-indigo-500/20 text-indigo-600 shadow-sm dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-200'
+                        : 'border-white/40 bg-white/30 text-slate-600 hover:border-indigo-300/60 hover:bg-white/50 dark:border-white/10 dark:bg-slate-900/30 dark:text-slate-300 dark:hover:bg-slate-800/50'
+                    }`}
+                  >
+                    {entry.edition.date} · {index === 0 ? '最新' : '已归档'}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+              <button type="button" disabled={!issue || issueIndex === briefingIssues.length - 1} onClick={()=>changeIssue(briefingIssues[issueIndex + 1].edition.date)} className="rounded-full border border-white/35 bg-white/25 px-3 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-indigo-300/60 hover:text-indigo-600 disabled:cursor-default disabled:opacity-35 dark:border-white/10 dark:bg-slate-900/25 dark:text-slate-300">上一期</button>
+              <button type="button" disabled={!issue || isLatest} onClick={()=>changeIssue(briefingIssues[issueIndex - 1].edition.date)} className="rounded-full border border-white/35 bg-white/25 px-3 py-1.5 text-slate-600 backdrop-blur-md transition hover:border-indigo-300/60 hover:text-indigo-600 disabled:cursor-default disabled:opacity-35 dark:border-white/10 dark:bg-slate-900/25 dark:text-slate-300">下一期</button>
+              {!isLatest && <button type="button" onClick={()=>changeIssue(briefingIssues[0].edition.date)} className="rounded-full border border-indigo-400/40 bg-indigo-500/15 px-3 py-1.5 text-indigo-600 backdrop-blur-md transition hover:bg-indigo-500/25 dark:text-indigo-300">回到最新</button>}
+            </div>
           </div>
-          <p className="mt-2 text-[10px] leading-6 text-slate-400">最近 {briefingDisplay.archiveDays} 天 · {briefingIssues.length} 期完整选刊。首页轮播最近 {briefingCarouselDays} 天内已有的 {carouselIssues.length} 期，展开阅读时暂停切换。</p>
+          <p className="mt-2.5 text-[10px] leading-6 text-slate-400">最近 {briefingDisplay.archiveDays} 天 · {briefingIssues.length} 期完整选刊。首页轮播最近 {briefingCarouselDays} 天内已有的 {carouselIssues.length} 期，展开阅读时暂停切换。</p>
         </div>
         </AnimatedDisclosure>
 
