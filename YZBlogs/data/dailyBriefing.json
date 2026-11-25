@@ -3,83 +3,86 @@
     "date": "2026.11.25",
     "weekday": "星期三",
     "label": "每日选刊",
-    "notice": "今日聚焦GPT-6生物设计突破、CIA安全事件及前沿AI进展。"
+    "notice": "前沿AI展现惊人蛋白质设计与多任务代理能力，开源与游戏圈迎来重磅复刻热潮。"
   },
   "items": [
     {
-      "id": "brief-20261125-1-35ef6850",
+      "id": "brief-20261125-1-05540a96",
       "category": "reading",
-      "title": "OpenAI 宣布 GPT-6 展现出原生蛋白质设计能力",
+      "title": "OpenAI发布GPT-6模型，展现强大的内在蛋白质设计能力",
       "originalTitle": "GPT-6 models demonstrate intrinsic protein-design capabilities",
-      "source": "Hacker News",
-      "sourceOrg": "OpenAI / Hacker News",
+      "source": "openai.com",
+      "sourceOrg": "OpenAI",
       "sourceDate": "2026.11.24",
-      "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/",
+      "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
       "tags": [
         "AI大模型"
       ],
-      "summary": "OpenAI 最新推出的 GPT-6 模型在生物科学领域取得突破，无需额外微调即可展现出原生的蛋白质结构设计与序列生成能力，为药物研发与生物工程开辟了新路径。",
+      "summary": "OpenAI最新发布的GPT-6模型利用先进的推理和代码生成能力，能够直接设计复杂的蛋白质结构与序列。实验室测试显示，其设计的蛋白质在五个目标上均表现出良好的结合能力，标志着大模型在生命科学领域的应用迈上新台阶。",
       "highlights": [
-        "模型具备无监督的蛋白质结构理解与生成能力",
-        "极大降低了计算生物学领域的技术门槛与研发周期"
+        "GPT-6通过推理与代码实现蛋白质结构和序列设计",
+        "实验室测试在五个目标靶点上均验证了结合能力"
       ],
-      "readingNote": "前沿大模型正在跨越纯文本生成，逐步深入科学探索与生命科学的底层构建。",
+      "readingNote": "大模型正从数字世界走向生物医药核心，AI驱动的合成生物学时代正在加速到来。",
       "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/"
-      ]
+        "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities"
+      ],
+      "cover": "/images/briefing/2026-11-25-1.jpg"
     },
     {
-      "id": "brief-20261125-2-0746e911",
+      "id": "brief-20261125-2-9215d2e5",
       "category": "news",
-      "title": "美情报机构 CIA 未分类网络系统遭攻击入侵",
-      "originalTitle": "An unclassified CIA system was breached in a cyberattack",
-      "source": "Hacker News",
-      "sourceOrg": "AP News / Hacker News",
-      "sourceDate": "2026.11.24",
-      "url": "https://apnews.com/article/cia-cyberattack-unclassified-system-bfa6d3b02e3b0e2779dfb613c900bd77",
+      "title": "GitHub开源热点：社区推进PC端运行GTA VI及兼容层探索",
+      "originalTitle": "Marvisak/VIctory (★11769)",
+      "source": "GitHub Trending",
+      "sourceOrg": "GitHub",
+      "sourceDate": "2026.11.23",
+      "url": "https://github.com/Marvisak/VIctory",
       "tags": [
-        "网络",
-        "时政"
+        "github开源热门",
+        "游戏"
       ],
-      "summary": "据美联社报道，美国中央情报局（CIA）的一个非机密系统遭遇网络攻击并被攻破。目前官方已启动应急响应，以评估漏洞影响并追查潜在攻击源头。",
+      "summary": "开源项目Marvisak/VIctory近期在GitHub上爆火，收获超1.1万星标。该项目汇聚了开源社区的技术力量，致力于在PC平台上尝试运行GTA VI，引发了逆向工程与主机游戏模拟领域的技术狂欢。",
       "highlights": [
-        "受袭击系统属于非机密范畴，但仍暴露政企网络安全隐患",
-        "黑客攻击手段与安全漏洞溯源仍在调查中"
+        "GitHub单日热度飙升，收获超11700枚星标",
+        "探索在PC端复刻与运行当代主机大作的可行性"
       ],
-      "readingNote": "重要机构的外部网络安全防御再次面临严峻考验。",
+      "readingNote": "极客们的硬核浪漫，开源力量再次挑战不可能的PC移植极限。",
       "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://apnews.com/article/cia-cyberattack-unclassified-system-bfa6d3b02e3b0e2779dfb613c900bd77"
-      ]
+        "https://github.com/Marvisak/VIctory"
+      ],
+      "cover": "/images/briefing/2026-11-25-2.jpg"
     },
     {
-      "id": "brief-20261125-3-c81d005a",
-      "category": "reading",
-      "title": "前沿大模型仅凭单篇文章即可准确鉴别作者身分与模型来源",
-      "originalTitle": "Frontier models need only one text to unmask its human or AI author",
-      "source": "Hugging Face Papers",
-      "sourceOrg": "Hugging Face",
-      "sourceDate": "2026.11.25",
-      "url": "https://huggingface.com/papers/2611.26216",
+      "id": "brief-20261125-3-02a5f344",
+      "category": "news",
+      "title": "《葬送的芙莉莲》衍生迷你漫画系列《Sōsō no Frieren: Betsutan》将于12月2日开载",
+      "originalTitle": "Frieren: Beyond Journey's End Manga Gets Spinoff Manga Mini-Series",
+      "source": "www.animenewsnetwork.com",
+      "sourceOrg": "Anime News Network",
+      "sourceDate": "2026.11.24",
+      "url": "https://www.animenewsnetwork.com/news/2026-11-24/frieren-beyond-journey-end-manga-gets-spinoff-manga-mini-series/.244165",
       "tags": [
-        "AI大模型"
+        "ACGN"
       ],
-      "summary": "最新研究表明，在无网络检索及无示例提示的情况下，前沿大模型仅需阅读单篇文章，即可精准识别文本是人类还是 AI 撰写，甚至能分辨出具体的模型提供商及系列。",
+      "summary": "据Anime News Network报道，热门奇幻作品《葬送的芙莉莲》将推出全新的衍生迷你漫画系列《Sōsō no Frieren: Betsutan》，官方定档于12月2日正式开载，为粉丝们带来更多关于原作世界的温馨短篇故事。",
       "highlights": [
-        "零样本提示下高准确率辨别 AI 与人类文本",
-        "可进一步追溯至特定的开源或闭源大模型厂商"
+        "官方宣布推出《葬送的芙莉莲》全新衍生短篇漫画",
+        "定于12月2日正式与读者见面"
       ],
-      "readingNote": "AI 生成文本的隐性指纹特征已成为前沿模型内部可以轻松识别的规律。",
+      "readingNote": "芙莉莲的温情旅程延续，ACGN粉丝不可错过的治愈番外科幻补充。",
       "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://huggingface.com/papers/2611.26216"
-      ]
+        "https://www.animenewsnetwork.com/news/2026-11-24/frieren-beyond-journey-end-manga-gets-spinoff-manga-mini-series/.244165"
+      ],
+      "cover": "/images/briefing/2026-11-25-3.jpg"
     },
     {
       "id": "brief-20261125-4-6cffb1ba",
-      "category": "reading",
-      "title": "nginx2root：详解 Nginx 严重内存破坏漏洞及防护方案",
+      "category": "news",
+      "title": "Cloudflare发布安全警报：深度剖析nginx2root等多起关键内存漏洞",
       "originalTitle": "nginx2root: Five new nginx vulnerabilities, and how Cloudflare protects origins from the worst of them",
       "source": "Cloudflare Blog",
       "sourceOrg": "Cloudflare",
@@ -88,86 +91,65 @@
       "tags": [
         "网络"
       ],
-      "summary": "Nginx 近期曝光的五个内存破坏漏洞（统称 nginx2root）可能允许未经身份验证的攻击者在服务器上执行远程代码。文章详细分析了漏洞成因以及 Cloudflare WAF 的防御机制。",
+      "summary": "Cloudflare技术博客披露了被称为“nginx2root”的五个Nginx内存损坏漏洞。这些严重漏洞允许未经身份验证的攻击者在服务器上执行代码，Cloudflare平台已通过WAF规则为所有用户提供默认拦截保护。",
       "highlights": [
-        "披露 5 个针对 Nginx 内存的安全漏洞",
-        "解释了云端代理如何为源站遮蔽最严重的 RCE 风险"
+        "曝光了Nginx中五个高危内存损坏漏洞",
+        "Cloudflare边缘代理与WAF已对全网客户提供默认防护"
       ],
-      "readingNote": "运维与安全人员需高度关注服务器基础设施的更新与防护配置。",
+      "readingNote": "服务器底层基础设施安全不容忽视，及时更新与边缘防护是网络运维的第一防线。",
       "verifiedAt": "2026.11.25",
       "verificationUrls": [
         "https://blog.cloudflare.com/nginx2root/"
-      ]
+      ],
+      "cover": "/images/briefing/2026-11-25-4.jpg"
     },
     {
-      "id": "brief-20261125-5-1309ffd7",
-      "category": "reading",
-      "title": "VideoJSON：超轻量设计击败复杂记忆图谱的超长视频理解方案",
-      "originalTitle": "VideoJSON: A Minimal Harness Beats Purpose-Built Memory for Ultra-Long Video Understanding",
-      "source": "Hugging Face Papers",
-      "sourceOrg": "Hugging Face",
+      "id": "brief-20261125-5-8b03025c",
+      "category": "news",
+      "title": "BBC报道称俄罗斯官方数据披露乌克兰战争导致约50万人伤亡",
+      "originalTitle": "Russia's own figures show almost 500,000 deaths in war in Ukraine",
+      "source": "feeds.bbci.co.uk",
+      "sourceOrg": "BBC News",
       "sourceDate": "2026.11.25",
-      "url": "https://huggingface.com/papers/2611.28167",
+      "url": "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss",
       "tags": [
-        "AI大模型"
+        "时政"
       ],
-      "summary": "在长达数天或数周的视频问答任务中，传统方法依赖复杂的记忆图谱与固定检索管线。新研究提出 VideoJSON 框架，以极简的结构提供了超越专用记忆机制的准确率与灵活性。",
+      "summary": "英国广播公司（BBC）最新报道显示，泄露或官方间接流出的统计数据揭示了俄乌全面冲突给俄罗斯带来的巨大人口与死亡率模式改变，相关数字引发了国际社会的广泛关注与哀悼。",
       "highlights": [
-        "摒弃繁琐的记忆图谱设计，采用轻量化检索框架",
-        "在长视频时序问答与跨事件检索中达到 SOTA 表现"
+        "统计表明乌克兰持久冲突对俄罗斯人口结构造成深远影响",
+        "外部独立数据与官方流出数字持续引发关注"
       ],
-      "readingNote": "重新审视 AI Agent 的记忆设计，大道至简的架构往往能发挥更大威力。",
+      "readingNote": "战争带来的沉重代价令人唏嘘，国际地缘政治格局依然充满动荡。",
       "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://huggingface.com/papers/2611.28167"
-      ]
+        "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss"
+      ],
+      "cover": "/images/briefing/2026-11-25-5.jpg"
     },
     {
-      "id": "brief-20261125-6-4f5eefd8",
+      "id": "brief-20261125-6-9afc6c91",
       "category": "news",
-      "title": "Versine 发布：基于 MCP 协议的 AI 对话直接收付款工具",
-      "originalTitle": "Launch HN: Versine (YC F26) – MCP to send and receive money",
-      "source": "Hacker News",
-      "sourceOrg": "Y Combinator / Hacker News",
-      "sourceDate": "2026.11.24",
-      "url": "https://news.ycombinator.com/item?id=50634426",
+      "title": "《AION2》与《少女前线》等Steam热门游戏迎来重大版本更新与运营调整",
+      "originalTitle": "[Notice] Updates to AION2 Operational Policy",
+      "source": "store.steampowered.com",
+      "sourceOrg": "Steam",
+      "sourceDate": "2026.11.25",
+      "url": "https://store.steampowered.com/news/app/3393110/view/675137971401262420",
       "tags": [
-        "AI大模型",
-        "网络"
+        "游戏"
       ],
-      "summary": "YC 孵化项目 Versine 正式亮相，它借助 Model Context Protocol (MCP) 让用户能够直接通过与 AI 的自然语言对话进行转账与收款，构建 AI 时代的新型支付入口。",
+      "summary": "Steam平台今日迎来多款热门游戏的密集更新。其中《AION2》公布了全新的黑色星期五外观皮肤与运营策略调整，多款二次元及独立游戏也推出了版本大版本维护与玩法扩充，为玩家带来丰富的假期体验。",
       "highlights": [
-        "基于 MCP 协议实现对话式支付与结算",
-        "探索了 AI Agent 接入现实金融设施的新途径"
+        "《AION2》更新运营策略并推出黑五专属外观Lookbook",
+        "多款Steam热门游戏在今日同步进行版本更新与维护"
       ],
-      "readingNote": "随着 MCP 协议普及，AI 正在从纯文本交互向金融交易等深度场景延伸。",
+      "readingNote": "游戏圈岁末活动接踵而至，肝度与钱包都在面临双重考验。",
       "verifiedAt": "2026.11.25",
       "verificationUrls": [
-        "https://news.ycombinator.com/item?id=50634426"
-      ]
-    },
-    {
-      "id": "brief-20261125-7-27555f15",
-      "category": "news",
-      "title": "《青春猪头少年不会梦到亲友》剧场版影评发布",
-      "originalTitle": "Rascal Does Not Dream of a Dear Friend Anime Film Review",
-      "source": "Anime News Network",
-      "sourceOrg": "Anime News Network",
-      "sourceDate": "2026.11.24",
-      "url": "https://www.animenewsnetwork.com/review/rascal-does-not-dream-of-a-dear-friend-anime-film/.243539",
-      "tags": [
-        "ACGN"
+        "https://store.steampowered.com/news/app/3393110/view/675137971401262420"
       ],
-      "summary": "ANN 发布了《青春猪头少年》系列全新剧场版《青春猪头少年不会梦到亲友》的详细影评。影评指出该片不仅妥善收尾了前作悬念，更为整个系列画上了极为饱满的句点。",
-      "highlights": [
-        "收束前季核心未解悬念",
-        "作为系列阶段性总结的高质量剧场版动画"
-      ],
-      "readingNote": "经典青春奇幻系列迎来了感人至深的阶段性总结，粉丝不容错过。",
-      "verifiedAt": "2026.11.25",
-      "verificationUrls": [
-        "https://www.animenewsnetwork.com/review/rascal-does-not-dream-of-a-dear-friend-anime-film/.243539"
-      ]
+      "cover": "/images/briefing/2026-11-25-6.jpg"
     }
   ]
 }

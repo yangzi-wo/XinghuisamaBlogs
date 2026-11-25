@@ -1,4 +1,13 @@
 {
   "version": 1,
-  "covers": {}
+  "covers": {
+    "2026.11.25": {
+      "src": "/images/briefing/2026-11-25-1.jpg",
+      "alt": "2026.11.25 每日选刊封面",
+      "theme": "floating 3D protein models, glowing molecular structures, futuristic biotech lab, focused dragon girl",
+      "model": "doubao-seedream-5-0-flash-260915",
+      "sha256": "a16ba9b1933ec35fead3b265be10fe442a9410b004d1e979a8386a869431e191",
+      "sourceSha256": "a16ba9b1933ec35fead3b265be10fe442a9410b004d1e979a8386a869431e191"
+    }
+  }
 }
