@@ -315,6 +315,7 @@ def create_app(store, admin_token):
                 text=True,
                 timeout=15,
             )
+            content.sync_from_published()
             return {'synced': True, 'message': '已同步云端最新选刊并刷新列表'}
         except Exception as exc:
             return {'synced': False, 'message': f'已刷新本地列表（云端同步跳过: {exc}）'}

@@ -178,6 +178,52 @@ class ContentStore:
                 raise KeyError('未找到这期期刊')
             return self.create(issue, cover=self.covers()['covers'].get(date))
 
+    def sync_from_published(self):
+        with self.lock:
+            state = self.read()
+            covers_map = self.covers().get('covers', {})
+            changed = False
+            for draft in state['drafts']:
+                date = draft.get('issue', {}).get('edition', {}).get('date')
+                if not date:
+                    continue
+                pub = self.published(date)
+                if not pub:
+                    continue
+                if not draft.get('cover') and covers_map.get(date):
+                    draft['cover'] = self.validate_cover(covers_map[date])
+                    changed = True
+                by_id = {it.get('id'): it.get('cover') for it in pub.get('items', []) if it.get('id') and it.get('cover')}
+                by_url = {it.get('url'): it.get('cover') for it in pub.get('items', []) if it.get('url') and it.get('cover')}
+                for item in draft.get('issue', {}).get('items', []):
+                    if not item.get('cover'):
+                        matched = by_id.get(item.get('id')) or by_url.get(item.get('url'))
+                        if matched:
+                            item['cover'] = matched
+                            changed = True
+            if changed:
+                self.write(self.path, state)
+            return changed
+
+    def reset_to_published(self, draft_id, revision):
+        with self.lock:
+            state = self.read()
+            draft = self.find(state, draft_id)
+            if draft['revision'] != revision:
+                raise ConflictError('草稿已被更新，请刷新后再试')
+            date = draft['issue']['edition']['date']
+            pub = self.published(date)
+            if not pub:
+                raise KeyError('未找到这期已发布选刊')
+            draft['issue'] = validate_issue(pub, self.settings.read())
+            draft['cover'] = self.validate_cover(self.covers().get('covers', {}).get(date))
+            draft['revision'] += 1
+            draft['updatedAt'] = now()
+            draft['baseDigest'] = self.fingerprint(date)
+            self.event(state, 'draft.reset', 'human', draft)
+            self.write(self.path, state)
+            return draft
+
     def update(self, draft_id, revision, issue, cover):
         issue = validate_issue(issue, self.settings.read())
         cover = self.validate_cover(cover)

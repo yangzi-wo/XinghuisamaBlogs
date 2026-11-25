@@ -67,6 +67,11 @@ def install_routes(app, content):
         value = await body(request)
         return {'draft': content.withdraw(draft_id, value.get('revision'))}
 
+    @app.post('/api/briefing/drafts/{draft_id}/reset')
+    async def reset_draft(draft_id: str, request: Request):
+        value = await body(request)
+        return {'draft': content.reset_to_published(draft_id, value.get('revision'))}
+
     @app.get('/api/briefing/events')
     def events():
         return {'events': content.read()['events']}
