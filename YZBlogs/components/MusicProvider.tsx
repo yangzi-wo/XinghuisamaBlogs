@@ -3,7 +3,9 @@
 import { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { siteConfig } from '../siteConfig';
 
-// 【增强版 LRC 歌词解析：支持同时间戳双语、原文【翻译】、原文 // 翻译】
+const LYRIC_CREDIT_RE = /^(?:作词|作曲|编曲|词|曲|词曲|演唱|歌手|曲名|歌名|原唱|翻唱|制作人?|混音|母带|吉他|贝斯|鼓|键盘|和声|录音|监制|企划|出品|Lyrics?|Lyricist|Composed?\s*by|Composer|Arranged?\s*by|Arranger|Vocal|Producer|Mixing|Mastering|Title|Artist)\s*[:：]/i;
+
+// 【增强版 LRC 歌词解析：支持同时间戳双语、原文【翻译】、原文 // 翻译，并过滤词曲作者行】
 function splitBilingualLine(raw: string): { text: string; translation?: string } {
   const bracketMatch = raw.match(/^(.*?)\s*【([^】]+)】\s*$/);
   if (bracketMatch && bracketMatch[1].trim() && bracketMatch[2].trim()) {
@@ -28,7 +30,7 @@ function parseLrc(lrcText: string) {
       const text = line.replace(/\[\d{2,}:\d{2}(?:\.\d{2,3})?\]/g, '').trim();
       const cleanText = text.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "");
 
-      if (cleanText) {
+      if (cleanText && !LYRIC_CREDIT_RE.test(cleanText)) {
         const parsedLine = splitBilingualLine(cleanText);
         for (const match of matches) {
           const min = parseInt(match[1], 10);

@@ -32,6 +32,53 @@ def _safe_filename(prefix: int, raw_name: str, fallback_stem: str, ext: str) -> 
     return f"{prefix}_{stem[:40]}{ext}"
 
 
+_CREDIT_RE = re.compile(
+    r"^(?:作词|作曲|编曲|词|曲|词曲|演唱|歌手|曲名|歌名|原唱|翻唱|制作人?|混音|母带|吉他|贝斯|鼓|键盘|和声|录音|监制|企划|出品|"
+    r"Lyrics?|Lyricist|Composed?\s*by|Composer|Arranged?\s*by|Arranger|Vocal|Producer|Mixing|Mastering|Title|Artist)\s*[:：]",
+    re.IGNORECASE,
+)
+_META_TAG_RE = re.compile(r"^\[(?:ti|ar|al|by|offset|re|ve|lyricist|composer|arranger|length):.*\]$", re.IGNORECASE)
+_TIME_TAG_RE = re.compile(r"\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?\]")
+
+
+def _decode_lrc(raw: bytes) -> str:
+    for enc in ("utf-8-sig", "utf-8", "gb18030", "shift_jis"):
+        try:
+            return raw.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", errors="replace")
+
+
+def _normalize_lrc_bytes(raw: bytes) -> bytes:
+    """统一清洗 LRC 格式：转 UTF-8、移除曲名/作词/作曲/编曲行、统一双语同时间戳格式"""
+    text = _decode_lrc(raw)
+    out_lines: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or _META_TAG_RE.match(stripped):
+            continue
+        tags = _TIME_TAG_RE.findall(stripped)
+        if not tags:
+            continue
+        body = _TIME_TAG_RE.sub("", stripped).strip()
+        if not body or _CREDIT_RE.match(body):
+            continue
+        # 统一标准时间戳前缀 [mm:ss.xx]
+        norm_tags = "".join(f"[{m[0]}:{m[1]}.{m[2] or '00'}]" for m in tags)
+        bracket = re.match(r"^(.*?)\s*【([^】]+)】\s*$", body)
+        slash = re.match(r"^(.*?)\s*//\s*(.+?)\s*$", body)
+        if bracket and bracket.group(1).strip() and bracket.group(2).strip():
+            out_lines.append(f"{norm_tags}{bracket.group(1).strip()}")
+            out_lines.append(f"{norm_tags}{bracket.group(2).strip()}")
+        elif slash and slash.group(1).strip() and slash.group(2).strip():
+            out_lines.append(f"{norm_tags}{slash.group(1).strip()}")
+            out_lines.append(f"{norm_tags}{slash.group(2).strip()}")
+        else:
+            out_lines.append(f"{norm_tags}{body}")
+    return ("\n".join(out_lines) + "\n").encode("utf-8")
+
+
 @router.post("/upload-local")
 async def upload_local_music(
     audio: UploadFile = File(...),
@@ -64,8 +111,8 @@ async def upload_local_music(
             lrc_ext = Path(raw_lrc).suffix.lower()
             if lrc_ext not in ALLOWED_LRC_EXT:
                 return {"success": False, "message": "歌词仅支持 .lrc 或 .txt 文件"}
-            lrc_filename = _safe_filename(ts, raw_lrc, "lyric", lrc_ext)
-            _save_to_music_dirs(lrc_filename, lrc_bytes)
+            lrc_filename = _safe_filename(ts, raw_lrc, "lyric", ".lrc")
+            _save_to_music_dirs(lrc_filename, _normalize_lrc_bytes(lrc_bytes))
             lrc_url = f"/music/{lrc_filename}"
 
         cover_url = "/avatar.jpg"
