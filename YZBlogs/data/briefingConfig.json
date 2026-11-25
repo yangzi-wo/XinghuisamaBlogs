@@ -30,8 +30,8 @@
     "excludedKeywords": [],
     "preferredSources": [],
     "language": "zh-CN",
-    "minItems": 4,
-    "maxItems": 9
+    "minItems": 6,
+    "maxItems": 6
   },
   "channels": [
     {
@@ -45,7 +45,7 @@
       "enabled": true
     },
     {
-      "id": "section-3",
+      "id": "focus",
       "name": "当下热门",
       "enabled": true
     }
