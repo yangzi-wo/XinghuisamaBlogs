@@ -32,7 +32,15 @@ export default function DailyBriefing() {
   const briefingEdition = issue?.edition ?? { date: windowDate, weekday: '', label: '每日选刊', notice: `最近 ${briefingDisplay.archiveDays} 天暂无可用选刊，请稍后再来。` };
   const briefingItems = (issue?.items ?? []).filter(item => briefingChannels.some(channel => channel.id === item.category));
   const briefingCover = briefingCovers[briefingEdition.date] ?? { src: '/images/briefing-default.svg', alt: '每日选刊默认封面' };
-  const coverSources = [...new Set([briefingCover.src, ...carouselIssues.map(entry => briefingCovers[entry.edition.date]?.src ?? '/images/briefing-default.svg')])];
+  const dailyCoverList = useMemo(() => {
+    const itemCovers = briefingItems.map(item => item.cover).filter((src): src is string => Boolean(src));
+    const unique = [...new Set(itemCovers)];
+    return unique.length > 0 ? unique : [briefingCover.src];
+  }, [briefingItems, briefingCover.src]);
+  const [dailyCoverIndex, setDailyCoverIndex] = useState(0);
+  const dailyCarouselEnabled = (briefingDisplay as { dailyCoverCarousel?: boolean }).dailyCoverCarousel ?? true;
+  const activeDailyCoverSrc = dailyCoverList[dailyCoverIndex % dailyCoverList.length] ?? briefingCover.src;
+  const coverSources = [...new Set([activeDailyCoverSrc, ...dailyCoverList, ...carouselIssues.map(entry => briefingCovers[entry.edition.date]?.src ?? '/images/briefing-default.svg')])];
   const isLatest = issueIndex === 0;
   const carouselIndex = carouselDates.indexOf(briefingEdition.date);
   const [reading, setReading] = useState<ReadingState>(initialState);
@@ -64,6 +72,18 @@ export default function DailyBriefing() {
     document.addEventListener('visibilitychange', updateVisibility);
     return () => { query.removeEventListener('change', updateMotion); document.removeEventListener('visibilitychange', updateVisibility); };
   }, []);
+
+  useEffect(() => {
+    setDailyCoverIndex(0);
+  }, [briefingEdition.date]);
+
+  useEffect(() => {
+    if (!briefingDisplay.enabled || !ready || !autoPlay || !dailyCarouselEnabled || hovered || focused || expanded || selectedId || !pageVisible || reducedMotion || dailyCoverList.length < 2) return;
+    const timer = setInterval(() => {
+      setDailyCoverIndex(prev => (prev + 1) % dailyCoverList.length);
+    }, briefingDisplay.intervalSeconds * 1000);
+    return () => clearInterval(timer);
+  }, [ready, autoPlay, dailyCarouselEnabled, hovered, focused, expanded, selectedId, pageVisible, reducedMotion, dailyCoverList.length]);
 
   useEffect(() => {
     if (!briefingDisplay.enabled || !ready || !autoPlay || hovered || focused || expanded || selectedId || !pageVisible || reducedMotion || carouselIndex < 0 || carouselDates.length < 2) return;
@@ -148,7 +168,7 @@ export default function DailyBriefing() {
     <section id="daily-briefing" aria-label={briefingDisplay.title + '，' + briefingDisplay.subtitle} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }} className="scroll-mt-28 overflow-hidden rounded-3xl border border-white/40 bg-white/40 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-slate-800/50">
       <div className="relative">
       <button ref={banner} type="button" aria-expanded={expanded} aria-controls="daily-letter-reader" onClick={() => expanded ? collapse() : setExpanded(true)} className="group relative block bg-slate-900 min-h-[206px] w-full overflow-hidden text-left focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white sm:min-h-[190px]">
-        {briefingDisplay.showCovers && coverSources.map(src => <img key={src} src={src} alt={src === briefingCover.src ? briefingCover.alt : ''} aria-hidden={src !== briefingCover.src} style={{ opacity: src === briefingCover.src ? 1 : 0 }} className="absolute inset-0 h-full w-full object-cover object-[72%_45%] transition-opacity duration-1000 motion-reduce:transition-none sm:object-[center_43%]" />)}
+        {briefingDisplay.showCovers && coverSources.map(src => <img key={src} src={src} alt={src === activeDailyCoverSrc ? briefingCover.alt : ''} aria-hidden={src !== activeDailyCoverSrc} style={{ opacity: src === activeDailyCoverSrc ? 1 : 0 }} className="absolute inset-0 h-full w-full object-cover object-[72%_45%] transition-opacity duration-1000 motion-reduce:transition-none sm:object-[center_43%]" />)}
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/5 sm:via-slate-950/30" />
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent" />
         <span className="relative flex min-h-[206px] flex-col justify-between p-5 sm:min-h-[190px] sm:px-8 sm:py-6">

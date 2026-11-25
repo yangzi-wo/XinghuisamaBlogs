@@ -8,6 +8,7 @@
     "autoPlay": true,
     "intervalSeconds": 8,
     "showCovers": true,
+    "dailyCoverCarousel": true,
     "showTerraNotes": false
   },
   "topics": [

@@ -22,7 +22,7 @@ def default_config():
         'revision': 0,
         'display': {'enabled': False, 'title': '每日选刊', 'subtitle': '为兴趣留一点时间',
                     'archiveDays': 90, 'carouselDays': 7, 'autoPlay': True,
-                    'intervalSeconds': 8, 'showCovers': True, 'showTerraNotes': False},
+                    'intervalSeconds': 8, 'showCovers': True, 'dailyCoverCarousel': True, 'showTerraNotes': False},
         'selection': {'topics': [], 'excludedKeywords': [], 'preferredSources': [],
                       'language': 'zh-CN', 'minItems': 4, 'maxItems': 6},
         'channels': [{'id': 'news', 'name': '动态精选', 'enabled': True},
@@ -68,7 +68,7 @@ def validate_config(value):
     if isinstance(value.get('imageGen'), dict):
         result['imageGen'].update({k: v for k, v in value['imageGen'].items() if k in result['imageGen']})
     display = result['display']
-    for key in ('enabled', 'autoPlay', 'showCovers', 'showTerraNotes'):
+    for key in ('enabled', 'autoPlay', 'showCovers', 'dailyCoverCarousel', 'showTerraNotes'):
         if type(display[key]) is not bool:
             raise ValueError('开关值无效：' + key)
     for key, low, high in (('archiveDays', 1, 90), ('carouselDays', 1, 14), ('intervalSeconds', 5, 60)):

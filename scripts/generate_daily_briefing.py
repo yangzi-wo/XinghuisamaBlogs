@@ -323,14 +323,15 @@ def build_prompt(
         f"今天是 {date_str}。请从以下候选资讯中挑选 {min_items} 到 {max_items} 条（至少 {min_items} 条、最多 {max_items} 条）最有价值的内容，组成今天的「每日选刊」。\n"
         f"输出语言要求：标题、摘要、要点与点评均使用 {lang_label}。\n"
         f"要求尽量覆盖用户关注的主题：{topic_desc}。{extra_text}\n"
-        f"可用栏目 category 只能从以下 id 中选择：{channel_desc}（一般快讯/新番/开源热门用 news，技术深度文章/论文用 reading）。\n"
+        f"可用栏目 category 只能从以下 id 中选择：{channel_desc}。\n"
+        f"【重要】必须为上述每一个已启用的栏目都分配至少 1 条内容（建议尽量均匀分配，例如 {len(channels)} 个栏目共 {max_items} 条时尽量平均分配），绝不允许任何已启用的栏目出现 0 条！\n"
         f"必须返回严格 JSON，格式如下：\n"
         "{\n"
         '  "notice": "一句话导语（15-30字，概括今日看点）",\n'
-        '  "coverTags": "根据今日选刊热点，为画面中的白发龙娘看板娘设计3-6个英文动作、手持道具与背景场景Tag（逗号分隔，不要重复描述外貌，例如：holding glowing holographic tablet, cozy cyber library at night, floating code windows, soft neon bokeh）",\n'
+        '  "coverTags": "根据今日选刊热点，为画面中的白发龙娘看板娘设计3-6个英文现实世界场景、动作与道具Tag（不要重复人物外貌）",\n'
         '  "items": [\n'
         "    {\n"
-        '      "category": "news 或 reading",\n'
+        f'      "category": "只能填 {channel_desc} 中的 id之一",\n'
         '      "title": "中文标题（简洁准确）",\n'
         '      "originalTitle": "原标题",\n'
         '      "source": "来源名称",\n'
@@ -341,7 +342,7 @@ def build_prompt(
         '      "summary": "中文摘要（60-120字，通俗易懂）",\n'
         '      "highlights": ["要点1", "要点2"],\n'
         '      "readingNote": "一句话编辑点评或阅读建议",\n'
-        '      "coverTags": "为本条资讯专属设计的3-5个英文动作、手持道具与场景Tag（用于GPT龙娘配图，不要重复人物外貌）"\n'
+        '      "coverTags": "为本条资讯专属设计的3-5个英文画面Tag（逗号分隔，不要重复龙娘外貌）：1. 背景必须贴合本条资讯的真实/现实场景（如AI/开源用现代电脑桌/机房/咖啡馆笔记本，时政用城市街景/新闻厅，游戏/ACGN用电竞房/街头/客厅主机）；2. 若本条是ACGN或游戏新闻且提到了具体角色，请务必在Tag中加入该角色英文名与龙娘同框互动（例如 alongside <Character Name> from <Work>）"\n'
         "    }\n"
         "  ]\n"
         "}\n\n"
@@ -468,6 +469,22 @@ def main() -> int:
 
     if not normalized_items:
         raise RuntimeError("清洗后无有效条目")
+
+    # 兜底均衡：保证每个已启用的栏目至少有 1 条内容
+    if len(normalized_items) >= len(channels):
+        counts = {c["id"]: 0 for c in channels}
+        for it in normalized_items:
+            counts[it["category"]] = counts.get(it["category"], 0) + 1
+        for cid in [c["id"] for c in channels]:
+            if counts.get(cid, 0) == 0:
+                donor_cid = max(counts, key=lambda k: counts[k])
+                if counts[donor_cid] > 1:
+                    for it in reversed(normalized_items):
+                        if it["category"] == donor_cid:
+                            it["category"] = cid
+                            counts[donor_cid] -= 1
+                            counts[cid] = 1
+                            break
 
     # 为每条简报生成专属 AI 封面图（第 1 条同时作为当日顶部轮播封面）
     image_cfg = config.get("imageGen") or {}
