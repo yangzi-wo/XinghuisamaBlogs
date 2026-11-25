@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 const ThemeContext = createContext({ isDark: true, toggleTheme: () => {} });
 
@@ -37,10 +38,47 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isDark, mounted]);
 
+  const applyDomTheme = (dark: boolean) => {
+    const root = document.documentElement;
+    if (dark) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('blog-theme', dark ? 'dark' : 'light');
+  };
+
   const toggleTheme = () => {
     const newDark = !isDark;
+    const root = document.documentElement;
+    // 切换瞬间禁用所有子元素的长耗时 CSS transition，避免毛玻璃卡片逐帧重绘导致掉帧
+    root.classList.add('theme-switching');
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const docWithTransition = document as Document & {
+      startViewTransition?: (callback: () => void) => { finished: Promise<void> };
+    };
+
+    if (typeof docWithTransition.startViewTransition === 'function' && !prefersReducedMotion) {
+      const transition = docWithTransition.startViewTransition(() => {
+        flushSync(() => {
+          setIsDark(newDark);
+        });
+        applyDomTheme(newDark);
+      });
+      transition.finished.finally(() => {
+        root.classList.remove('theme-switching');
+      });
+      return;
+    }
+
     setIsDark(newDark);
-    localStorage.setItem('blog-theme', newDark ? 'dark' : 'light');
+    applyDomTheme(newDark);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        root.classList.remove('theme-switching');
+      });
+    });
   };
 
   // 在客户端挂载完成前，为了防止闪屏，先隐藏内容
