@@ -28,7 +28,14 @@
       "游戏"
     ],
     "excludedKeywords": [],
-    "preferredSources": [],
+    "preferredSources": [
+      "https://huggingface.co/blog/feed.xml",
+      "https://openai.com/news/rss.xm",
+      "https://rsshub.app/github/trending/daily/any",
+      "https://www.animenewsnetwork.com/all/rss.xml",
+      "https://store.steampowered.com/feeds/news/?l=schinese",
+      "https://feeds.bbci.co.uk/news/world/rss.xml"
+    ],
     "language": "zh-CN",
     "minItems": 6,
     "maxItems": 6
@@ -63,8 +70,8 @@
   "imageGen": {
     "enabled": false,
     "provider": "openai-images",
-    "baseUrl": "https://api.siliconflow.cn/v1",
-    "model": "Kwai-Kolors/Kolors",
+    "baseUrl": "https://api.openai.com/v1",
+    "model": "",
     "secretName": "IMAGE_API_KEY",
     "baseTags": "anime illustration, clean composition, atmospheric lighting, digital art, high detail, no text",
     "size": "1280x720"
