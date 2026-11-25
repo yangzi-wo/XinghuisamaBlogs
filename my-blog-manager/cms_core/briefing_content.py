@@ -224,6 +224,15 @@ class ContentStore:
             self.write(self.path, state)
             return draft
 
+    def delete(self, draft_id):
+        with self.lock:
+            state = self.read()
+            draft = self.find(state, draft_id)
+            state['drafts'] = [x for x in state['drafts'] if x['id'] != draft_id]
+            self.event(state, 'draft.deleted', 'human', draft)
+            self.write(self.path, state)
+            return True
+
     def update(self, draft_id, revision, issue, cover):
         issue = validate_issue(issue, self.settings.read())
         cover = self.validate_cover(cover)

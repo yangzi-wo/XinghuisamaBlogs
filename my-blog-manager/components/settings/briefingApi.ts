@@ -1,7 +1,10 @@
 export async function briefingApi<T>(endpoint: string, value?: unknown, method = 'POST'): Promise<T> {
-  const response = await fetch('/api/briefing/' + endpoint, value === undefined ? { cache: 'no-store' } : {
-    method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value),
-  });
+  const init: RequestInit = value === undefined && method === 'POST'
+    ? { cache: 'no-store' }
+    : value === undefined
+      ? { method, cache: 'no-store' }
+      : { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) };
+  const response = await fetch('/api/briefing/' + endpoint, init);
   const result = await response.json();
   if (!response.ok) throw new Error(typeof result.detail === 'string' ? result.detail : '操作未完成，请重试');
   return result;

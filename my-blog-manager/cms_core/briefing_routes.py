@@ -72,6 +72,11 @@ def install_routes(app, content):
         value = await body(request)
         return {'draft': content.reset_to_published(draft_id, value.get('revision'))}
 
+    @app.delete('/api/briefing/drafts/{draft_id}')
+    def delete_draft(draft_id: str):
+        content.delete(draft_id)
+        return {'deleted': True}
+
     @app.get('/api/briefing/events')
     def events():
         return {'events': content.read()['events']}
