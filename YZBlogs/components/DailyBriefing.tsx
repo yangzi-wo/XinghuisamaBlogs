@@ -177,11 +177,40 @@ export default function DailyBriefing() {
           <span className="flex items-end justify-between gap-3"><span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-white/75">{briefingChannels.map(channel => <span key={channel.id}>{channel.name} <b className="ml-1 font-mono font-normal text-white">{pad(followedItems.filter(item => item.category === channel.id).length)}</b></span>)}{unread > 0 && <span className="flex items-center gap-1.5 text-pink-200"><span className="h-1 w-1 rounded-full bg-pink-300" />{unread} 条未读</span>}</span><span className="flex shrink-0 items-center gap-2 text-white/90"><span className="hidden text-[10px] tracking-wide sm:inline">{expanded ? '收起这封来信' : isLatest ? '展开今日选刊' : '展开往期选刊'}</span><span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm transition duration-500 group-hover:border-white/60 group-hover:bg-white/20 sm:h-9 sm:w-9">{expanded ? <Minus size={16} /> : <Plus size={16} />}</span></span></span>
         </span>
       </button>
-      <div role="group" aria-label={`最近 ${briefingCarouselDays} 天选刊轮播`} className="absolute right-4 top-5 z-10 flex items-center gap-1 rounded-full border border-white/20 bg-slate-950/25 p-1 text-white backdrop-blur-md sm:right-7 sm:top-6">
-        <button type="button" aria-label="卡片上一期" disabled={carouselDates.length < 2 || carouselIndex < 0} onClick={() => { const date = stepBriefingDate(carouselDates, briefingEdition.date, 1); if (date) changeIssue(date); }} className="flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30"><ChevronLeft size={15} /></button>
-        <span aria-hidden="true" className="min-w-8 text-center font-mono text-[10px] text-white/80">{carouselIndex < 0 ? '往期' : `${carouselIndex + 1}/${carouselDates.length}`}</span>
-        <button type="button" aria-label="卡片下一期" disabled={carouselDates.length < 2 || carouselIndex < 0} onClick={() => { const date = stepBriefingDate(carouselDates, briefingEdition.date, -1); if (date) changeIssue(date); }} className="flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30"><ChevronRight size={15} /></button>
-        <button type="button" aria-label={autoPlay ? '暂停选刊轮播' : '播放选刊轮播'} aria-pressed={!autoPlay} disabled={carouselDates.length < 2 || reducedMotion} onClick={() => setAutoPlay(value => !value)} className="flex h-8 w-8 items-center justify-center rounded-full border-l border-white/15 transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30">{autoPlay ? <Pause size={12} /> : <Play size={12} />}</button>
+      <div role="group" aria-label={`最近 ${briefingCarouselDays} 天选刊轮播`} className="absolute right-5 top-6 z-10 flex items-center gap-2 sm:right-8 sm:top-7">
+        {carouselDates.length >= 2 ? (
+          carouselDates.map((date, idx) => {
+            const active = idx === carouselIndex;
+            return (
+              <button
+                key={date}
+                type="button"
+                aria-label={`切换到 ${date} 选刊`}
+                aria-current={active ? 'true' : undefined}
+                onClick={() => changeIssue(date)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  active ? 'w-7 bg-indigo-400 shadow-sm shadow-indigo-500/40' : 'w-2.5 bg-white/45 hover:bg-white/75'
+                }`}
+              />
+            );
+          })
+        ) : dailyCarouselEnabled && dailyCoverList.length >= 2 ? (
+          dailyCoverList.map((src, idx) => {
+            const active = idx === (dailyCoverIndex % dailyCoverList.length);
+            return (
+              <button
+                key={src}
+                type="button"
+                aria-label={`切换到第 ${idx + 1} 张封面`}
+                aria-current={active ? 'true' : undefined}
+                onClick={() => setDailyCoverIndex(idx)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  active ? 'w-7 bg-indigo-400 shadow-sm shadow-indigo-500/40' : 'w-2.5 bg-white/45 hover:bg-white/75'
+                }`}
+              />
+            );
+          })
+        ) : null}
       </div>
       </div>
 
