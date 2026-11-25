@@ -1,15 +1,15 @@
 {
   "edition": {
-    "date": "2026.11.25",
-    "weekday": "星期三",
+    "date": "2026.11.26",
+    "weekday": "星期四",
     "label": "每日选刊",
-    "notice": "前沿AI展现惊人蛋白质设计与多任务代理能力，开源与游戏圈迎来重磅复刻热潮。"
+    "notice": "今日科技与文化前沿：AI大模型突破蛋白质设计，开源社区热议GTA VI PC移植进展。"
   },
   "items": [
     {
-      "id": "brief-20261125-1-05540a96",
-      "category": "reading",
-      "title": "OpenAI发布GPT-6模型，展现强大的内在蛋白质设计能力",
+      "id": "brief-20261126-1-aebbf9e4",
+      "category": "news",
+      "title": "GPT-6模型展现蛋白质设计能力",
       "originalTitle": "GPT-6 models demonstrate intrinsic protein-design capabilities",
       "source": "openai.com",
       "sourceOrg": "OpenAI",
@@ -18,23 +18,95 @@
       "tags": [
         "AI大模型"
       ],
-      "summary": "OpenAI最新发布的GPT-6模型利用先进的推理和代码生成能力，能够直接设计复杂的蛋白质结构与序列。实验室测试显示，其设计的蛋白质在五个目标上均表现出良好的结合能力，标志着大模型在生命科学领域的应用迈上新台阶。",
+      "summary": "OpenAI最新发布的GPT-6模型在蛋白质结构与序列设计上展现出卓越的推理能力。实验室测试表明，该模型能够设计出具有实际结合能力的蛋白质，为生物医药研发带来新可能。",
       "highlights": [
-        "GPT-6通过推理与代码实现蛋白质结构和序列设计",
-        "实验室测试在五个目标靶点上均验证了结合能力"
+        "模型具备蛋白质结构推理能力",
+        "实验室测试验证了结合活性"
       ],
-      "readingNote": "大模型正从数字世界走向生物医药核心，AI驱动的合成生物学时代正在加速到来。",
-      "verifiedAt": "2026.11.25",
+      "readingNote": "AI在生物科学领域的应用正从辅助转向创造，值得密切关注。",
+      "verifiedAt": "2026.11.26",
       "verificationUrls": [
         "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities"
       ],
-      "cover": "/images/briefing/2026-11-25-1.jpg"
+      "cover": "/images/briefing/2026-11-26-1.jpg"
     },
     {
-      "id": "brief-20261125-2-9215d2e5",
+      "id": "brief-20261126-2-b7e1c1b0",
       "category": "news",
-      "title": "GitHub开源热点：社区推进PC端运行GTA VI及兼容层探索",
-      "originalTitle": "Marvisak/VIctory (★11769)",
+      "title": "《At 25:00, in Akasaka》BL漫画宣布动画化",
+      "originalTitle": "'At 25:00, in Akasaka' Boys-Love Manga Gets TV Anime in 2027",
+      "source": "www.animenewsnetwork.com",
+      "sourceOrg": "Anime News Network",
+      "sourceDate": "2026.11.25",
+      "url": "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187",
+      "tags": [
+        "ACGN"
+      ],
+      "summary": "夏野宽子创作的BL漫画《在赤坂，25点》正式宣布将于2027年推出TV动画。该作由齐藤壮马与佐藤拓也担任主演，讲述了演艺圈背景下的情感故事。",
+      "highlights": [
+        "2027年动画化确定",
+        "齐藤壮马与佐藤拓也领衔主演"
+      ],
+      "readingNote": "演艺圈题材的BL作品，期待动画对原作细腻情感的还原。",
+      "verifiedAt": "2026.11.26",
+      "verificationUrls": [
+        "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187"
+      ],
+      "cover": "/images/briefing/2026-11-26-2.jpg"
+    },
+    {
+      "id": "brief-20261126-3-cc154f12",
+      "category": "reading",
+      "title": "OWE-Bench：衡量现实世界工程能力的基准",
+      "originalTitle": "OWE-Bench: A long-horizon benchmark for measuring real-world engineering",
+      "source": "Hugging Face Papers",
+      "sourceOrg": "Hugging Face",
+      "sourceDate": "2026.11.26",
+      "url": "https://huggingface.co/papers/2611.30017",
+      "tags": [
+        "AI大模型"
+      ],
+      "summary": "OWE-Bench是一个全新的长周期工程基准测试，涵盖了软件工程、物理工程、机器学习等领域的26项复杂任务，旨在评估AI模型在真实工程环境中的实际解决问题能力。",
+      "highlights": [
+        "涵盖26项长周期工程任务",
+        "多学科领域专家共同编写"
+      ],
+      "readingNote": "AI评估正从简单的问答转向复杂的工程实践，这是衡量模型实用性的关键。",
+      "verifiedAt": "2026.11.26",
+      "verificationUrls": [
+        "https://huggingface.co/papers/2611.30017"
+      ],
+      "cover": "/images/briefing/2026-11-26-3.jpg"
+    },
+    {
+      "id": "brief-20261126-4-0869063c",
+      "category": "reading",
+      "title": "Cloudflare推出AI代理搜索功能",
+      "originalTitle": "Introducing Search for Agents",
+      "source": "Cloudflare Blog",
+      "sourceOrg": "Cloudflare",
+      "sourceDate": "2026.11.25",
+      "url": "https://blog.cloudflare.com/search-for-agents/",
+      "tags": [
+        "网络"
+      ],
+      "summary": "Cloudflare推出了一项新功能，允许网站一键开启AI代理搜索支持，通过自动内容索引和发现API，使网站内容能被AI智能体更高效地检索与利用。",
+      "highlights": [
+        "一键开启AI代理搜索",
+        "支持自动内容索引与HTTP QUERY"
+      ],
+      "readingNote": "这是网站适应AI时代检索方式的重要基础设施升级。",
+      "verifiedAt": "2026.11.26",
+      "verificationUrls": [
+        "https://blog.cloudflare.com/search-for-agents/"
+      ],
+      "cover": "/images/briefing/2026-11-26-4.jpg"
+    },
+    {
+      "id": "brief-20261126-5-96b21c34",
+      "category": "focus",
+      "title": "GitHub热门：GTA VI PC移植项目",
+      "originalTitle": "Marvisak/VIctory (★12349)",
       "source": "GitHub Trending",
       "sourceOrg": "GitHub",
       "sourceDate": "2026.11.23",
@@ -43,113 +115,41 @@
         "github开源热门",
         "游戏"
       ],
-      "summary": "开源项目Marvisak/VIctory近期在GitHub上爆火，收获超1.1万星标。该项目汇聚了开源社区的技术力量，致力于在PC平台上尝试运行GTA VI，引发了逆向工程与主机游戏模拟领域的技术狂欢。",
+      "summary": "开源项目VIctory在GitHub上引发热议，该项目致力于通过社区力量实现《GTA VI》的PC移植与兼容运行，目前已获得超过1.2万颗星标。",
       "highlights": [
-        "GitHub单日热度飙升，收获超11700枚星标",
-        "探索在PC端复刻与运行当代主机大作的可行性"
+        "社区驱动的PC移植尝试",
+        "GitHub热门开源项目"
       ],
-      "readingNote": "极客们的硬核浪漫，开源力量再次挑战不可能的PC移植极限。",
-      "verifiedAt": "2026.11.25",
+      "readingNote": "开源社区对大作移植的热情极高，但技术实现难度巨大，建议关注后续进展。",
+      "verifiedAt": "2026.11.26",
       "verificationUrls": [
         "https://github.com/Marvisak/VIctory"
       ],
-      "cover": "/images/briefing/2026-11-25-2.jpg"
+      "cover": "/images/briefing/2026-11-26-5.jpg"
     },
     {
-      "id": "brief-20261125-3-02a5f344",
-      "category": "news",
-      "title": "《葬送的芙莉莲》衍生迷你漫画系列《Sōsō no Frieren: Betsutan》将于12月2日开载",
-      "originalTitle": "Frieren: Beyond Journey's End Manga Gets Spinoff Manga Mini-Series",
-      "source": "www.animenewsnetwork.com",
-      "sourceOrg": "Anime News Network",
-      "sourceDate": "2026.11.24",
-      "url": "https://www.animenewsnetwork.com/news/2026-11-24/frieren-beyond-journey-end-manga-gets-spinoff-manga-mini-series/.244165",
-      "tags": [
-        "ACGN"
-      ],
-      "summary": "据Anime News Network报道，热门奇幻作品《葬送的芙莉莲》将推出全新的衍生迷你漫画系列《Sōsō no Frieren: Betsutan》，官方定档于12月2日正式开载，为粉丝们带来更多关于原作世界的温馨短篇故事。",
-      "highlights": [
-        "官方宣布推出《葬送的芙莉莲》全新衍生短篇漫画",
-        "定于12月2日正式与读者见面"
-      ],
-      "readingNote": "芙莉莲的温情旅程延续，ACGN粉丝不可错过的治愈番外科幻补充。",
-      "verifiedAt": "2026.11.25",
-      "verificationUrls": [
-        "https://www.animenewsnetwork.com/news/2026-11-24/frieren-beyond-journey-end-manga-gets-spinoff-manga-mini-series/.244165"
-      ],
-      "cover": "/images/briefing/2026-11-25-3.jpg"
-    },
-    {
-      "id": "brief-20261125-4-6cffb1ba",
-      "category": "news",
-      "title": "Cloudflare发布安全警报：深度剖析nginx2root等多起关键内存漏洞",
-      "originalTitle": "nginx2root: Five new nginx vulnerabilities, and how Cloudflare protects origins from the worst of them",
-      "source": "Cloudflare Blog",
-      "sourceOrg": "Cloudflare",
-      "sourceDate": "2026.11.20",
-      "url": "https://blog.cloudflare.com/nginx2root/",
-      "tags": [
-        "网络"
-      ],
-      "summary": "Cloudflare技术博客披露了被称为“nginx2root”的五个Nginx内存损坏漏洞。这些严重漏洞允许未经身份验证的攻击者在服务器上执行代码，Cloudflare平台已通过WAF规则为所有用户提供默认拦截保护。",
-      "highlights": [
-        "曝光了Nginx中五个高危内存损坏漏洞",
-        "Cloudflare边缘代理与WAF已对全网客户提供默认防护"
-      ],
-      "readingNote": "服务器底层基础设施安全不容忽视，及时更新与边缘防护是网络运维的第一防线。",
-      "verifiedAt": "2026.11.25",
-      "verificationUrls": [
-        "https://blog.cloudflare.com/nginx2root/"
-      ],
-      "cover": "/images/briefing/2026-11-25-4.jpg"
-    },
-    {
-      "id": "brief-20261125-5-8b03025c",
-      "category": "news",
-      "title": "BBC报道称俄罗斯官方数据披露乌克兰战争导致约50万人伤亡",
-      "originalTitle": "Russia's own figures show almost 500,000 deaths in war in Ukraine",
+      "id": "brief-20261126-6-00e16b8b",
+      "category": "focus",
+      "title": "俄乌冲突最新伤亡数据披露",
+      "originalTitle": "Russia's own figures show it has lost nearly 500,000 people in Ukraine war",
       "source": "feeds.bbci.co.uk",
-      "sourceOrg": "BBC News",
+      "sourceOrg": "BBC",
       "sourceDate": "2026.11.25",
       "url": "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss",
       "tags": [
         "时政"
       ],
-      "summary": "英国广播公司（BBC）最新报道显示，泄露或官方间接流出的统计数据揭示了俄乌全面冲突给俄罗斯带来的巨大人口与死亡率模式改变，相关数字引发了国际社会的广泛关注与哀悼。",
+      "summary": "据BBC报道，泄露的数据显示俄乌战争已导致俄罗斯方面近50万人伤亡，这场全面入侵从根本上改变了俄罗斯国内的人口死亡模式。",
       "highlights": [
-        "统计表明乌克兰持久冲突对俄罗斯人口结构造成深远影响",
-        "外部独立数据与官方流出数字持续引发关注"
+        "伤亡人数近50万",
+        "人口死亡模式发生改变"
       ],
-      "readingNote": "战争带来的沉重代价令人唏嘘，国际地缘政治格局依然充满动荡。",
-      "verifiedAt": "2026.11.25",
+      "readingNote": "战争带来的深远影响持续发酵，国际局势依然严峻。",
+      "verifiedAt": "2026.11.26",
       "verificationUrls": [
         "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss"
       ],
-      "cover": "/images/briefing/2026-11-25-5.jpg"
-    },
-    {
-      "id": "brief-20261125-6-9afc6c91",
-      "category": "news",
-      "title": "《AION2》与《少女前线》等Steam热门游戏迎来重大版本更新与运营调整",
-      "originalTitle": "[Notice] Updates to AION2 Operational Policy",
-      "source": "store.steampowered.com",
-      "sourceOrg": "Steam",
-      "sourceDate": "2026.11.25",
-      "url": "https://store.steampowered.com/news/app/3393110/view/675137971401262420",
-      "tags": [
-        "游戏"
-      ],
-      "summary": "Steam平台今日迎来多款热门游戏的密集更新。其中《AION2》公布了全新的黑色星期五外观皮肤与运营策略调整，多款二次元及独立游戏也推出了版本大版本维护与玩法扩充，为玩家带来丰富的假期体验。",
-      "highlights": [
-        "《AION2》更新运营策略并推出黑五专属外观Lookbook",
-        "多款Steam热门游戏在今日同步进行版本更新与维护"
-      ],
-      "readingNote": "游戏圈岁末活动接踵而至，肝度与钱包都在面临双重考验。",
-      "verifiedAt": "2026.11.25",
-      "verificationUrls": [
-        "https://store.steampowered.com/news/app/3393110/view/675137971401262420"
-      ],
-      "cover": "/images/briefing/2026-11-25-6.jpg"
+      "cover": "/images/briefing/2026-11-26-6.jpg"
     }
   ]
 }

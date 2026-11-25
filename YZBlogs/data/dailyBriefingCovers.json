@@ -8,6 +8,14 @@
       "model": "doubao-seedream-5-0-flash-260915",
       "sha256": "a16ba9b1933ec35fead3b265be10fe442a9410b004d1e979a8386a869431e191",
       "sourceSha256": "a16ba9b1933ec35fead3b265be10fe442a9410b004d1e979a8386a869431e191"
+    },
+    "2026.11.26": {
+      "src": "/images/briefing/2026-11-26-1.jpg",
+      "alt": "2026.11.26 每日选刊封面",
+      "theme": "biotech laboratory, DNA double helix hologram, white-haired dragon girl, scientific research equipment, glowing blue dat",
+      "model": "doubao-seedream-5-0-flash-260915",
+      "sha256": "059d3aee29fdf87861b78fcfc2b07312258336bac93bfc6c86660b8716e3a477",
+      "sourceSha256": "059d3aee29fdf87861b78fcfc2b07312258336bac93bfc6c86660b8716e3a477"
     }
   }
 }
