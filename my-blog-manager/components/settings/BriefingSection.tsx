@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import BriefingContentManager from './BriefingContentManager';
 import type { BriefingIssue } from './briefingApi';
-import { ArrowUpRight, BookOpen, Check, CircleHelp, Cpu, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpRight, BookOpen, Check, Cpu, Eye, Layers3, Loader2, Plus, RefreshCw, Save, Settings2, Sparkles, Trash2 } from 'lucide-react';
 
 type AiProviderConfig = { provider: 'gemini' | 'openai'; baseUrl: string; model: string; secretName: string };
 type ScheduleConfig = { enabled: boolean; preferredTime: string };
@@ -176,7 +176,98 @@ export default function BriefingSection() {
             </div>}
             {tab === 'selection' && <div className="space-y-5">
               <Panel title="你希望读到什么" description="以下是你的个人偏好。新安装不预设任何专业方向，也不要求填写特定领域。"><div className="grid gap-6 sm:grid-cols-2"><Field label="关注主题" hint="每行一个，也可以用逗号分隔。留空时不按主题筛选历史内容。"><textarea className={fieldClass} rows={5} value={terms.topics} onChange={e => setTerms({ ...terms, topics: e.target.value })} placeholder={'例如：摄影\n城市生活\n开源软件'} /></Field><Field label="排除关键词" hint="用于后续 Agent 选题，不会删除已有内容。"><textarea className={fieldClass} rows={5} value={terms.excludedKeywords} onChange={e => setTerms({ ...terms, excludedKeywords: e.target.value })} placeholder="不想收录的主题，可留空" /></Field></div><div className="mt-6"><Field label="偏好来源" hint="填写媒体、期刊、机构名称或网址；只是选题偏好，不是抓取白名单。"><textarea className={fieldClass} rows={3} value={terms.preferredSources} onChange={e => setTerms({ ...terms, preferredSources: e.target.value })} placeholder="每行一个来源，可留空" /></Field></div><div className="mt-6 grid gap-5 sm:grid-cols-3"><Field label="摘要语言"><select className={fieldClass} value={config.selection.language} onChange={e => selection('language', e.target.value)}><option value="zh-CN">中文</option><option value="en-US">English</option><option value="ja-JP">日本語</option></select></Field><Field label="每期最少条目" hint="云端生成时要求至少输出的数量。"><input className={fieldClass} type="number" min={1} max={config.selection.maxItems} value={config.selection.minItems ?? 4} onChange={e => { const val = Math.max(1, Math.min(20, Number(e.target.value) || 1)); selection('minItems', Math.min(val, config.selection.maxItems)); }} /></Field><Field label="每期最多条目" hint="新选刊的生成上限（1–20）。"><input className={fieldClass} type="number" min={1} max={20} value={config.selection.maxItems} onChange={e => { const val = Math.max(1, Math.min(20, Number(e.target.value) || 1)); setConfig(previous => previous ? { ...previous, selection: { ...previous.selection, maxItems: val, minItems: Math.min(previous.selection.minItems ?? 4, val) } } : previous); }} /></Field></div></Panel>
-              <Panel title="栏目设置" description="栏目名称可以改，历史内容仍按原栏目归属保留。至少启用一个栏目。"><div className="space-y-4">{config.channels.map((channel, index) => <div key={channel.id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200/60 bg-white/30 p-4 dark:border-white/10"><div className="min-w-40 flex-1"><label className="sr-only" htmlFor={'channel-' + channel.id}>栏目名称 {index + 1}</label><input id={'channel-' + channel.id} className={fieldClass} value={channel.name} maxLength={24} onChange={e => setConfig({ ...config, channels: config.channels.map((entry, i) => i === index ? { ...entry, name: e.target.value } : entry) })} /><p className="mt-1.5 pl-1 text-[9px] text-slate-400">归属编号 {channel.id}</p></div><Toggle title={channel.enabled ? '显示' : '隐藏'} checked={channel.enabled} onChange={value => setConfig({ ...config, channels: config.channels.map((entry, i) => i === index ? { ...entry, enabled: value } : entry) })} compact /></div>)}</div><button disabled={config.channels.length >= 6} className={buttonClass + ' mt-5'} onClick={() => { let index = config.channels.length + 1; while (config.channels.some(channel => channel.id === `section-${index}`)) index++; setConfig({ ...config, channels: [...config.channels, { id: `section-${index}`, name: '新栏目', enabled: true }] }); }}><Plus size={14} />新增栏目</button></Panel>
+              <Panel title="栏目设置" description="可自由编辑栏目名称、归属编号（小写字母/数字/短横线）、显示顺序，或删除不需要的栏目（至少保留并启用 1 个）。">
+                <div className="space-y-4">
+                  {config.channels.map((channel, index) => (
+                    <div key={index} className="flex flex-col gap-4 rounded-2xl border border-slate-200/60 bg-white/30 p-4 sm:flex-row sm:items-end dark:border-white/10">
+                      <div className="min-w-36 flex-1">
+                        <label className="mb-1.5 block text-[11px] font-medium text-slate-500 dark:text-slate-400" htmlFor={`channel-name-${index}`}>栏目名称</label>
+                        <input
+                          id={`channel-name-${index}`}
+                          className={fieldClass}
+                          value={channel.name}
+                          maxLength={24}
+                          onChange={e => setConfig({ ...config, channels: config.channels.map((entry, i) => i === index ? { ...entry, name: e.target.value } : entry) })}
+                          placeholder="例如：动态精选"
+                        />
+                      </div>
+                      <div className="min-w-36 flex-1">
+                        <label className="mb-1.5 block text-[11px] font-medium text-slate-500 dark:text-slate-400" htmlFor={`channel-id-${index}`}>归属编号（英文 ID）</label>
+                        <input
+                          id={`channel-id-${index}`}
+                          className={fieldClass + ' font-mono'}
+                          value={channel.id}
+                          maxLength={32}
+                          onChange={e => {
+                            const cleaned = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                            setConfig({ ...config, channels: config.channels.map((entry, i) => i === index ? { ...entry, id: cleaned } : entry) });
+                          }}
+                          placeholder="例如：news"
+                        />
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 pb-1">
+                        <Toggle
+                          title={channel.enabled ? '显示' : '隐藏'}
+                          checked={channel.enabled}
+                          onChange={value => setConfig({ ...config, channels: config.channels.map((entry, i) => i === index ? { ...entry, enabled: value } : entry) })}
+                          compact
+                        />
+                        <button
+                          type="button"
+                          title="上移"
+                          disabled={index === 0}
+                          className={buttonClass + ' px-2.5 py-2'}
+                          onClick={() => {
+                            const next = [...config.channels];
+                            [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                            setConfig({ ...config, channels: next });
+                          }}
+                        >
+                          <ArrowUp size={13} />
+                        </button>
+                        <button
+                          type="button"
+                          title="下移"
+                          disabled={index === config.channels.length - 1}
+                          className={buttonClass + ' px-2.5 py-2'}
+                          onClick={() => {
+                            const next = [...config.channels];
+                            [next[index], next[index + 1]] = [next[index + 1], next[index]];
+                            setConfig({ ...config, channels: next });
+                          }}
+                        >
+                          <ArrowDown size={13} />
+                        </button>
+                        <button
+                          type="button"
+                          title="删除栏目"
+                          disabled={config.channels.length <= 1}
+                          className={buttonClass + ' px-2.5 py-2 text-rose-500 hover:border-rose-300 hover:text-rose-600'}
+                          onClick={() => {
+                            if (config.channels.length <= 1) return;
+                            const next = config.channels.filter((_, i) => i !== index);
+                            if (!next.some(c => c.enabled)) next[0] = { ...next[0], enabled: true };
+                            setConfig({ ...config, channels: next });
+                          }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  disabled={config.channels.length >= 6}
+                  className={buttonClass + ' mt-5'}
+                  onClick={() => {
+                    let index = config.channels.length + 1;
+                    while (config.channels.some(channel => channel.id === `section-${index}`)) index++;
+                    setConfig({ ...config, channels: [...config.channels, { id: `section-${index}`, name: '新栏目', enabled: true }] });
+                  }}
+                >
+                  <Plus size={14} />新增栏目
+                </button>
+              </Panel>
             </div>}
             <div hidden={tab !== 'issues'}><BriefingContentManager issues={issues} channels={config.channels} maxItems={config.selection.maxItems} onPublished={() => void refreshPublished()} /></div>
             {tab === 'api' && (() => {
