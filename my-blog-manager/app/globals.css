@@ -120,3 +120,12 @@ input[type="number"] {
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.2); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.4); }
+
+/* ========================================================
+   主题切换性能优化：抑制多卡片毛玻璃逐帧重绘卡顿，同时保留切换图标自身动画
+   ======================================================== */
+.theme-switching *:not(.theme-toggle-icon):not(.theme-toggle-icon *),
+.theme-switching *:not(.theme-toggle-icon):not(.theme-toggle-icon *)::before,
+.theme-switching *:not(.theme-toggle-icon):not(.theme-toggle-icon *)::after {
+  transition: none !important;
+}

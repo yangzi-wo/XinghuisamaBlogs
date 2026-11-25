@@ -37,10 +37,30 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isDark, mounted]);
 
+  const applyDomTheme = (dark: boolean) => {
+    const root = document.documentElement;
+    if (dark) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('blog-theme', dark ? 'dark' : 'light');
+  };
+
   const toggleTheme = () => {
     const newDark = !isDark;
+    const root = document.documentElement;
+    // 切换瞬间禁用大面积毛玻璃卡片与文本的逐帧 CSS transition，仅保留图标自身动画，避免掉帧
+    root.classList.add('theme-switching');
+
     setIsDark(newDark);
-    localStorage.setItem('blog-theme', newDark ? 'dark' : 'light');
+    applyDomTheme(newDark);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        root.classList.remove('theme-switching');
+      });
+    });
   };
 
   // 在客户端挂载完成前，为了防止闪屏，先隐藏内容
