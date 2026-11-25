@@ -232,11 +232,17 @@ export default function DailyBriefing() {
       <p role="status" aria-live="polite" className="sr-only">{message}</p>
     </section>
 
-    {selected && <dialog ref={dialog} aria-labelledby="daily-reading-title" onCancel={event => { event.preventDefault(); setSelectedId(null); }} onClick={event => { if (event.target === event.currentTarget) setSelectedId(null); }} className="fixed inset-0 m-auto max-h-[88dvh] w-[calc(100%-1.5rem)] max-w-3xl overflow-hidden rounded-3xl border border-white/70 bg-white/95 p-0 text-slate-800 shadow-2xl backdrop-blur-2xl backdrop:bg-slate-950/40 backdrop:backdrop-blur-sm dark:border-white/15 dark:bg-slate-900/95 dark:text-slate-100">
+    {selected && <dialog ref={dialog} aria-labelledby="daily-reading-title" onCancel={event => { event.preventDefault(); setSelectedId(null); }} onClick={event => { if (event.target === event.currentTarget) setSelectedId(null); }} className="fixed inset-0 m-auto max-h-[88dvh] w-[calc(100%-1.5rem)] max-w-3xl overflow-hidden rounded-3xl border border-white/60 bg-white/70 p-0 text-slate-800 shadow-2xl backdrop-blur-2xl backdrop:bg-slate-950/45 backdrop:backdrop-blur-md dark:border-white/15 dark:bg-slate-900/70 dark:text-slate-100">
       <div className="flex max-h-[88dvh] flex-col">
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/60 px-6 py-4 sm:px-8 dark:border-white/10"><span className="text-[10px] tracking-[0.2em] text-indigo-500 dark:text-indigo-300">{briefingDisplay.title} / {categoryName(selected.category)} · {briefingEdition.date}</span><button type="button" autoFocus aria-label="关闭阅读窗口" onClick={() => setSelectedId(null)} className="rounded-xl bg-slate-100/80 p-2 text-slate-500 transition hover:bg-indigo-50 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-indigo-400 dark:bg-slate-800 dark:text-slate-300"><X size={18} /></button></div>
-        <article aria-label="独立阅读内容" className="min-h-0 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8 sm:py-7">
-              {selected.cover && <img src={selected.cover} alt={selected.title} className="mb-5 max-h-64 w-full rounded-2xl object-cover shadow-md" />}
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/40 bg-white/40 px-6 py-4 backdrop-blur-md sm:px-8 dark:border-white/10 dark:bg-slate-900/40"><span className="text-[10px] tracking-[0.2em] text-indigo-500 dark:text-indigo-300">{briefingDisplay.title} / {categoryName(selected.category)} · {briefingEdition.date}</span><button type="button" autoFocus aria-label="关闭阅读窗口" onClick={() => setSelectedId(null)} className="rounded-xl bg-white/70 p-2 text-slate-500 transition hover:bg-indigo-50 hover:text-indigo-600 focus-visible:outline-2 focus-visible:outline-indigo-400 dark:bg-slate-800/70 dark:text-slate-300"><X size={18} /></button></div>
+        <article aria-label="独立阅读内容" className="min-h-0 overflow-y-auto overscroll-contain">
+              {selected.cover && (
+                <div className="group/cover relative h-48 w-full overflow-hidden transition-all duration-500 ease-out sm:h-64 [@media(hover:hover)]:hover:h-96">
+                  <img src={selected.cover} alt={selected.title} className="h-full w-full object-cover transition-transform duration-500 ease-out [@media(hover:hover)]:group-hover/cover:scale-[1.03]" />
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/40 to-transparent dark:from-slate-900/50" />
+                </div>
+              )}
+              <div className="px-6 py-6 sm:px-8 sm:py-7">
 
               <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px]"><span className="font-mono tracking-[0.18em] text-indigo-500 dark:text-indigo-300">{categoryName(selected.category)}</span><span className="text-slate-400">原文 {selected.sourceDate}</span><span className="ml-auto text-slate-400">约 1 分钟</span></div>
               <h2 id="daily-reading-title" className="text-xl leading-relaxed text-slate-800 dark:text-white sm:text-2xl">{selected.title}</h2>
@@ -257,8 +263,9 @@ export default function DailyBriefing() {
                 </div>
               </details>}
 
+              </div>
         </article>
-        <div className="flex shrink-0 items-center justify-between gap-4 border-t border-slate-200/60 bg-white/70 px-6 py-4 sm:px-8 dark:border-white/10 dark:bg-slate-900/90"><button type="button" aria-pressed={reading.saved.includes(selected.id)} onClick={() => toggleSaved(selected.id)} className="flex items-center gap-2 py-1 text-[11px] text-slate-500 transition hover:text-indigo-500 dark:text-slate-400 dark:hover:text-indigo-300"><Bookmark size={14} fill={reading.saved.includes(selected.id) ? 'currentColor' : 'none'} />{reading.saved.includes(selected.id) ? '已收藏' : '留着慢慢读'}</button><a href={selected.url} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 border-b border-indigo-300/70 py-1 text-xs font-bold text-indigo-600 transition hover:border-indigo-600 dark:text-indigo-300">查看原文<ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></a></div>
+        <div className="flex shrink-0 items-center justify-between gap-4 border-t border-slate-200/40 bg-white/45 px-6 py-4 backdrop-blur-md sm:px-8 dark:border-white/10 dark:bg-slate-900/50"><button type="button" aria-pressed={reading.saved.includes(selected.id)} onClick={() => toggleSaved(selected.id)} className="flex items-center gap-2 py-1 text-[11px] text-slate-500 transition hover:text-indigo-500 dark:text-slate-400 dark:hover:text-indigo-300"><Bookmark size={14} fill={reading.saved.includes(selected.id) ? 'currentColor' : 'none'} />{reading.saved.includes(selected.id) ? '已收藏' : '留着慢慢读'}</button><a href={selected.url} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 border-b border-indigo-300/70 py-1 text-xs font-bold text-indigo-600 transition hover:border-indigo-600 dark:text-indigo-300">查看原文<ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></a></div>
       </div>
     </dialog>}
   </>);
