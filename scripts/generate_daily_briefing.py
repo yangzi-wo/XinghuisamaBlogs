@@ -340,7 +340,8 @@ def build_prompt(
         '      "tags": ["从关注主题中匹配1-2个标签"],\n'
         '      "summary": "中文摘要（60-120字，通俗易懂）",\n'
         '      "highlights": ["要点1", "要点2"],\n'
-        '      "readingNote": "一句话编辑点评或阅读建议"\n'
+        '      "readingNote": "一句话编辑点评或阅读建议",\n'
+        '      "coverTags": "为本条资讯专属设计的3-5个英文动作、手持道具与场景Tag（用于GPT龙娘配图，不要重复人物外貌）"\n'
         "    }\n"
         "  ]\n"
         "}\n\n"
@@ -468,20 +469,45 @@ def main() -> int:
     if not normalized_items:
         raise RuntimeError("清洗后无有效条目")
 
+    # 为每条简报生成专属 AI 封面图（第 1 条同时作为当日顶部轮播封面）
+    image_cfg = config.get("imageGen") or {}
+    if image_cfg.get("enabled"):
+        first_cover_meta: dict | None = None
+        for idx, (item, raw_item) in enumerate(zip(normalized_items, raw_items[:max_items]), start=1):
+            item_tags = str(raw_item.get("coverTags") or generated.get("coverTags") or "").strip()
+            cover_res = generate_single_cover(image_cfg, f"{today_iso}-{idx}", item_tags)
+            if cover_res:
+                item["cover"] = cover_res["src"]
+                if first_cover_meta is None:
+                    first_cover_meta = {
+                        "src": cover_res["src"],
+                        "alt": f"{today_dot} 每日选刊封面",
+                        "theme": item_tags[:120],
+                        "model": cover_res["model"],
+                        "sha256": cover_res["sha256"],
+                        "sourceSha256": cover_res["sha256"],
+                    }
+        if first_cover_meta:
+            covers_doc = json.loads(COVERS_PATH.read_text(encoding="utf-8")) if COVERS_PATH.is_file() else {"version": 1, "covers": {}}
+            covers_map = covers_doc.setdefault("covers", {})
+            covers_map[today_dot] = first_cover_meta
+            COVERS_PATH.write_text(json.dumps(covers_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     # 若存在旧一期有效数据且不是今天，归档到 dailyBriefingArchive.json
     if LATEST_PATH.is_file():
         prev = json.loads(LATEST_PATH.read_text(encoding="utf-8"))
         prev_date = prev.get("edition", {}).get("date", "")
         if prev.get("items") and prev_date and prev_date != "1970.01.01" and prev_date != today_dot:
-            archive = json.loads(ARCHIVE_PATH.read_text(encoding="utf-8")) if ARCHIVE_PATH.is_file() else {"windowDays": 90, "asOfDate": today_dot, "issues": []}
+            archive = json.loads(ARCHIVE_PATH.read_text(encoding="utf-8")) if ARCHIVE_PATH.is_file() else {"windowDays": 30, "asOfDate": today_dot, "issues": []}
             existing_dates = {iss.get("edition", {}).get("date") for iss in archive.get("issues", [])}
             if prev_date not in existing_dates:
                 archive.setdefault("issues", []).insert(0, prev)
-                archive["issues"] = archive["issues"][:90]
+            archive["windowDays"] = 30
             archive["asOfDate"] = today_dot
             ARCHIVE_PATH.write_text(json.dumps(archive, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         elif ARCHIVE_PATH.is_file():
             archive = json.loads(ARCHIVE_PATH.read_text(encoding="utf-8"))
+            archive["windowDays"] = 30
             archive["asOfDate"] = today_dot
             ARCHIVE_PATH.write_text(json.dumps(archive, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -497,14 +523,63 @@ def main() -> int:
     LATEST_PATH.write_text(json.dumps(new_issue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"成功生成 {today_dot} 每日选刊，共 {len(normalized_items)} 条。")
 
-    image_cfg = config.get("imageGen") or {}
-    if image_cfg.get("enabled"):
-        try_generate_cover(image_cfg, today_dot, today_iso, str(generated.get("coverTags") or ""))
+    # 自动清理超过 30 天的归档简报与本地封面图片
+    cleanup_old_briefings(now, retention_days=30)
 
     return 0
 
 
-def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_tags: str) -> None:
+def cleanup_old_briefings(now: dt.datetime, retention_days: int = 30) -> None:
+    cutoff_date = (now - dt.timedelta(days=retention_days)).date()
+
+    def parse_dot_date(val: str) -> dt.date | None:
+        try:
+            return dt.datetime.strptime(val.strip()[:10], "%Y.%m.%d").date()
+        except Exception:
+            return None
+
+    if ARCHIVE_PATH.is_file():
+        try:
+            archive = json.loads(ARCHIVE_PATH.read_text(encoding="utf-8"))
+            kept_issues = []
+            for iss in archive.get("issues", []):
+                d = parse_dot_date(iss.get("edition", {}).get("date", ""))
+                if d is None or d >= cutoff_date:
+                    kept_issues.append(iss)
+            archive["windowDays"] = retention_days
+            archive["issues"] = kept_issues
+            ARCHIVE_PATH.write_text(json.dumps(archive, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        except Exception as exc:
+            print(f"[warn] 清理旧归档失败: {exc}", file=sys.stderr)
+
+    if COVERS_PATH.is_file():
+        try:
+            covers_doc = json.loads(COVERS_PATH.read_text(encoding="utf-8"))
+            covers_map = covers_doc.get("covers") or {}
+            covers_doc["covers"] = {
+                k: v for k, v in covers_map.items()
+                if (parse_dot_date(k) is None or parse_dot_date(k) >= cutoff_date)
+            }
+            COVERS_PATH.write_text(json.dumps(covers_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        except Exception as exc:
+            print(f"[warn] 清理旧封面索引失败: {exc}", file=sys.stderr)
+
+    if COVERS_DIR.is_dir():
+        for img_file in COVERS_DIR.iterdir():
+            if not img_file.is_file():
+                continue
+            m = re.match(r"^(\d{4}-\d{2}-\d{2})", img_file.name)
+            if m:
+                try:
+                    file_date = dt.datetime.strptime(m.group(1), "%Y-%m-%d").date()
+                    if file_date < cutoff_date:
+                        img_file.unlink(missing_ok=True)
+                        print(f"[cleanup] 已删除超过 {retention_days} 天的旧封面: {img_file.name}")
+                except Exception:
+                    pass
+
+
+def generate_single_cover(image_cfg: dict, filename_stem: str, cover_tags: str) -> dict | None:
     provider = image_cfg.get("provider") or "openai-images"
     base_url = (image_cfg.get("baseUrl") or "").rstrip("/")
     model = image_cfg.get("model") or "Kwai-Kolors/Kolors"
@@ -568,28 +643,17 @@ def try_generate_cover(image_cfg: dict, today_dot: str, today_iso: str, cover_ta
             return
 
         COVERS_DIR.mkdir(parents=True, exist_ok=True)
-        filename = f"{today_iso}.{ext}"
+        filename = f"{filename_stem}.{ext}"
         target = COVERS_DIR / filename
         target.write_bytes(img_bytes)
 
         sha = hashlib.sha256(img_bytes).hexdigest()
-        covers_doc = json.loads(COVERS_PATH.read_text(encoding="utf-8")) if COVERS_PATH.is_file() else {"version": 1, "covers": {}}
-        covers_map = covers_doc.setdefault("covers", {})
-        covers_map[today_dot] = {
-            "src": f"/images/briefing/{filename}",
-            "alt": f"{today_dot} 每日选刊封面",
-            "theme": cover_tags[:120],
-            "model": model,
-            "sha256": sha,
-            "sourceSha256": sha,
-        }
-        # 仅保留最近 90 期封面记录
-        sorted_dates = sorted(covers_map.keys(), reverse=True)[:90]
-        covers_doc["covers"] = {k: covers_map[k] for k in sorted_dates}
-        COVERS_PATH.write_text(json.dumps(covers_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print(f"成功生成并登记今日 AI 封面: /images/briefing/{filename}")
+        src = f"/images/briefing/{filename}"
+        print(f"成功生成 AI 封面: {src}")
+        return {"src": src, "sha256": sha, "model": model}
     except Exception as exc:
-        print(f"[warn] AI 封面生成失败，已自动回退默认封面: {exc}", file=sys.stderr)
+        print(f"[warn] AI 封面生成失败 ({filename_stem})，已自动跳过: {exc}", file=sys.stderr)
+        return None
 
 
 if __name__ == "__main__":

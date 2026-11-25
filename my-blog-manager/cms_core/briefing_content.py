@@ -63,7 +63,7 @@ def validate_issue(value, config, complete=False):
         if item.get('category') not in channels:
             raise ValueError('条目使用了尚未配置的栏目')
         limits = {'title': 300, 'originalTitle': 600, 'source': 300, 'sourceOrg': 200,
-                  'summary': 6000, 'readingNote': 6000, 'url': 2048, 'doi': 300}
+                  'summary': 6000, 'readingNote': 6000, 'url': 2048, 'doi': 300, 'cover': 500}
         for key, limit in limits.items():
             text = item.get(key, '')
             if not isinstance(text, str) or len(text) > limit:
