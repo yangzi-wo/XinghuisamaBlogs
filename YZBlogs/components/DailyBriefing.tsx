@@ -177,7 +177,7 @@ export default function DailyBriefing() {
           <span className="flex items-end justify-between gap-3"><span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-white/75">{briefingChannels.map(channel => <span key={channel.id}>{channel.name} <b className="ml-1 font-mono font-normal text-white">{pad(followedItems.filter(item => item.category === channel.id).length)}</b></span>)}{unread > 0 && <span className="flex items-center gap-1.5 text-pink-200"><span className="h-1 w-1 rounded-full bg-pink-300" />{unread} 条未读</span>}</span><span className="flex shrink-0 items-center gap-2 text-white/90"><span className="hidden text-[10px] tracking-wide sm:inline">{expanded ? '收起这封来信' : isLatest ? '展开今日选刊' : '展开往期选刊'}</span><span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm transition duration-500 group-hover:border-white/60 group-hover:bg-white/20 sm:h-9 sm:w-9">{expanded ? <Minus size={16} /> : <Plus size={16} />}</span></span></span>
         </span>
       </button>
-      <div role="group" aria-label={`最近 ${briefingCarouselDays} 天选刊轮播`} className="absolute right-5 top-6 z-10 flex items-center gap-2 sm:right-8 sm:top-7">
+      <div role="group" aria-label={`最近 ${briefingCarouselDays} 天选刊轮播`} className="absolute right-5 top-6 z-10 flex items-center gap-1.5 sm:right-8 sm:top-7">
         {carouselDates.length >= 2 ? (
           carouselDates.map((date, idx) => {
             const active = idx === carouselIndex;
@@ -188,8 +188,8 @@ export default function DailyBriefing() {
                 aria-label={`切换到 ${date} 选刊`}
                 aria-current={active ? 'true' : undefined}
                 onClick={() => changeIssue(date)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  active ? 'w-7 bg-indigo-400 shadow-sm shadow-indigo-500/40' : 'w-2.5 bg-white/45 hover:bg-white/75'
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
                 }`}
               />
             );
@@ -204,8 +204,8 @@ export default function DailyBriefing() {
                 aria-label={`切换到第 ${idx + 1} 张封面`}
                 aria-current={active ? 'true' : undefined}
                 onClick={() => setDailyCoverIndex(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  active ? 'w-7 bg-indigo-400 shadow-sm shadow-indigo-500/40' : 'w-2.5 bg-white/45 hover:bg-white/75'
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
                 }`}
               />
             );
