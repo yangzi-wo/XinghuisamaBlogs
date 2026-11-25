@@ -32,15 +32,15 @@ export default function DailyBriefing() {
   const briefingEdition = issue?.edition ?? { date: windowDate, weekday: '', label: '每日选刊', notice: `最近 ${briefingDisplay.archiveDays} 天暂无可用选刊，请稍后再来。` };
   const briefingItems = (issue?.items ?? []).filter(item => briefingChannels.some(channel => channel.id === item.category));
   const briefingCover = briefingCovers[briefingEdition.date] ?? { src: '/images/briefing-default.svg', alt: '每日选刊默认封面' };
-  const dailyCoverList = useMemo(() => {
-    const itemCovers = briefingItems.map(item => item.cover).filter((src): src is string => Boolean(src));
-    const unique = [...new Set(itemCovers)];
-    return unique.length > 0 ? unique : [briefingCover.src];
-  }, [briefingItems, briefingCover.src]);
   const [dailyCoverIndex, setDailyCoverIndex] = useState(0);
   const dailyCarouselEnabled = (briefingDisplay as { dailyCoverCarousel?: boolean }).dailyCoverCarousel ?? true;
-  const activeDailyCoverSrc = dailyCoverList[dailyCoverIndex % dailyCoverList.length] ?? briefingCover.src;
-  const coverSources = [...new Set([activeDailyCoverSrc, ...dailyCoverList, ...carouselIssues.map(entry => briefingCovers[entry.edition.date]?.src ?? '/images/briefing-default.svg')])];
+  const activeBriefingItem = briefingItems.length > 0 ? briefingItems[dailyCoverIndex % briefingItems.length] : undefined;
+  const activeDailyCoverSrc = (dailyCarouselEnabled && activeBriefingItem?.cover) || briefingCover.src;
+  const coverSources = [...new Set([
+    activeDailyCoverSrc,
+    ...briefingItems.map(item => item.cover).filter((src): src is string => Boolean(src)),
+    ...carouselIssues.map(entry => briefingCovers[entry.edition.date]?.src ?? '/images/briefing-default.svg'),
+  ])];
   const isLatest = issueIndex === 0;
   const carouselIndex = carouselDates.indexOf(briefingEdition.date);
   const [reading, setReading] = useState<ReadingState>(initialState);
@@ -54,7 +54,7 @@ export default function DailyBriefing() {
   const dialog = useRef<HTMLDialogElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
   const banner = useRef<HTMLButtonElement>(null);
-  const headline = briefingItems[0]?.title ?? '从你关注的方向，开始今天的阅读';
+  const headline = (dailyCarouselEnabled ? activeBriefingItem?.title : briefingItems[0]?.title) ?? '从你关注的方向，开始今天的阅读';
   useEffect(() => {
     const refresh = () => setWindowDate(beijingCalendarDate());
     refresh();
@@ -78,21 +78,25 @@ export default function DailyBriefing() {
   }, [briefingEdition.date]);
 
   useEffect(() => {
-    if (!briefingDisplay.enabled || !ready || !autoPlay || !dailyCarouselEnabled || hovered || focused || expanded || selectedId || !pageVisible || reducedMotion || dailyCoverList.length < 2) return;
-    const timer = setInterval(() => {
-      setDailyCoverIndex(prev => (prev + 1) % dailyCoverList.length);
-    }, briefingDisplay.intervalSeconds * 1000);
-    return () => clearInterval(timer);
-  }, [ready, autoPlay, dailyCarouselEnabled, hovered, focused, expanded, selectedId, pageVisible, reducedMotion, dailyCoverList.length]);
+    const canCycleDaily = dailyCarouselEnabled && briefingItems.length >= 2;
+    const canCycleIssue = carouselIndex >= 0 && carouselDates.length >= 2;
+    if (!briefingDisplay.enabled || !ready || !autoPlay || hovered || focused || expanded || selectedId || !pageVisible || reducedMotion || (!canCycleDaily && !canCycleIssue)) return;
 
-  useEffect(() => {
-    if (!briefingDisplay.enabled || !ready || !autoPlay || hovered || focused || expanded || selectedId || !pageVisible || reducedMotion || carouselIndex < 0 || carouselDates.length < 2) return;
     const timer = setTimeout(() => {
-      const date = stepBriefingDate(carouselDates, briefingEdition.date, 1);
-      if (date) setIssueDate(date);
+      if (canCycleDaily && dailyCoverIndex < briefingItems.length - 1) {
+        setDailyCoverIndex(prev => prev + 1);
+      } else if (canCycleIssue) {
+        const date = stepBriefingDate(carouselDates, briefingEdition.date, 1);
+        if (date) {
+          setDailyCoverIndex(0);
+          setIssueDate(date);
+        }
+      } else if (canCycleDaily) {
+        setDailyCoverIndex(0);
+      }
     }, briefingDisplay.intervalSeconds * 1000);
     return () => clearTimeout(timer);
-  }, [ready, autoPlay, hovered, focused, expanded, selectedId, pageVisible, reducedMotion, carouselIndex, carouselDates, briefingEdition.date]);
+  }, [ready, autoPlay, dailyCarouselEnabled, hovered, focused, expanded, selectedId, pageVisible, reducedMotion, dailyCoverIndex, briefingItems.length, carouselIndex, carouselDates, briefingEdition.date]);
 
   useEffect(() => {
     try {
@@ -178,7 +182,23 @@ export default function DailyBriefing() {
         </span>
       </button>
       <div role="group" aria-label={`最近 ${briefingCarouselDays} 天选刊轮播`} className="absolute right-5 top-6 z-10 flex items-center gap-1.5 sm:right-8 sm:top-7">
-        {carouselDates.length >= 2 ? (
+        {dailyCarouselEnabled && briefingItems.length >= 2 ? (
+          briefingItems.map((item, idx) => {
+            const active = idx === (dailyCoverIndex % briefingItems.length);
+            return (
+              <button
+                key={item.id}
+                type="button"
+                aria-label={`切换到第 ${idx + 1} 条简报`}
+                aria-current={active ? 'true' : undefined}
+                onClick={() => setDailyCoverIndex(idx)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
+                }`}
+              />
+            );
+          })
+        ) : carouselDates.length >= 2 ? (
           carouselDates.map((date, idx) => {
             const active = idx === carouselIndex;
             return (
@@ -188,22 +208,6 @@ export default function DailyBriefing() {
                 aria-label={`切换到 ${date} 选刊`}
                 aria-current={active ? 'true' : undefined}
                 onClick={() => changeIssue(date)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
-                }`}
-              />
-            );
-          })
-        ) : dailyCarouselEnabled && dailyCoverList.length >= 2 ? (
-          dailyCoverList.map((src, idx) => {
-            const active = idx === (dailyCoverIndex % dailyCoverList.length);
-            return (
-              <button
-                key={src}
-                type="button"
-                aria-label={`切换到第 ${idx + 1} 张封面`}
-                aria-current={active ? 'true' : undefined}
-                onClick={() => setDailyCoverIndex(idx)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
                 }`}
