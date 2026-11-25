@@ -1,4 +1,48 @@
 {
   "version": 1,
-  "editions": []
+  "editions": [
+    {
+      "date": "2026.11.24",
+      "status": "published",
+      "digest": "626fe45816f00281c5178b9ee068d27fd2b59508923b250844331671d80e3a67",
+      "items": [
+        {
+          "id": "brief-20261124-1-67d54e34",
+          "key": "url:https://huggingface.co/papers/2611.26863",
+          "url": "https://huggingface.co/papers/2611.26863",
+          "title": "llmsmemorizetheirownhallucinationsduringposttraining",
+          "originalTitle": "LLMs Memorize Their Own Hallucinations During Post-Training",
+          "category": "reading",
+          "sourceOrg": "Hugging Face"
+        },
+        {
+          "id": "brief-20261124-2-30cdd4ec",
+          "key": "url:https://github.com/Marvisak/VIctory",
+          "url": "https://github.com/Marvisak/VIctory",
+          "title": "marvisakvictory9194",
+          "originalTitle": "Marvisak/VIctory (★9194)",
+          "category": "news",
+          "sourceOrg": "GitHub"
+        },
+        {
+          "id": "brief-20261124-3-20eabf9d",
+          "key": "url:https://www.animenewsnetwork.com/news/2026-11-24/witch-on-the-holy-night-anime-film-sequel-confrmed/.244151",
+          "url": "https://www.animenewsnetwork.com/news/2026-11-24/witch-on-the-holy-night-anime-film-sequel-confrmed/.244151",
+          "title": "witchontheholynightanimefilmssequelconfrmed",
+          "originalTitle": "Witch on the Holy Night Anime Film's Sequel Confrmed",
+          "category": "news",
+          "sourceOrg": "ANN"
+        },
+        {
+          "id": "brief-20261124-4-48e9fadc",
+          "key": "url:https://blog.cloudflare.com/ruby2shell-waf-protection",
+          "url": "https://blog.cloudflare.com/ruby2shell-waf-protection/",
+          "title": "howcloudflarewafprotectsagainstruby2shellcve2026132825",
+          "originalTitle": "How Cloudflare WAF protects against ruby2shell (CVE-2026-132825)",
+          "category": "news",
+          "sourceOrg": "Cloudflare"
+        }
+      ]
+    }
+  ]
 }
