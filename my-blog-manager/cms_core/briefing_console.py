@@ -135,8 +135,12 @@ def validate_config(value):
         raise ValueError('AI 配图开关无效')
     if img.get('provider') not in ('openai-images', 'pollinations'):
         raise ValueError('生图接口类型仅支持 openai-images 或 pollinations')
-    for k, maximum in (('baseUrl', 200), ('model', 120), ('baseTags', 600), ('negativeTags', 600), ('size', 32)):
+    for k, maximum in (('baseUrl', 200), ('model', 120), ('size', 32)):
         if not isinstance(img.get(k), str) or len(img[k]) > maximum:
+            raise ValueError('AI 配图参数无效：' + k)
+        img[k] = img[k].strip()
+    for k in ('baseTags', 'negativeTags'):
+        if not isinstance(img.get(k), str):
             raise ValueError('AI 配图参数无效：' + k)
         img[k] = img[k].strip()
     if img.get('enabled') and (not img['baseUrl'] or not img['model']):

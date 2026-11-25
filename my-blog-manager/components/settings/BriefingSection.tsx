@@ -449,10 +449,10 @@ export default function BriefingSection() {
                   </div>
                   <div className="mt-5 grid gap-5 sm:grid-cols-2">
                     <Field label="正面画风 Tag（Positive Tags）" hint="希望画面包含的风格（英文逗号分隔），每次会自动与 Gemini 提取的今日画面 Tag 拼接。">
-                      <textarea className={fieldClass} rows={3} value={img.baseTags} maxLength={600} onChange={e => updateImageGen({ baseTags: e.target.value })} placeholder="anime illustration, clean composition, atmospheric lighting, digital art, high detail" />
+                      <textarea className={fieldClass} rows={3} value={img.baseTags} onChange={e => updateImageGen({ baseTags: e.target.value })} placeholder="anime illustration, clean composition, atmospheric lighting, digital art, high detail" />
                     </Field>
                     <Field label="负面排除 Tag（Negative Tags）" hint="不希望画面出现的元素（如文字、水印、模糊等），兼容接口会自动传给 negative_prompt。">
-                      <textarea className={fieldClass} rows={3} value={img.negativeTags ?? ''} maxLength={600} onChange={e => updateImageGen({ negativeTags: e.target.value })} placeholder="lowres, bad anatomy, bad hands, text, watermark, signature, blurry" />
+                      <textarea className={fieldClass} rows={3} value={img.negativeTags ?? ''} onChange={e => updateImageGen({ negativeTags: e.target.value })} placeholder="lowres, bad anatomy, bad hands, text, watermark, signature, blurry" />
                     </Field>
                   </div>
                 </Panel>
