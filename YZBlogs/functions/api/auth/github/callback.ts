@@ -42,9 +42,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     }),
   });
 
-  const tokenData = (await tokenRes.json()) as { access_token?: string; error_description?: string };
+  const rawText = await tokenRes.text();
+  let tokenData: { access_token?: string; error?: string; error_description?: string } = {};
+  try {
+    tokenData = JSON.parse(rawText);
+  } catch {
+    return jsonResponse({ error: `GitHub Token 接口返回非 JSON (${tokenRes.status}): ${rawText.slice(0, 120)}` }, 502);
+  }
   if (!tokenData.access_token) {
-    return jsonResponse({ error: tokenData.error_description || "换取 GitHub Token 失败" }, 401);
+    const detail = [tokenData.error, tokenData.error_description].filter(Boolean).join(" - ");
+    return jsonResponse({ error: detail || `换取 GitHub Token 失败 (HTTP ${tokenRes.status})` }, 401);
   }
 
   const ghUserRes = await fetch("https://api.github.com/user", {
