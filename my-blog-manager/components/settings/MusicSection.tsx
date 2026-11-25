@@ -9,8 +9,59 @@ export default function MusicSection({ formData, handleUpdate, pushToQueue, show
   const [artist, setArtist] = useState('');
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [lrcFile, setLrcFile] = useState<File | null>(null);
+  const [lrcInspect, setLrcInspect] = useState<{ total: number; translated: number; hasMojibake: boolean } | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  const inspectLrcFile = async (file: File | null) => {
+    setLrcFile(file);
+    if (!file) {
+      setLrcInspect(null);
+      return;
+    }
+    try {
+      const text = await file.text();
+      const hasMojibake = text.includes('\uFFFD');
+      const entries: { time: number; hasInlineTrans: boolean }[] = [];
+      for (const line of text.split(/\r?\n/)) {
+        const matches = [...line.matchAll(/\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?\]/g)];
+        const body = line.replace(/\[\d{2,}:\d{2}(?:\.\d{2,3})?\]/g, '').trim();
+        if (matches.length > 0 && body) {
+          const inlineTrans = /^(.*?)\s*【([^】]+)】\s*$/.test(body) || /^(.*?)\s*\/\/\s*(.+?)\s*$/.test(body);
+          for (const m of matches) {
+            const time = parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + (m[3] ? parseInt(m[3], 10) / (m[3].length === 3 ? 1000 : 100) : 0);
+            entries.push({ time, hasInlineTrans: inlineTrans });
+          }
+        }
+      }
+      entries.sort((a, b) => a.time - b.time);
+      let total = 0;
+      let translated = 0;
+      let prevTime = -1;
+      for (const entry of entries) {
+        if (prevTime >= 0 && Math.abs(entry.time - prevTime) < 0.05) {
+          translated += 1;
+          prevTime = -1;
+        } else {
+          total += 1;
+          if (entry.hasInlineTrans) translated += 1;
+          prevTime = entry.hasInlineTrans ? -1 : entry.time;
+        }
+      }
+      setLrcInspect({ total, translated, hasMojibake });
+      if (hasMojibake) {
+        showToast?.("检测到歌词文件可能非 UTF-8 编码（含乱码），建议先转为 UTF-8", "warning");
+      } else if (total === 0) {
+        showToast?.("未检测到标准 [mm:ss] 时间轴歌词", "warning");
+      } else if (translated > 0) {
+        showToast?.(`已识别双语歌词：共 ${total} 句，其中 ${translated} 句含翻译`, "success");
+      } else {
+        showToast?.(`已识别纯单语歌词：共 ${total} 句（未检测到翻译）`, "info");
+      }
+    } catch {
+      setLrcInspect(null);
+    }
+  };
 
   const audioInputRef = useRef<HTMLInputElement>(null);
   const lrcInputRef = useRef<HTMLInputElement>(null);
@@ -49,6 +100,7 @@ export default function MusicSection({ formData, handleUpdate, pushToQueue, show
         setArtist('');
         setAudioFile(null);
         setLrcFile(null);
+        setLrcInspect(null);
         setCoverFile(null);
         if (audioInputRef.current) audioInputRef.current.value = '';
         if (lrcInputRef.current) lrcInputRef.current.value = '';
@@ -172,12 +224,23 @@ export default function MusicSection({ formData, handleUpdate, pushToQueue, show
               <span className="text-slate-500 text-[11px] truncate block">
                 {lrcFile ? `已选：${lrcFile.name}` : "支持标准 LRC 时间轴歌词文件"}
               </span>
+              {lrcInspect && (
+                <span className={`mt-1 block text-[11px] font-medium ${lrcInspect.hasMojibake || lrcInspect.total === 0 ? 'text-amber-500' : lrcInspect.translated > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-indigo-500'}`}>
+                  {lrcInspect.hasMojibake
+                    ? '⚠️ 编码可能异常（建议转为 UTF-8）'
+                    : lrcInspect.total === 0
+                      ? '⚠️ 未检测到 [mm:ss] 时间轴'
+                      : lrcInspect.translated > 0
+                        ? `✅ 已识别双语歌词（${lrcInspect.total} 句，含 ${lrcInspect.translated} 句翻译）`
+                        : `ℹ️ 纯单语歌词（${lrcInspect.total} 句，无翻译）`}
+                </span>
+              )}
               <input
                 ref={lrcInputRef}
                 type="file"
                 accept=".lrc,.txt"
                 className="hidden"
-                onChange={(e) => setLrcFile(e.target.files?.[0] || null)}
+                onChange={(e) => void inspectLrcFile(e.target.files?.[0] || null)}
               />
             </label>
 

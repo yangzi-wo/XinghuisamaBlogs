@@ -20,7 +20,7 @@ export default function MusicClient() {
   const lyricContainerRef = useRef<HTMLDivElement>(null);
   const activeLyricRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'lyrics' | 'playlist'>('lyrics');
-  const [showTranslation, setShowTranslation] = useState(true);
+  const [lyricMode, setLyricMode] = useState<'bilingual' | 'original' | 'translation'>('bilingual');
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -206,15 +206,15 @@ export default function MusicClient() {
                 {activeTab === 'lyrics' && parsedLyrics.some((line: any) => Boolean(line.translation)) && (
                   <button
                     type="button"
-                    onClick={() => setShowTranslation((v) => !v)}
-                    title={showTranslation ? "隐藏歌词翻译" : "显示歌词翻译"}
+                    onClick={() => setLyricMode((m) => (m === 'bilingual' ? 'original' : m === 'original' ? 'translation' : 'bilingual'))}
+                    title="切换歌词语言模式：双语 / 仅原文 / 纯译文"
                     className={`px-3 py-1.5 md:py-2 rounded-full font-black text-xs transition-all border shadow-sm ${
-                      showTranslation
+                      lyricMode !== 'original'
                         ? 'bg-indigo-500 text-white border-indigo-400 shadow-indigo-500/30'
                         : 'bg-white/50 dark:bg-slate-900/50 text-slate-500 border-white/40 dark:border-white/10 hover:text-indigo-500'
                     }`}
                   >
-                    译
+                    {lyricMode === 'bilingual' ? '双语' : lyricMode === 'original' ? '原文' : '纯译'}
                   </button>
                 )}
               </div>
@@ -234,8 +234,8 @@ export default function MusicClient() {
                                     className={`transition-all duration-700 cursor-pointer px-2 md:px-4 rounded-2xl ${isActive ? 'opacity-100 scale-105 py-2 md:py-3 bg-white/10' : 'opacity-20 hover:opacity-40'}`}
                                     onClick={() => duration > 0 && handleSeek({ target: { value: String((line.time / duration) * 100) } } as any)}
                                   >
-                                    <p className={`font-black tracking-tight leading-relaxed transition-all duration-700 ${isActive ? 'text-lg md:text-2xl text-indigo-600 dark:text-indigo-400' : 'text-sm md:text-lg text-slate-700 dark:text-slate-300'}`} style={isActive ? { textShadow: '0 0 20px rgba(99,102,241,0.15)' } : {}}>{line.text}</p>
-                                    {showTranslation && line.translation && (
+                                    <p className={`font-black tracking-tight leading-relaxed transition-all duration-700 ${isActive ? 'text-lg md:text-2xl text-indigo-600 dark:text-indigo-400' : 'text-sm md:text-lg text-slate-700 dark:text-slate-300'}`} style={isActive ? { textShadow: '0 0 20px rgba(99,102,241,0.15)' } : {}}>{lyricMode === 'translation' && line.translation ? line.translation : line.text}</p>
+                                    {lyricMode === 'bilingual' && line.translation && (
                                       <p className={`mt-1 tracking-normal leading-snug transition-all duration-700 ${isActive ? 'text-xs md:text-base font-bold text-indigo-500/80 dark:text-indigo-300/80' : 'text-[11px] md:text-sm font-medium text-slate-500 dark:text-slate-400'}`}>{line.translation}</p>
                                     )}
                                   </div>
