@@ -299,7 +299,16 @@ def create_app(store, admin_token):
                 return {'synced': False, 'message': '云端拉取失败，已刷新本地列表（' + (fetch.stderr.strip() or '网络异常')[:80] + '）'}
             rel_site = store.site.name
             subprocess.run(
-                ['git', 'checkout', 'origin/main', '--', f'{rel_site}/data/dailyBriefing.json', f'{rel_site}/data/dailyBriefingArchive.json'],
+                [
+                    'git',
+                    'checkout',
+                    'origin/main',
+                    '--',
+                    f'{rel_site}/data/dailyBriefing.json',
+                    f'{rel_site}/data/dailyBriefingArchive.json',
+                    f'{rel_site}/data/dailyBriefingCovers.json',
+                    f'{rel_site}/public/images/briefing',
+                ],
                 cwd=str(repo_root),
                 env=env,
                 capture_output=True,
