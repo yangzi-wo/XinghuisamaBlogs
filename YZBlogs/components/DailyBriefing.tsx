@@ -193,7 +193,7 @@ export default function DailyBriefing() {
                 aria-current={active ? 'true' : undefined}
                 onClick={() => setDailyCoverIndex(idx)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
+                  active ? 'w-5 bg-indigo-400 shadow-sm shadow-indigo-500/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
                 }`}
               />
             );
@@ -209,7 +209,7 @@ export default function DailyBriefing() {
                 aria-current={active ? 'true' : undefined}
                 onClick={() => changeIssue(date)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  active ? 'w-5 bg-cyan-300 shadow-sm shadow-cyan-400/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
+                  active ? 'w-5 bg-indigo-400 shadow-sm shadow-indigo-500/40' : 'w-1.5 bg-white/40 hover:bg-white/75'
                 }`}
               />
             );
