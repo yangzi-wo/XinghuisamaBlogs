@@ -15,21 +15,29 @@ export default function Navbar() {
 
   // --- 🌟 物理引擎：菜单转动逻辑 ---
   const wheelRef = useRef<HTMLDivElement>(null);
+  const wheelCenterRef = useRef<{ x: number; y: number } | null>(null);
   const rawRotation = useMotionValue(0);
   const smoothRotation = useSpring(rawRotation, { stiffness: 200, damping: 25 });
   const inverseRotation = useTransform(smoothRotation, (r) => -r);
 
-  const handlePan = (event: any, info: PanInfo) => {
+  const handlePanStart = () => {
     if (!wheelRef.current) return;
     const rect = wheelRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    wheelCenterRef.current = {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+  };
+
+  const handlePan = (_event: unknown, info: PanInfo) => {
+    const center = wheelCenterRef.current;
+    if (!center) return;
     const currX = info.point.x;
     const currY = info.point.y;
     const prevX = currX - info.delta.x;
     const prevY = currY - info.delta.y;
-    const prevAngle = Math.atan2(prevY - centerY, prevX - centerX);
-    const currAngle = Math.atan2(currY - centerY, currX - centerX);
+    const prevAngle = Math.atan2(prevY - center.y, prevX - center.x);
+    const currAngle = Math.atan2(currY - center.y, currX - center.x);
     let deltaAngle = (currAngle - prevAngle) * (180 / Math.PI);
     if (deltaAngle > 180) deltaAngle -= 360;
     if (deltaAngle < -180) deltaAngle += 360;
@@ -51,7 +59,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (isMobileMenuOpen) rawRotation.set(0);
+    if (isMobileMenuOpen) rawRotation.jump(0);
   }, [isMobileMenuOpen, rawRotation]);
 
   // 控制 PC 端导航栏
@@ -151,13 +159,19 @@ export default function Navbar() {
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                 exit={{ scale: 0.5, opacity: 0, rotate: 90 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 150 }}
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] z-[70] pointer-events-none"
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] z-[70] pointer-events-none will-change-transform transform-gpu"
               >
+                {/* 静止毛玻璃底盘：避免旋转时每帧重算大半径 backdrop-blur 造成手机端掉帧 */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-full border border-white/30 dark:border-slate-500/50 bg-white/40 dark:bg-slate-800/50 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.3)]"
+                />
                 <motion.div
                   ref={wheelRef}
                   style={{ rotate: smoothRotation }}
+                  onPanStart={handlePanStart}
                   onPan={handlePan}
-                  className="w-full h-full rounded-full border border-white/30 dark:border-slate-500/50 bg-white/40 dark:bg-slate-800/50 backdrop-blur-3xl shadow-[0_0_50px_rgba(0,0,0,0.3)] pointer-events-auto relative cursor-grab active:cursor-grabbing"
+                  className="w-full h-full rounded-full pointer-events-auto relative cursor-grab active:cursor-grabbing touch-none will-change-transform"
                 >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 border-4 border-slate-300 dark:border-slate-500 flex items-center justify-center shadow-inner z-10">
                     <button onClick={() => setIsMobileMenuOpen(false)} className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-black shadow-lg hover:bg-red-500 hover:rotate-90 transition-all duration-300 active:scale-95">
@@ -179,11 +193,11 @@ export default function Navbar() {
                           transform: `rotate(${angle}deg) translateY(-115px) rotate(${-angle}deg)`
                         }}
                       >
-                        <motion.div style={{ rotate: inverseRotation }} className="w-full h-full">
+                        <motion.div style={{ rotate: inverseRotation }} className="w-full h-full will-change-transform">
                           <Link
                             href={link.href}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center justify-center w-full h-full rounded-full transition-all duration-300 ${
+                            className={`flex items-center justify-center w-full h-full rounded-full transition-colors duration-300 ${
                               isActive 
                                 ? 'bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.8)] scale-110' 
                                 : 'bg-white/90 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-md hover:scale-110 border border-white/50 dark:border-slate-600'
