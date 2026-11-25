@@ -133,8 +133,8 @@ async def execute_sync(request: Request):
                 return {"success": True, "message": "🎉 本地与云端已同步（无新改动需要推送）"}
 
             subprocess.run(
-                ["git", "-C", repo_root, "push"],
-                check=True, capture_output=True, text=True, env=git_env, timeout=45
+                ["git", "-C", repo_root, "push", "origin", "main"],
+                check=True, capture_output=True, text=True, env=git_env, timeout=120
             )
             return {"success": True, "message": "🎉 已同步并自动推送至 GitHub！Cloudflare 约 1 分钟内自动更新。"}
         except Exception as git_err:
