@@ -24,7 +24,7 @@ def default_config():
                     'archiveDays': 90, 'carouselDays': 7, 'autoPlay': True,
                     'intervalSeconds': 8, 'showCovers': True, 'showTerraNotes': False},
         'selection': {'topics': [], 'excludedKeywords': [], 'preferredSources': [],
-                      'language': 'zh-CN', 'maxItems': 6},
+                      'language': 'zh-CN', 'minItems': 4, 'maxItems': 6},
         'channels': [{'id': 'news', 'name': '动态精选', 'enabled': True},
                      {'id': 'reading', 'name': '深度阅读', 'enabled': True}],
         'agent': {'enabled': False, 'publishMode': 'review', 'preferredTime': '09:00'},
@@ -87,8 +87,12 @@ def validate_config(value):
         selection[key] = list(dict.fromkeys(x.strip() for x in items))
     if selection['language'] not in ('zh-CN', 'en-US', 'ja-JP'):
         raise ValueError('摘要语言无效')
+    if type(selection['minItems']) is not int or not 1 <= selection['minItems'] <= 20:
+        raise ValueError('每期最少条目数应在 1–20 之间')
     if type(selection['maxItems']) is not int or not 1 <= selection['maxItems'] <= 20:
-        raise ValueError('每期条目数应在 1–20 之间')
+        raise ValueError('每期最多条目数应在 1–20 之间')
+    if selection['minItems'] > selection['maxItems']:
+        raise ValueError('每期最少条目数不能大于最多条目数')
     channels = value.get('channels')
     if not isinstance(channels, list) or not 1 <= len(channels) <= 6:
         raise ValueError('栏目数量应在 1–6 之间')

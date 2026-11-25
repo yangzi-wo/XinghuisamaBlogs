@@ -296,6 +296,7 @@ def build_prompt(
     date_str: str,
     *,
     language: str = "zh-CN",
+    min_items: int = 4,
     max_items: int = 6,
     preferred_sources: list[str] | None = None,
     excluded_keywords: list[str] | None = None,
@@ -311,7 +312,7 @@ def build_prompt(
         extra_rules.append(f"严禁收录包含以下关键词的内容：{'、'.join(excluded_keywords)}。")
     extra_text = ("\n" + "\n".join(extra_rules)) if extra_rules else ""
     return (
-        f"今天是 {date_str}。请从以下候选资讯中挑选最多 {max_items} 条（建议 4 到 {max_items} 条）最有价值的内容，组成今天的「每日选刊」。\n"
+        f"今天是 {date_str}。请从以下候选资讯中挑选 {min_items} 到 {max_items} 条（至少 {min_items} 条、最多 {max_items} 条）最有价值的内容，组成今天的「每日选刊」。\n"
         f"输出语言要求：标题、摘要、要点与点评均使用 {lang_label}。\n"
         f"要求尽量覆盖用户关注的主题：{topic_desc}。{extra_text}\n"
         f"可用栏目 category 只能从以下 id 中选择：{channel_desc}（一般快讯/新番/开源热门用 news，技术深度文章/论文用 reading）。\n"
@@ -402,6 +403,7 @@ def main() -> int:
     preferred_sources = selection.get("preferredSources") or []
     language = selection.get("language") or "zh-CN"
     max_items = max(1, min(20, int(selection.get("maxItems") or 6)))
+    min_items = max(1, min(max_items, int(selection.get("minItems") or 4)))
 
     candidates = fetch_candidates(now, preferred_sources=preferred_sources, excluded_keywords=excluded_keywords)
     if not candidates:
@@ -418,6 +420,7 @@ def main() -> int:
         channels,
         today_iso,
         language=language,
+        min_items=min_items,
         max_items=max_items,
         preferred_sources=preferred_sources,
         excluded_keywords=excluded_keywords,

@@ -30,6 +30,7 @@
     "excludedKeywords": [],
     "preferredSources": [],
     "language": "zh-CN",
+    "minItems": 4,
     "maxItems": 9
   },
   "channels": [
