@@ -319,7 +319,7 @@ def build_prompt(
         f"必须返回严格 JSON，格式如下：\n"
         "{\n"
         '  "notice": "一句话导语（15-30字，概括今日看点）",\n'
-        '  "coverTags": "根据今日选刊主题，为二次元龙娘看板娘构思的4-6个英文画面联动Tag（逗号分隔，仅描述她手持的道具、穿搭细节与背景氛围，不要重复画质或人物基础词，例如 holding glowing holographic tablet, floating code runes, neon cyber library background）",\n'
+        '  "coverTags": "根据今日选刊热点，为画面中的白发龙娘看板娘设计3-6个英文动作、手持道具与背景场景Tag（逗号分隔，不要重复描述外貌，例如：holding glowing holographic tablet, cozy cyber library at night, floating code windows, soft neon bokeh）",\n'
         '  "items": [\n'
         "    {\n"
         '      "category": "news 或 reading",\n'
