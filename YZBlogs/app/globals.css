@@ -97,16 +97,10 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 /* ========================================================
-   7. 主题切换性能优化：抑制多卡片毛玻璃重绘卡顿，交由 View Transitions 合成淡入淡出
+   7. 主题切换性能优化：抑制多卡片毛玻璃逐帧重绘卡顿，同时保留切换图标自身动画
    ======================================================== */
-.theme-switching *,
-.theme-switching *::before,
-.theme-switching *::after {
+.theme-switching *:not(.theme-toggle-icon):not(.theme-toggle-icon *),
+.theme-switching *:not(.theme-toggle-icon):not(.theme-toggle-icon *)::before,
+.theme-switching *:not(.theme-toggle-icon):not(.theme-toggle-icon *)::after {
   transition: none !important;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.28s;
-  animation-timing-function: ease-out;
 }

@@ -15,7 +15,7 @@ export default function ThemeToggleBlock() {
       `}
     >
        {/* 日夜交替动画图标 */}
-       <div className="relative w-20 h-20 rounded-full overflow-hidden mb-3 shadow-inner flex-shrink-0">
+       <div className="theme-toggle-icon relative w-20 h-20 rounded-full overflow-hidden mb-3 shadow-inner flex-shrink-0">
           <div className={`absolute inset-0 transition-transform duration-700 ${isDark ? '-translate-y-full' : 'translate-y-0'} bg-gradient-to-tr from-sky-300 to-yellow-200`}></div>
           <div className={`absolute inset-0 transition-transform duration-700 ${isDark ? 'translate-y-0' : 'translate-y-full'} bg-gradient-to-tr from-indigo-900 to-slate-800`}></div>
 

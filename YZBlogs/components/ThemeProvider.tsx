@@ -1,6 +1,5 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
 
 const ThemeContext = createContext({ isDark: true, toggleTheme: () => {} });
 
@@ -51,29 +50,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     const newDark = !isDark;
     const root = document.documentElement;
-    // 切换瞬间禁用所有子元素的长耗时 CSS transition，避免毛玻璃卡片逐帧重绘导致掉帧
+    // 切换瞬间禁用大面积毛玻璃卡片与文本的逐帧 CSS transition，仅保留图标自身动画，避免掉帧
     root.classList.add('theme-switching');
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const docWithTransition = document as Document & {
-      startViewTransition?: (callback: () => void) => { finished: Promise<void> };
-    };
-
-    if (typeof docWithTransition.startViewTransition === 'function' && !prefersReducedMotion) {
-      const transition = docWithTransition.startViewTransition(() => {
-        flushSync(() => {
-          setIsDark(newDark);
-        });
-        applyDomTheme(newDark);
-      });
-      transition.finished.finally(() => {
-        root.classList.remove('theme-switching');
-      });
-      return;
-    }
 
     setIsDark(newDark);
     applyDomTheme(newDark);
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         root.classList.remove('theme-switching');
