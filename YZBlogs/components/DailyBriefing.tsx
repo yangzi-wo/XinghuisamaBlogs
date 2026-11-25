@@ -55,6 +55,8 @@ export default function DailyBriefing() {
   const dialog = useRef<HTMLDialogElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
   const banner = useRef<HTMLButtonElement>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const swiped = useRef(false);
   const headline = (dailyCarouselEnabled ? activeBriefingItem?.title : briefingItems[0]?.title) ?? '从你关注的方向，开始今天的阅读';
   useEffect(() => {
     const refresh = () => setWindowDate(beijingCalendarDate());
@@ -167,12 +169,46 @@ export default function DailyBriefing() {
     banner.current?.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
   }
 
+  function stepSlide(delta: 1 | -1) {
+    if (dailyCarouselEnabled && briefingItems.length >= 2) {
+      setDailyCoverIndex(prev => (prev + delta + briefingItems.length) % briefingItems.length);
+      return;
+    }
+    if (carouselDates.length >= 2) {
+      const date = stepBriefingDate(carouselDates, briefingEdition.date, delta);
+      if (date) {
+        setDailyCoverIndex(0);
+        changeIssue(date);
+      }
+    }
+  }
+
+  function handleBannerTouchStart(event: React.TouchEvent<HTMLButtonElement>) {
+    const touch = event.touches[0];
+    if (!touch) return;
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+    swiped.current = false;
+  }
+
+  function handleBannerTouchEnd(event: React.TouchEvent<HTMLButtonElement>) {
+    const start = touchStart.current;
+    const touch = event.changedTouches[0];
+    touchStart.current = null;
+    if (!start || !touch) return;
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      swiped.current = true;
+      stepSlide(dx < 0 ? 1 : -1);
+    }
+  }
+
   if (!briefingDisplay.enabled) return null;
 
   return (<>
     <section id="daily-briefing" aria-label={briefingDisplay.title + '，' + briefingDisplay.subtitle} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }} className="scroll-mt-28 overflow-hidden rounded-3xl border border-white/40 bg-white/40 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-slate-800/50">
       <div className="relative">
-      <button ref={banner} type="button" aria-expanded={expanded} aria-controls="daily-letter-reader" onClick={() => expanded ? collapse() : setExpanded(true)} className="group relative block bg-slate-900 min-h-[206px] w-full overflow-hidden text-left focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white sm:min-h-[190px]">
+      <button ref={banner} type="button" aria-expanded={expanded} aria-controls="daily-letter-reader" onTouchStart={handleBannerTouchStart} onTouchEnd={handleBannerTouchEnd} onClick={() => { if (swiped.current) { swiped.current = false; return; } expanded ? collapse() : setExpanded(true); }} className="group relative block min-h-[206px] w-full touch-pan-y overflow-hidden bg-slate-900 text-left focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white sm:min-h-[190px]">
         {briefingDisplay.showCovers && coverSources.map(src => <img key={src} src={src} alt={src === activeDailyCoverSrc ? briefingCover.alt : ''} aria-hidden={src !== activeDailyCoverSrc} style={{ opacity: src === activeDailyCoverSrc ? 1 : 0 }} className="absolute inset-0 h-full w-full object-cover object-[72%_45%] transition-opacity duration-1000 motion-reduce:transition-none sm:object-[center_43%]" />)}
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/5 sm:via-slate-950/30" />
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent" />
@@ -298,24 +334,23 @@ export default function DailyBriefing() {
     </section>
 
     {selected && <dialog ref={dialog} aria-labelledby="daily-reading-title" onCancel={event => { event.preventDefault(); setSelectedId(null); }} onClick={event => { if (event.target === event.currentTarget) setSelectedId(null); }} className="fixed inset-0 m-auto max-h-[88dvh] w-[calc(100%-1.5rem)] max-w-3xl overflow-hidden rounded-3xl border border-white/45 bg-white/45 p-0 text-slate-800 shadow-2xl backdrop-blur-xl backdrop:bg-slate-950/30 backdrop:backdrop-blur-sm dark:border-white/15 dark:bg-slate-900/45 dark:text-slate-100">
-      <div className="relative flex max-h-[88dvh] flex-col">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-3 px-5 py-4 sm:px-6">
-          <span className={`pointer-events-auto rounded-full border px-3 py-1.5 text-[10px] tracking-[0.18em] backdrop-blur-md ${selected.cover ? 'border-white/20 bg-slate-950/30 text-white/90' : 'border-white/35 bg-white/35 text-slate-700 dark:border-white/15 dark:bg-slate-900/35 dark:text-slate-200'}`}>
+      <div className="flex max-h-[88dvh] flex-col">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/20 px-5 py-3.5 sm:px-6 dark:border-white/10">
+          <span className="truncate rounded-full border border-white/35 bg-white/35 px-3 py-1.5 text-[10px] tracking-[0.18em] text-slate-700 backdrop-blur-md dark:border-white/15 dark:bg-slate-900/35 dark:text-slate-200">
             {briefingDisplay.title} / {categoryName(selected.category)} · {briefingEdition.date}
           </span>
-          <button type="button" autoFocus aria-label="关闭阅读窗口" onClick={() => setSelectedId(null)} className={`pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-md transition ${selected.cover ? 'border-white/20 bg-slate-950/30 text-white/90 hover:bg-slate-950/50 hover:text-white focus-visible:outline-2 focus-visible:outline-white' : 'border-white/35 bg-white/35 text-slate-700 hover:bg-white/60 dark:border-white/15 dark:bg-slate-900/35 dark:text-slate-200 dark:hover:bg-slate-800/60'}`}>
+          <button type="button" autoFocus aria-label="关闭阅读窗口" onClick={() => setSelectedId(null)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/35 text-slate-700 backdrop-blur-md transition hover:bg-white/60 dark:border-white/15 dark:bg-slate-900/35 dark:text-slate-200 dark:hover:bg-slate-800/60">
             <X size={17} />
           </button>
         </div>
-        <article aria-label="独立阅读内容" className="min-h-0 overflow-y-auto overscroll-contain">
+        <article aria-label="独立阅读内容" className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
               {selected.cover && (
                 <div className="group/cover relative h-52 w-full overflow-hidden transition-all duration-500 ease-out sm:h-72 [@media(hover:hover)]:hover:h-[420px]">
                   <img src={selected.cover} alt={selected.title} className="h-full w-full object-cover transition-transform duration-500 ease-out [@media(hover:hover)]:group-hover/cover:scale-[1.03]" />
-                  <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-slate-950/35 to-transparent" />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/35 to-transparent dark:from-slate-900/45" />
                 </div>
               )}
-              <div className={`px-6 pb-6 sm:px-8 sm:pb-7 ${selected.cover ? 'pt-6 sm:pt-7' : 'pt-16 sm:pt-18'}`}>
+              <div className="px-6 pb-6 pt-6 sm:px-8 sm:pb-7 sm:pt-7">
 
               <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px]"><span className="font-medium tracking-[0.12em] text-indigo-500 dark:text-indigo-300">{categoryName(selected.category)}</span><span className="text-slate-400">原文 {selected.sourceDate}</span><span className="ml-auto text-slate-400">约 1 分钟</span></div>
               <h2 id="daily-reading-title" className="text-xl leading-relaxed text-slate-800 dark:text-white sm:text-2xl">{selected.title}</h2>
