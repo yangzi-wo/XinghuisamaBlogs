@@ -203,7 +203,7 @@ export default function MusicClient() {
                   <button onClick={() => setActiveTab('lyrics')} className={`flex-1 py-1.5 md:py-2 rounded-full font-black text-xs md:text-[13px] transition-all ${activeTab === 'lyrics' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-500'}`}>歌词</button>
                   <button onClick={() => setActiveTab('playlist')} className={`flex-1 py-1.5 md:py-2 rounded-full font-black text-xs md:text-[13px] transition-all ${activeTab === 'playlist' ? 'bg-indigo-500 text-white shadow-md' : 'text-slate-500'}`}>歌单</button>
                 </div>
-                {activeTab === 'lyrics' && (
+                {activeTab === 'lyrics' && parsedLyrics.some((line: any) => Boolean(line.translation)) && (
                   <button
                     type="button"
                     onClick={() => setShowTranslation((v) => !v)}

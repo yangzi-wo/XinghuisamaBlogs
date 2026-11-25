@@ -3,12 +3,24 @@
 import { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { siteConfig } from '../siteConfig';
 
-// 【增强版 LRC 歌词解析：支持同时间戳双语原文+翻译合并】
+// 【增强版 LRC 歌词解析：支持同时间戳双语、原文【翻译】、原文 // 翻译】
+function splitBilingualLine(raw: string): { text: string; translation?: string } {
+  const bracketMatch = raw.match(/^(.*?)\s*【([^】]+)】\s*$/);
+  if (bracketMatch && bracketMatch[1].trim() && bracketMatch[2].trim()) {
+    return { text: bracketMatch[1].trim(), translation: bracketMatch[2].trim() };
+  }
+  const slashMatch = raw.match(/^(.*?)\s*\/\/\s*(.+?)\s*$/);
+  if (slashMatch && slashMatch[1].trim() && slashMatch[2].trim()) {
+    return { text: slashMatch[1].trim(), translation: slashMatch[2].trim() };
+  }
+  return { text: raw };
+}
+
 function parseLrc(lrcText: string) {
   if (!lrcText || lrcText.length > 50000) return [];
 
   const lines = lrcText.split(/\r?\n/);
-  const rawEntries: { time: number; text: string }[] = [];
+  const rawEntries: { time: number; text: string; translation?: string }[] = [];
 
   for (const line of lines) {
     const matches = [...line.matchAll(/\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?\]/g)];
@@ -17,13 +29,14 @@ function parseLrc(lrcText: string) {
       const cleanText = text.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "");
 
       if (cleanText) {
+        const parsedLine = splitBilingualLine(cleanText);
         for (const match of matches) {
           const min = parseInt(match[1], 10);
           const sec = parseInt(match[2], 10);
           const ms = match[3] ? parseInt(match[3], 10) : 0;
           const divisor = match[3] && match[3].length === 3 ? 1000 : 100;
           const time = min * 60 + sec + ms / divisor;
-          rawEntries.push({ time, text: cleanText });
+          rawEntries.push({ time, text: parsedLine.text, translation: parsedLine.translation });
         }
       }
     }
@@ -34,10 +47,10 @@ function parseLrc(lrcText: string) {
   const grouped: { time: number; text: string; translation?: string }[] = [];
   for (const entry of rawEntries) {
     const last = grouped[grouped.length - 1];
-    if (last && Math.abs(last.time - entry.time) < 0.05 && !last.translation) {
+    if (last && Math.abs(last.time - entry.time) < 0.05 && !last.translation && !entry.translation) {
       last.translation = entry.text;
     } else {
-      grouped.push({ time: entry.time, text: entry.text });
+      grouped.push({ time: entry.time, text: entry.text, ...(entry.translation ? { translation: entry.translation } : {}) });
     }
   }
   return grouped;
