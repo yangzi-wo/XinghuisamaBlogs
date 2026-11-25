@@ -51,7 +51,7 @@ export const siteConfig = {
 
 
   // 👇 【新增】：全局背景弹幕配置
-  danmakuList: ["在干嘛呢？", "有笨蛋嘛？", "前方高能反应！", "GROMACS 跑起来了吗？", "MD 模拟什么时候才能出图啊", "Graph Neural Networks 炼丹中...", "BUG 修复进度 99%", "今天背单词了吗？", "Tailwind CSS 拯救前端", "写算法中", "睡大觉中", "到底在干嘛？"],
+  danmakuList: ["也吹落了酸木梨", "吹落了青核桃", "狂风肆虐", "火之渐熄，然位不见王影", "你不是对手！", "折返吧...", "居然是菇...", "卡了", "在干嘛呢？", "有笨蛋嘛？", "前方高能反应！", "MD 模拟什么时候才能出图啊", "Graph Neural Networks 炼丹中...", "BUG 修复进度 99%", "今天背单词了吗？", "写算法中", "睡大觉中", "到底在干嘛？"],
   gitalkConfig: {
     clientID: "",
     clientSecret: "",
