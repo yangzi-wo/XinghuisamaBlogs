@@ -130,7 +130,7 @@ def main():
         print("🛠️ [开发模式] 启动本地控制台源码...")
         frontend_process = subprocess.Popen(
             ["node", str(Path(BASE_DIR) / "node_modules/next/dist/bin/next"),
-             "dev", "--webpack", "--hostname", "127.0.0.1", "--port", str(frontend_port)],
+             "dev", "--hostname", "127.0.0.1", "--port", str(frontend_port)],
             cwd=BASE_DIR, env=env_vars,
         )
     window_url = f"http://127.0.0.1:{frontend_port}"
