@@ -1,161 +1,157 @@
 {
   "edition": {
-    "date": "2026.11.26",
-    "weekday": "星期四",
+    "date": "2026.11.27",
+    "weekday": "星期五",
     "label": "每日选刊",
-    "notice": "今日科技与文化前沿：AI大模型突破蛋白质设计，开源社区热议GTA VI PC移植进展。"
+    "notice": "今日聚焦AI大模型最新突破、开源工具及多领域动态，洞察前沿科技风向。"
   },
   "items": [
     {
-      "id": "brief-20261126-1-aebbf9e4",
-      "category": "news",
-      "title": "GPT-6模型展现蛋白质设计能力",
-      "originalTitle": "GPT-6 models demonstrate intrinsic protein-design capabilities",
-      "source": "openai.com",
-      "sourceOrg": "OpenAI",
-      "sourceDate": "2026.11.24",
-      "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
-      "tags": [
-        "AI大模型"
-      ],
-      "summary": "OpenAI最新发布的GPT-6模型在蛋白质结构与序列设计上展现出卓越的推理能力。实验室测试表明，该模型能够设计出具有实际结合能力的蛋白质，为生物医药研发带来新可能。",
-      "highlights": [
-        "模型具备蛋白质结构推理能力",
-        "实验室测试验证了结合活性"
-      ],
-      "readingNote": "AI在生物科学领域的应用正从辅助转向创造，值得密切关注。",
-      "verifiedAt": "2026.11.26",
-      "verificationUrls": [
-        "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities"
-      ],
-      "cover": "/images/briefing/2026-11-26-1.jpg",
-      "doi": ""
-    },
-    {
-      "id": "brief-20261126-2-b7e1c1b0",
-      "category": "news",
-      "title": "《At 25:00, in Akasaka》BL漫画宣布动画化",
-      "originalTitle": "'At 25:00, in Akasaka' Boys-Love Manga Gets TV Anime in 2027",
-      "source": "www.animenewsnetwork.com",
-      "sourceOrg": "Anime News Network",
-      "sourceDate": "2026.11.25",
-      "url": "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187",
-      "tags": [
-        "ACGN"
-      ],
-      "summary": "夏野宽子创作的BL漫画《在赤坂，25点》正式宣布将于2027年推出TV动画。该作由齐藤壮马与佐藤拓也担任主演，讲述了演艺圈背景下的情感故事。",
-      "highlights": [
-        "2027年动画化确定",
-        "齐藤壮马与佐藤拓也领衔主演"
-      ],
-      "readingNote": "演艺圈题材的BL作品，期待动画对原作细腻情感的还原。",
-      "verifiedAt": "2026.11.26",
-      "verificationUrls": [
-        "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187"
-      ],
-      "cover": "/images/briefing/2026-11-26-2.jpg",
-      "doi": ""
-    },
-    {
-      "id": "brief-20261126-3-cc154f12",
-      "category": "reading",
-      "title": "OWE-Bench：衡量现实世界工程能力的基准",
-      "originalTitle": "OWE-Bench: A long-horizon benchmark for measuring real-world engineering",
+      "id": "brief-20261127-1-093ea952",
+      "category": "focus",
+      "title": "Look Back: 基于反事实世界模型的强化学习探索",
+      "originalTitle": "Look Back: Reinforcement Learning with Counterfactual World Models",
       "source": "Hugging Face Papers",
       "sourceOrg": "Hugging Face",
-      "sourceDate": "2026.11.26",
-      "url": "https://huggingface.co/papers/2611.30017",
+      "sourceDate": "2026.11.27",
+      "url": "https://huggingface.co/papers/2611.29259",
       "tags": [
         "AI大模型"
       ],
-      "summary": "OWE-Bench是一个全新的长周期工程基准测试，涵盖了软件工程、物理工程、机器学习等领域的26项复杂任务，旨在评估AI模型在真实工程环境中的实际解决问题能力。",
+      "summary": "在复杂的随机环境中，智能体常常需要应对超出其世界模型预测能力和随机性的动态变化。该研究提出了反事实世界模型的强化学习方法，通过回溯和反事实推演，有效帮助智能体在不确定性环境中评估行动后果，提升策略训练的稳健性与效果。",
       "highlights": [
-        "涵盖26项长周期工程任务",
-        "多学科领域专家共同编写"
+        "针对复杂随机环境提出创新强化学习范式",
+        "利用反事实世界模型克服传统预测的不确定性"
       ],
-      "readingNote": "AI评估正从简单的问答转向复杂的工程实践，这是衡量模型实用性的关键。",
-      "verifiedAt": "2026.11.26",
+      "readingNote": "为复杂环境下的AI智能体决策提供了全新的理论视角和优化方向。",
+      "verifiedAt": "2026.11.27",
       "verificationUrls": [
-        "https://huggingface.co/papers/2611.30017"
+        "https://huggingface.co/papers/2611.29259"
       ],
-      "cover": "/images/briefing/2026-11-26-3.jpg",
-      "doi": ""
+      "cover": "/images/briefing/2026-11-27-1.jpg"
     },
     {
-      "id": "brief-20261126-4-0869063c",
-      "category": "reading",
-      "title": "Cloudflare推出AI代理搜索功能",
-      "originalTitle": "Introducing Search for Agents",
-      "source": "Cloudflare Blog",
-      "sourceOrg": "Cloudflare",
-      "sourceDate": "2026.11.25",
-      "url": "https://blog.cloudflare.com/search-for-agents/",
-      "tags": [
-        "网络"
-      ],
-      "summary": "Cloudflare推出了一项新功能，允许网站一键开启AI代理搜索支持，通过自动内容索引和发现API，使网站内容能被AI智能体更高效地检索与利用。",
-      "highlights": [
-        "一键开启AI代理搜索",
-        "支持自动内容索引与HTTP QUERY"
-      ],
-      "readingNote": "这是网站适应AI时代检索方式的重要基础设施升级。",
-      "verifiedAt": "2026.11.26",
-      "verificationUrls": [
-        "https://blog.cloudflare.com/search-for-agents/"
-      ],
-      "cover": "/images/briefing/2026-11-26-4.jpg",
-      "doi": ""
-    },
-    {
-      "id": "brief-20261126-5-96b21c34",
+      "id": "brief-20261127-2-d3a5bb96",
       "category": "focus",
-      "title": "GitHub热门：GTA VI PC移植项目",
-      "originalTitle": "Marvisak/VIctory (★12349)",
+      "title": "AIChipBench：用于自动化AI加速器设计的LLM智能体基准测试",
+      "originalTitle": "AIChipBench: Benchmarking LLM Agents for Automated AI Accelerator Design",
+      "source": "Hugging Face Papers",
+      "sourceOrg": "Hugging Face",
+      "sourceDate": "2026.11.27",
+      "url": "https://huggingface.co/papers/2611.33093",
+      "tags": [
+        "AI大模型"
+      ],
+      "summary": "大语言模型在硬件设计中面临状态传递的挑战，错误的中间状态可能导致输出在数个Token后才崩溃。AIChipBench旨在评估大模型智能体在自动化AI加速器设计中的表现，通过严格的基准测试揭示当前LLM在复杂硬件逻辑生成中的能力与局限。",
+      "highlights": [
+        "聚焦大语言模型在硬件加速器设计中的自动化应用",
+        "建立严苛基准以测试复杂时序状态与逻辑生成能力"
+      ],
+      "readingNote": "连接了大模型技术与底层硬件芯片设计的硬核交叉领域前沿探索。",
+      "verifiedAt": "2026.11.27",
+      "verificationUrls": [
+        "https://huggingface.co/papers/2611.33093"
+      ],
+      "cover": "/images/briefing/2026-11-27-2.jpg"
+    },
+    {
+      "id": "brief-20261127-3-c02bcf9b",
+      "category": "news",
+      "title": "4lwayz/portwatch-vi：GTA VI PC版移植与模拟进度实时追踪",
+      "originalTitle": "4lwayz/portwatch-vi (★5473)",
       "source": "GitHub Trending",
       "sourceOrg": "GitHub",
-      "sourceDate": "2026.11.23",
-      "url": "https://github.com/Marvisak/VIctory",
+      "sourceDate": "2026.11.21",
+      "url": "https://github.com/4lwayz/portwatch-vi",
       "tags": [
         "github开源热门",
         "游戏"
       ],
-      "summary": "开源项目VIctory在GitHub上引发热议，该项目致力于通过社区力量实现《GTA VI》的PC移植与兼容运行，目前已获得超过1.2万颗星标。",
+      "summary": "这是一个备受关注的开源追踪项目，实时记录并更新社区关于《GTA 6》在PC平台上的重新编译和模拟进展。项目吸引了大量玩家与开发者的目光，是了解次世代大作跨平台移植动态的重要窗口。",
       "highlights": [
-        "社区驱动的PC移植尝试",
-        "GitHub热门开源项目"
+        "每日更新社区逆向与重构最新进展",
+        "汇聚全球玩家和极客的技术关注焦点"
       ],
-      "readingNote": "开源社区对大作移植的热情极高，但技术实现难度巨大，建议关注后续进展。",
-      "verifiedAt": "2026.11.26",
+      "readingNote": "开源社区关于顶级游戏跨平台移植热度的风向标。",
+      "verifiedAt": "2026.11.27",
       "verificationUrls": [
-        "https://github.com/Marvisak/VIctory"
+        "https://github.com/4lwayz/portwatch-vi"
       ],
-      "cover": "/images/briefing/2026-11-26-5.jpg",
-      "doi": ""
+      "cover": "/images/briefing/2026-11-27-3.jpg"
     },
     {
-      "id": "brief-20261126-6-00e16b8b",
-      "category": "focus",
-      "title": "俄乌冲突最新伤亡数据披露",
-      "originalTitle": "Russia's own figures show it has lost nearly 500,000 people in Ukraine war",
-      "source": "feeds.bbci.co.uk",
-      "sourceOrg": "BBC",
-      "sourceDate": "2026.11.25",
-      "url": "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss",
+      "id": "brief-20261127-4-3d6a8be0",
+      "category": "news",
+      "title": "EL4CTEO/fast-anything：利用Coding Agent对应用进行精准热点重构",
+      "originalTitle": "EL4CTEO/fast-anything (★4202)",
+      "source": "GitHub Trending",
+      "sourceOrg": "GitHub",
+      "sourceDate": "2026.11.21",
+      "url": "https://github.com/EL4CTEO/fast-anything",
       "tags": [
-        "时政"
+        "github开源热门",
+        "AI大模型"
       ],
-      "summary": "据BBC报道，泄露的数据显示俄乌战争已导致俄罗斯方面近50万人伤亡，这场全面入侵从根本上改变了俄罗斯国内的人口死亡模式。",
+      "summary": "反对盲目重写整个项目，而是通过精准性能分析找出Python、Node或Ruby等应用中那慢的5%代码，借助编程智能体（Coding Agent）将其重构为高性能实现，并自动验证其行为的一致性。",
       "highlights": [
-        "伤亡人数近50万",
-        "人口死亡模式发生改变"
+        "精准定位应用性能瓶颈而非盲目全量重构",
+        "结合AI编程智能体实现高效代码移植"
       ],
-      "readingNote": "战争带来的深远影响持续发酵，国际局势依然严峻。",
-      "verifiedAt": "2026.11.26",
+      "readingNote": "用AI赋能局部性能优化的实用开源工程实践。",
+      "verifiedAt": "2026.11.27",
       "verificationUrls": [
-        "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss"
+        "https://github.com/EL4CTEO/fast-anything"
       ],
-      "cover": "/images/briefing/2026-11-26-6.jpg",
-      "doi": ""
+      "cover": "/images/briefing/2026-11-27-4.jpg"
+    },
+    {
+      "id": "brief-20261127-5-e10033d0",
+      "category": "reading",
+      "title": "kuboken 的《异世界杀人鲨》漫画宣布改编为TV动画",
+      "originalTitle": "kuboken's Killer Shark in Another World Manga Gets TV Anime",
+      "source": "www.animenewsnetwork.com",
+      "sourceOrg": "Anime News Network",
+      "sourceDate": "2026.11.26",
+      "url": "https://www.animenewsnetwork.com/news/2026-11-26/kuboken-killer-shark-in-another-world-manga-gets-tv-anime/.244231",
+      "tags": [
+        "ACGN"
+      ],
+      "summary": "据最新消息，kuboken 创作的奇幻搞笑漫画《异世界杀人鲨》正式宣布将改编为 TV 动画。该作由福瀬重監督带领 Studio Lings 制作，将为观众带来充满荒诞色彩与刺激感的全新异世界冒险故事。",
+      "highlights": [
+        "人气异世界题材漫画确认动画化决定",
+        "由 Studio Lings 负责制作并公布监督人选"
+      ],
+      "readingNote": "又一部脑洞大开的异世界题材作品即将登陆荧幕，ACGN迷不容错过。",
+      "verifiedAt": "2026.11.27",
+      "verificationUrls": [
+        "https://www.animenewsnetwork.com/news/2026-11-26/kuboken-killer-shark-in-another-world-manga-gets-tv-anime/.244231"
+      ],
+      "cover": "/images/briefing/2026-11-27-5.jpg"
+    },
+    {
+      "id": "brief-20261127-6-9ff1a741",
+      "category": "reading",
+      "title": "德国船艇经销商因涉嫌向英吉利海峡走私团伙提供船只遭BBC调查",
+      "originalTitle": "German boat dealer suspected of supplying Channel smuggling gangs, BBC finds",
+      "source": "feeds.bbci.co.uk",
+      "sourceOrg": "BBC News",
+      "sourceDate": "2026.11.26",
+      "url": "https://www.bbc.co.uk/news/articles/cqlymky8kpzjo?at_medium=RSS&at_campaign=rss",
+      "tags": [
+        "时政",
+        "网络"
+      ],
+      "summary": "BBC调查发现，2026年初英吉利海峡近三分之一的非法偷渡船只或引擎涉嫌由一名德国商人的公司提供。目前该嫌疑人正面临相关指控及引渡程序，引发了欧洲跨境打击偷渡网络的新一轮关注。",
+      "highlights": [
+        "BBC深度调查揭露跨境走私供应链细节",
+        "嫌疑人面临引渡及多项严重刑事指控"
+      ],
+      "readingNote": "剖析欧洲偷渡黑色产业链与跨国司法合作的重要时政报道。",
+      "verifiedAt": "2026.11.27",
+      "verificationUrls": [
+        "https://www.bbc.co.uk/news/articles/cqlymky8kpzjo?at_medium=RSS&at_campaign=rss"
+      ],
+      "cover": "/images/briefing/2026-11-27-6.jpg"
     }
   ]
 }

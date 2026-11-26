@@ -16,6 +16,14 @@
       "model": "doubao-seedream-5-0-flash-260915",
       "sha256": "059d3aee29fdf87861b78fcfc2b07312258336bac93bfc6c86660b8716e3a477",
       "sourceSha256": "059d3aee29fdf87861b78fcfc2b07312258336bac93bfc6c86660b8716e3a477"
+    },
+    "2026.11.27": {
+      "src": "/images/briefing/2026-11-27-1.jpg",
+      "alt": "2026.11.27 每日选刊封面",
+      "theme": "futuristic laboratory, holographic timeline graph, glowing data nodes, multi-monitor workstation, sleek aluminum desk",
+      "model": "doubao-seedream-5-0-flash-260915",
+      "sha256": "bb208689faffed08b4cd28aa8a7bbebeabcf3f28eb0fa0983b7a62ae64606bbf",
+      "sourceSha256": "bb208689faffed08b4cd28aa8a7bbebeabcf3f28eb0fa0983b7a62ae64606bbf"
     }
   }
 }

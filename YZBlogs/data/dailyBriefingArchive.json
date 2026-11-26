@@ -1,6 +1,6 @@
 {
-  "windowDays": 90,
-  "asOfDate": "2026.11.26",
+  "windowDays": 30,
+  "asOfDate": "2026.11.27",
   "issues": [
     {
       "edition": {
