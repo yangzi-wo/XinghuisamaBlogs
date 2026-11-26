@@ -139,7 +139,44 @@ def parse_rss_or_atom(raw: bytes, source_name: str, topic_hint: str, limit: int 
     return items
 
 
-def fetch_candidates(now: dt.datetime, preferred_sources: list[str] | None = None, excluded_keywords: list[str] | None = None) -> list[dict]:
+def _norm_item_url(url: str) -> str:
+    clean = (url or "").strip()
+    if not clean:
+        return ""
+    return clean.split("#", 1)[0].rstrip("/").lower()
+
+
+def load_recent_published_urls(today_dot: str, lookback_issues: int = 14) -> set[str]:
+    """收集最近若干期已发布过的原文链接，避免次日重复抓取同一热点。"""
+    urls: set[str] = set()
+    issues: list[dict] = []
+    if LATEST_PATH.is_file():
+        try:
+            issues.append(json.loads(LATEST_PATH.read_text(encoding="utf-8")))
+        except Exception:
+            pass
+    if ARCHIVE_PATH.is_file():
+        try:
+            arch = json.loads(ARCHIVE_PATH.read_text(encoding="utf-8"))
+            issues.extend((arch.get("issues") or [])[:lookback_issues])
+        except Exception:
+            pass
+    for iss in issues:
+        if iss.get("edition", {}).get("date") == today_dot:
+            continue
+        for item in iss.get("items") or []:
+            norm = _norm_item_url(item.get("url") or "")
+            if norm:
+                urls.add(norm)
+    return urls
+
+
+def fetch_candidates(
+    now: dt.datetime,
+    preferred_sources: list[str] | None = None,
+    excluded_keywords: list[str] | None = None,
+    recent_urls: set[str] | None = None,
+) -> list[dict]:
     candidates: list[dict] = []
     rss_sources = [
         ("https://blog.cloudflare.com/rss/", "Cloudflare Blog", "网络技术", 5),
@@ -228,6 +265,11 @@ def fetch_candidates(now: dt.datetime, preferred_sources: list[str] | None = Non
             item for item in candidates
             if not any(kw in f"{item.get('title', '')} {item.get('summary', '')}".lower() for kw in excluded)
         ]
+
+    if recent_urls:
+        fresh = [item for item in candidates if _norm_item_url(item.get("url") or "") not in recent_urls]
+        if len(fresh) >= 6:
+            candidates = fresh
 
     return candidates
 
@@ -415,7 +457,8 @@ def main() -> int:
     max_items = max(1, min(20, int(selection.get("maxItems") or 6)))
     min_items = max(1, min(max_items, int(selection.get("minItems") or 4)))
 
-    candidates = fetch_candidates(now, preferred_sources=preferred_sources, excluded_keywords=excluded_keywords)
+    recent_urls = load_recent_published_urls(today_dot)
+    candidates = fetch_candidates(now, preferred_sources=preferred_sources, excluded_keywords=excluded_keywords, recent_urls=recent_urls)
     if not candidates:
         print("未能抓取到任何候选资讯，跳过更新。", file=sys.stderr)
         return 1
