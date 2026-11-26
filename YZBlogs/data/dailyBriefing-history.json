@@ -43,6 +43,67 @@
           "sourceOrg": "Cloudflare"
         }
       ]
+    },
+    {
+      "date": "2026.11.26",
+      "status": "published",
+      "digest": "a02a571401f886c26dd66f7bf568bc5f9eb88b81ad3750b4ec5af3b905ca5a0f",
+      "items": [
+        {
+          "id": "brief-20261126-1-aebbf9e4",
+          "key": "url:https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
+          "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
+          "title": "gpt6modelsdemonstrateintrinsicproteindesigncapabilities",
+          "originalTitle": "GPT-6 models demonstrate intrinsic protein-design capabilities",
+          "category": "news",
+          "sourceOrg": "OpenAI"
+        },
+        {
+          "id": "brief-20261126-2-b7e1c1b0",
+          "key": "url:https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187",
+          "url": "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187",
+          "title": "at2500inakasakaboyslovemangagetstvanimein2027",
+          "originalTitle": "'At 25:00, in Akasaka' Boys-Love Manga Gets TV Anime in 2027",
+          "category": "news",
+          "sourceOrg": "Anime News Network"
+        },
+        {
+          "id": "brief-20261126-3-cc154f12",
+          "key": "url:https://huggingface.co/papers/2611.30017",
+          "url": "https://huggingface.co/papers/2611.30017",
+          "title": "owebenchalonghorizonbenchmarkformeasuringrealworldengineering",
+          "originalTitle": "OWE-Bench: A long-horizon benchmark for measuring real-world engineering",
+          "category": "reading",
+          "sourceOrg": "Hugging Face"
+        },
+        {
+          "id": "brief-20261126-4-0869063c",
+          "key": "url:https://blog.cloudflare.com/search-for-agents",
+          "url": "https://blog.cloudflare.com/search-for-agents/",
+          "title": "introducingsearchforagents",
+          "originalTitle": "Introducing Search for Agents",
+          "category": "reading",
+          "sourceOrg": "Cloudflare"
+        },
+        {
+          "id": "brief-20261126-5-96b21c34",
+          "key": "url:https://github.com/Marvisak/VIctory",
+          "url": "https://github.com/Marvisak/VIctory",
+          "title": "marvisakvictory12349",
+          "originalTitle": "Marvisak/VIctory (★12349)",
+          "category": "focus",
+          "sourceOrg": "GitHub"
+        },
+        {
+          "id": "brief-20261126-6-00e16b8b",
+          "key": "url:https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss",
+          "url": "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss",
+          "title": "russiasownfiguresshowithaslostnearly500000peopleinukrainewar",
+          "originalTitle": "Russia's own figures show it has lost nearly 500,000 people in Ukraine war",
+          "category": "focus",
+          "sourceOrg": "BBC"
+        }
+      ]
     }
   ]
 }

@@ -1,7 +1,168 @@
 {
-  "windowDays": 30,
+  "windowDays": 90,
   "asOfDate": "2026.11.26",
   "issues": [
+    {
+      "edition": {
+        "date": "2026.11.26",
+        "weekday": "星期四",
+        "label": "每日选刊",
+        "notice": "今日科技与文化前沿：AI大模型突破蛋白质设计，开源社区热议GTA VI PC移植进展。"
+      },
+      "items": [
+        {
+          "id": "brief-20261126-1-aebbf9e4",
+          "category": "news",
+          "title": "GPT-6模型展现蛋白质设计能力",
+          "originalTitle": "GPT-6 models demonstrate intrinsic protein-design capabilities",
+          "source": "openai.com",
+          "sourceOrg": "OpenAI",
+          "sourceDate": "2026.11.24",
+          "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
+          "tags": [
+            "AI大模型"
+          ],
+          "summary": "OpenAI最新发布的GPT-6模型在蛋白质结构与序列设计上展现出卓越的推理能力。实验室测试表明，该模型能够设计出具有实际结合能力的蛋白质，为生物医药研发带来新可能。",
+          "highlights": [
+            "模型具备蛋白质结构推理能力",
+            "实验室测试验证了结合活性"
+          ],
+          "readingNote": "AI在生物科学领域的应用正从辅助转向创造，值得密切关注。",
+          "verifiedAt": "2026.11.26",
+          "verificationUrls": [
+            "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities"
+          ],
+          "cover": "/images/briefing/2026-11-26-1.jpg",
+          "doi": ""
+        },
+        {
+          "id": "brief-20261126-2-b7e1c1b0",
+          "category": "news",
+          "title": "《At 25:00, in Akasaka》BL漫画宣布动画化",
+          "originalTitle": "'At 25:00, in Akasaka' Boys-Love Manga Gets TV Anime in 2027",
+          "source": "www.animenewsnetwork.com",
+          "sourceOrg": "Anime News Network",
+          "sourceDate": "2026.11.25",
+          "url": "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187",
+          "tags": [
+            "ACGN"
+          ],
+          "summary": "夏野宽子创作的BL漫画《在赤坂，25点》正式宣布将于2027年推出TV动画。该作由齐藤壮马与佐藤拓也担任主演，讲述了演艺圈背景下的情感故事。",
+          "highlights": [
+            "2027年动画化确定",
+            "齐藤壮马与佐藤拓也领衔主演"
+          ],
+          "readingNote": "演艺圈题材的BL作品，期待动画对原作细腻情感的还原。",
+          "verifiedAt": "2026.11.26",
+          "verificationUrls": [
+            "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187"
+          ],
+          "cover": "/images/briefing/2026-11-26-2.jpg",
+          "doi": ""
+        },
+        {
+          "id": "brief-20261126-3-cc154f12",
+          "category": "reading",
+          "title": "OWE-Bench：衡量现实世界工程能力的基准",
+          "originalTitle": "OWE-Bench: A long-horizon benchmark for measuring real-world engineering",
+          "source": "Hugging Face Papers",
+          "sourceOrg": "Hugging Face",
+          "sourceDate": "2026.11.26",
+          "url": "https://huggingface.co/papers/2611.30017",
+          "tags": [
+            "AI大模型"
+          ],
+          "summary": "OWE-Bench是一个全新的长周期工程基准测试，涵盖了软件工程、物理工程、机器学习等领域的26项复杂任务，旨在评估AI模型在真实工程环境中的实际解决问题能力。",
+          "highlights": [
+            "涵盖26项长周期工程任务",
+            "多学科领域专家共同编写"
+          ],
+          "readingNote": "AI评估正从简单的问答转向复杂的工程实践，这是衡量模型实用性的关键。",
+          "verifiedAt": "2026.11.26",
+          "verificationUrls": [
+            "https://huggingface.co/papers/2611.30017"
+          ],
+          "cover": "/images/briefing/2026-11-26-3.jpg",
+          "doi": ""
+        },
+        {
+          "id": "brief-20261126-4-0869063c",
+          "category": "reading",
+          "title": "Cloudflare推出AI代理搜索功能",
+          "originalTitle": "Introducing Search for Agents",
+          "source": "Cloudflare Blog",
+          "sourceOrg": "Cloudflare",
+          "sourceDate": "2026.11.25",
+          "url": "https://blog.cloudflare.com/search-for-agents/",
+          "tags": [
+            "网络"
+          ],
+          "summary": "Cloudflare推出了一项新功能，允许网站一键开启AI代理搜索支持，通过自动内容索引和发现API，使网站内容能被AI智能体更高效地检索与利用。",
+          "highlights": [
+            "一键开启AI代理搜索",
+            "支持自动内容索引与HTTP QUERY"
+          ],
+          "readingNote": "这是网站适应AI时代检索方式的重要基础设施升级。",
+          "verifiedAt": "2026.11.26",
+          "verificationUrls": [
+            "https://blog.cloudflare.com/search-for-agents/"
+          ],
+          "cover": "/images/briefing/2026-11-26-4.jpg",
+          "doi": ""
+        },
+        {
+          "id": "brief-20261126-5-96b21c34",
+          "category": "focus",
+          "title": "GitHub热门：GTA VI PC移植项目",
+          "originalTitle": "Marvisak/VIctory (★12349)",
+          "source": "GitHub Trending",
+          "sourceOrg": "GitHub",
+          "sourceDate": "2026.11.23",
+          "url": "https://github.com/Marvisak/VIctory",
+          "tags": [
+            "github开源热门",
+            "游戏"
+          ],
+          "summary": "开源项目VIctory在GitHub上引发热议，该项目致力于通过社区力量实现《GTA VI》的PC移植与兼容运行，目前已获得超过1.2万颗星标。",
+          "highlights": [
+            "社区驱动的PC移植尝试",
+            "GitHub热门开源项目"
+          ],
+          "readingNote": "开源社区对大作移植的热情极高，但技术实现难度巨大，建议关注后续进展。",
+          "verifiedAt": "2026.11.26",
+          "verificationUrls": [
+            "https://github.com/Marvisak/VIctory"
+          ],
+          "cover": "/images/briefing/2026-11-26-5.jpg",
+          "doi": ""
+        },
+        {
+          "id": "brief-20261126-6-00e16b8b",
+          "category": "focus",
+          "title": "俄乌冲突最新伤亡数据披露",
+          "originalTitle": "Russia's own figures show it has lost nearly 500,000 people in Ukraine war",
+          "source": "feeds.bbci.co.uk",
+          "sourceOrg": "BBC",
+          "sourceDate": "2026.11.25",
+          "url": "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss",
+          "tags": [
+            "时政"
+          ],
+          "summary": "据BBC报道，泄露的数据显示俄乌战争已导致俄罗斯方面近50万人伤亡，这场全面入侵从根本上改变了俄罗斯国内的人口死亡模式。",
+          "highlights": [
+            "伤亡人数近50万",
+            "人口死亡模式发生改变"
+          ],
+          "readingNote": "战争带来的深远影响持续发酵，国际局势依然严峻。",
+          "verifiedAt": "2026.11.26",
+          "verificationUrls": [
+            "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss"
+          ],
+          "cover": "/images/briefing/2026-11-26-6.jpg",
+          "doi": ""
+        }
+      ]
+    },
     {
       "edition": {
         "date": "2026.11.25",

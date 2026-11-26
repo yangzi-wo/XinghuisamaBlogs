@@ -28,7 +28,8 @@
       "verificationUrls": [
         "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities"
       ],
-      "cover": "/images/briefing/2026-11-26-1.jpg"
+      "cover": "/images/briefing/2026-11-26-1.jpg",
+      "doi": ""
     },
     {
       "id": "brief-20261126-2-b7e1c1b0",
@@ -52,7 +53,8 @@
       "verificationUrls": [
         "https://www.animenewsnetwork.com/news/2026-11-25/at-25-00-in-akasaka-boys-love-manga-gets-tv-anime-in-2027/.244187"
       ],
-      "cover": "/images/briefing/2026-11-26-2.jpg"
+      "cover": "/images/briefing/2026-11-26-2.jpg",
+      "doi": ""
     },
     {
       "id": "brief-20261126-3-cc154f12",
@@ -76,7 +78,8 @@
       "verificationUrls": [
         "https://huggingface.co/papers/2611.30017"
       ],
-      "cover": "/images/briefing/2026-11-26-3.jpg"
+      "cover": "/images/briefing/2026-11-26-3.jpg",
+      "doi": ""
     },
     {
       "id": "brief-20261126-4-0869063c",
@@ -100,7 +103,8 @@
       "verificationUrls": [
         "https://blog.cloudflare.com/search-for-agents/"
       ],
-      "cover": "/images/briefing/2026-11-26-4.jpg"
+      "cover": "/images/briefing/2026-11-26-4.jpg",
+      "doi": ""
     },
     {
       "id": "brief-20261126-5-96b21c34",
@@ -125,7 +129,8 @@
       "verificationUrls": [
         "https://github.com/Marvisak/VIctory"
       ],
-      "cover": "/images/briefing/2026-11-26-5.jpg"
+      "cover": "/images/briefing/2026-11-26-5.jpg",
+      "doi": ""
     },
     {
       "id": "brief-20261126-6-00e16b8b",
@@ -149,7 +154,8 @@
       "verificationUrls": [
         "https://www.bbc.co.uk/news/articles/cmx27g533zwyo?at_medium=RSS&at_campaign=rss"
       ],
-      "cover": "/images/briefing/2026-11-26-6.jpg"
+      "cover": "/images/briefing/2026-11-26-6.jpg",
+      "doi": ""
     }
   ]
 }
