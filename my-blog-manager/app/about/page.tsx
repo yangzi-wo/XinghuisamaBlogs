@@ -230,10 +230,10 @@ export default async function AdminAboutPage() {
           <div className="absolute top-4 right-4 md:top-6 md:right-8 z-50">
             <Link
               href="/editor?type=about"
-              className="p-2.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl bg-white/30 dark:bg-slate-900/40 backdrop-blur-md text-slate-800 dark:text-slate-100 hover:bg-indigo-500 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-lg border border-white/50 dark:border-white/10 group flex items-center gap-2 active:scale-95"
+              className="px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl bg-white/75 dark:bg-slate-900/75 backdrop-blur-md text-slate-800 dark:text-slate-100 hover:bg-indigo-500 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-lg border border-white/60 dark:border-white/15 flex items-center gap-2 active:scale-95"
             >
               <span className="text-base md:text-lg">✏️</span>
-              <span className="text-xs md:text-sm font-bold hidden md:inline-block group-hover:inline-block">修改此页</span>
+              <span className="text-xs md:text-sm font-bold">修改此页</span>
             </Link>
           </div>
 
