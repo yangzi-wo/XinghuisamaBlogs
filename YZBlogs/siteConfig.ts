@@ -5,7 +5,7 @@ export const siteConfig = {
   title: "样子の巴别塔",
   faviconUrl: "/avatar.jpg",
   authorName: "样子",
-  bio: "「烏の歌に茜 この孤独も今音に変わる」\n只不过是一个喜爱ACGN的普通人而已。",
+  bio: "「烏の歌に茜 この孤独も今音に変わる」",
 
   navTitle: "样子",
 
@@ -34,7 +34,7 @@ export const siteConfig = {
   // 5. 首页照片墙预览图
   photoWallImage: "",
   cloudMusicIds: [] as string[],
-  localTracks: [{"id": "local_1795514121095", "title": "花も騒めく", "artist": "ヨルシカ", "src": "/music/1795514121095_Hi-Res.mp3", "cover": "/music/1795514121095_178201173.jpg", "lrcUrl": "/music/1795514121095_-.lrc"}, {"id": "local_1795568545836", "title": "又三郎", "artist": "ヨルシカ", "src": "/music/1795568545836_MV_____n-buna___suis.mp3", "cover": "/music/1795568545836_kg_1795568422802.jpg", "lrcUrl": "/music/1795568545836_lyric.lrc"}, {"id": "local_1795615158152", "title": "八月、某、月明かり", "artist": "ヨルシカ", "src": "/music/1795615158152_Hi-Res______________-_____Yorushika.mp3", "cover": "/music/1795615158152_22195309.jpg", "lrcUrl": "/music/1795615158152_lyric.lrc"}, {"id": "local_1795616340698", "title": "アポリア", "artist": "ヨルシカ", "src": "/music/1795616340698_Hi-Res_____________-______Yorushika.mp3", "cover": "/music/1795616340698_105645570.jpg", "lrcUrl": "/music/1795616340698_lyric.lrc"}, {"id": "local_1795617284268", "title": "白金ディスコ", "artist": "井口裕香", "src": "/music/1795617284268_disco_____MV_______________OP.mp3", "cover": "/music/1795617284268_32170955.jpg", "lrcUrl": "/music/1795617284268_disco.lrc"}] as { id: string; title: string; artist: string; src: string; cover?: string; lrcUrl?: string }[],
+  localTracks: [{"id": "local_1795514121095", "title": "花も騒めく", "artist": "ヨルシカ", "src": "/music/1795514121095_Hi-Res.mp3", "cover": "/music/1795514121095_178201173.jpg", "lrcUrl": "/music/1795514121095_-.lrc"}, {"id": "local_1795568545836", "title": "又三郎", "artist": "ヨルシカ", "src": "/music/1795568545836_MV_____n-buna___suis.mp3", "cover": "/music/1795568545836_kg_1795568422802.jpg", "lrcUrl": "/music/1795568545836_lyric.lrc"}, {"id": "local_1795615158152", "title": "八月、某、月明かり", "artist": "ヨルシカ", "src": "/music/1795615158152_Hi-Res______________-_____Yorushika.mp3", "cover": "/music/1795615158152_22195309.jpg", "lrcUrl": "/music/1795615158152_lyric.lrc"}, {"id": "local_1795616340698", "title": "アポリア", "artist": "ヨルシカ", "src": "/music/1795616340698_Hi-Res_____________-______Yorushika.mp3", "cover": "/music/1795616340698_105645570.jpg", "lrcUrl": "/music/1795616340698_lyric.lrc"}, {"id": "local_1795617284268", "title": "白金ディスコ", "artist": "井口裕香", "src": "/music/1795617284268_disco_____MV_______________OP.mp3", "cover": "/music/1795617284268_32170955.jpg", "lrcUrl": "/music/1795617284268_disco.lrc"}, {"id": "local_1795695468629", "title": "三月と狼少年", "artist": "初音ミク", "src": "/music/1795695468629_n-buna.mp3", "cover": "/music/1795695468629_1831798.jpg", "lrcUrl": "/music/1795695468629_lyric.lrc"}, {"id": "local_1795695589228", "title": "ラプンツェル", "artist": "初音ミク", "src": "/music/1795695589228_Dark__________n-buna.mp3", "cover": "/music/1795695589228_1831798.jpg", "lrcUrl": "/music/1795695589228_lyric.lrc"}] as { id: string; title: string; artist: string; src: string; cover?: string; lrcUrl?: string }[],
   social: {
     github: "https://github.com/yangzi-wo",
     discord: "https://discord.com/users/1511869707916152885",
