@@ -57,7 +57,19 @@ function fixFragmentLinks() {
   };
 }
 
+function normalizeCjkStrikethrough(markdown) {
+  return String(markdown || '')
+    .split(/(```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]+`)/g)
+    .map((part, idx) =>
+      idx % 2 === 1
+        ? part
+        : part.replace(/(?<!\\)~~(?=\S)([^\n]+?)(?<=\S)~~/g, '<del>$1</del>')
+    )
+    .join('');
+}
+
 export async function renderMarkdown(content) {
+  const normalizedContent = normalizeCjkStrikethrough(content);
   const processed = await unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -73,6 +85,6 @@ export async function renderMarkdown(content) {
     })
     .use(rehypeKatex)
     .use(rehypeStringify)
-    .process(content);
+    .process(normalizedContent);
   return processed.toString();
 }

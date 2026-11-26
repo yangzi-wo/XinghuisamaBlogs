@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import Link from 'next/link';
 
 import { unified } from 'unified';
+import { normalizeCjkStrikethrough } from '../../../lib/markdownUtils';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm'; // 🌟 核心引入：支持删除线和表格等 GFM 语法
 import remarkRehype from 'remark-rehype';
@@ -93,6 +94,7 @@ async function getPostData(slug: string) {
       return '\n\n' + '<br/>'.repeat(brCount) + '\n\n';
     });
   }).join('');
+  content = normalizeCjkStrikethrough(content);
 
   // ==========================================
 

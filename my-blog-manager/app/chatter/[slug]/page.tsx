@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 // 🌟 核心升级：引入 Next.js 现代统一解析流
 import { unified } from 'unified';
+import { normalizeCjkStrikethrough } from '../../../lib/markdownUtils';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm'; // 🌟 挂载 GFM 支持删除线
 import remarkMath from 'remark-math';
@@ -72,6 +73,7 @@ async function getChatterData(slug: string) {
       return '\n\n' + '<br>'.repeat(brCount) + '\n\n';
     });
   }).join('');
+  content = normalizeCjkStrikethrough(content);
 
   // ==========================================
 

@@ -19,6 +19,7 @@ import 'katex/dist/katex.min.css';
 import Navbar from '../../components/Navbar';
 import PageTransition from '../../components/PageTransition';
 import { siteConfig } from '../../siteConfig';
+import { normalizeCjkStrikethrough } from '../../lib/markdownUtils';
 
 // 🌟 引入刚刚写好的前端交互引擎
 import AboutClient from '../../components/AboutClient';
@@ -74,6 +75,7 @@ export default async function AdminAboutPage() {
         return '\n\n' + '<br>'.repeat(brCount) + '\n\n';
       });
     }).join('');
+    content = normalizeCjkStrikethrough(content);
     // ==========================================
 
     // 🌟 2. 启用全新解析引擎：支持代码高亮与删除线
