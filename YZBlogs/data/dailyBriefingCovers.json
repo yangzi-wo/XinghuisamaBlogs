@@ -24,6 +24,14 @@
       "model": "doubao-seedream-5-0-flash-260915",
       "sha256": "bb208689faffed08b4cd28aa8a7bbebeabcf3f28eb0fa0983b7a62ae64606bbf",
       "sourceSha256": "bb208689faffed08b4cd28aa8a7bbebeabcf3f28eb0fa0983b7a62ae64606bbf"
+    },
+    "2026.11.28": {
+      "src": "/images/briefing/2026-11-28-1.jpg",
+      "alt": "2026.11.28 每日选刊封面",
+      "theme": "server room background, monitoring server rack, typing on terminal laptop, blue holographic security display",
+      "model": "doubao-seedream-5-0-flash-260915",
+      "sha256": "9ab29bb7a0c9cd5eaf4fb99012e4b75b4878159deb8ff3316074fea0f498741a",
+      "sourceSha256": "9ab29bb7a0c9cd5eaf4fb99012e4b75b4878159deb8ff3316074fea0f498741a"
     }
   }
 }
