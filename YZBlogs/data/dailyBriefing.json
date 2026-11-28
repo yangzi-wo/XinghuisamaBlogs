@@ -1,156 +1,158 @@
 {
   "edition": {
-    "date": "2026.11.28",
-    "weekday": "星期六",
+    "date": "2026.11.29",
+    "weekday": "星期日",
     "label": "每日选刊",
-    "notice": "今日速览AI安全新框架、星际战甲新更新、宝可梦动画与开源热门。"
+    "notice": "今日聚焦大模型与开源前沿，探索AI代理、Xbox移植兼容层及全球多地热点动态。"
   },
   "items": [
     {
-      "id": "brief-20261128-1-71ca52e2",
-      "category": "news",
-      "title": "OpenAI联合思科推出Linux运行时开源安全工具Shirudo",
-      "originalTitle": "OpenAI and Cisco introduce Shirudo",
-      "source": "OpenAI News",
-      "sourceOrg": "OpenAI / Cisco",
-      "sourceDate": "2026.11.23",
-      "url": "https://openai.com/index/introducing-shirudo",
+      "id": "brief-20261129-1-93c1d1ed",
+      "category": "focus",
+      "title": "Donald Knuth 因AI生成报告泛滥暂停错误悬赏",
+      "originalTitle": "Donald Knuth suspends error bounties due to an influx of AI-generated reports",
+      "source": "Hacker News",
+      "sourceOrg": "Hacker News",
+      "sourceDate": "2026.11.28",
+      "url": "https://cs.stanford.edu/~knuth/moratorium.html",
       "tags": [
         "AI大模型",
         "网络"
       ],
-      "summary": "OpenAI与思科联合发布了名为Shirudo的Linux开源运行时安全工具。该项目旨在帮助工程团队在为运行中的系统滚动部署安全补丁时提供实时防护，降低系统暴露在漏洞攻击下的风险，进一步提升基础设施安全性。",
+      "summary": "著名计算机科学家唐纳德·高德（Donald Knuth）宣布暂停其标志性的错误悬赏（Error Bounties），原因是近期收到了大量由AI自动生成的垃圾报告，给学术核查带来了沉重负担。",
       "highlights": [
-        "针对Linux环境打造的开源运行时保护工具",
-        "助力团队在热更新与补丁无缝滚动部署期间保障系统稳定与安全"
+        "高德宣布暂停长期的书籍错误悬赏项目",
+        "AI生成工具导致无效与垃圾报告激增"
       ],
-      "readingNote": "开源AI基础设施安全工具的新突破，适合云原生及系统运维开发者关注。",
-      "verifiedAt": "2026.11.28",
+      "readingNote": "计算机泰斗也被AI时代的垃圾信息淹没，值得全行业深思。看板娘提醒：使用AI需克制，切勿滥用刷榜。",
+      "verifiedAt": "2026.11.29",
       "verificationUrls": [
-        "https://openai.com/index/introducing-shirudo"
+        "https://cs.stanford.edu/~knuth/moratorium.html"
       ],
-      "cover": "/images/briefing/2026-11-28-1.jpg"
+      "cover": "/images/briefing/2026-11-29-1.jpg"
     },
     {
-      "id": "brief-20261128-2-191f42a7",
+      "id": "brief-20261129-2-930f28af",
+      "category": "focus",
+      "title": "OpenAI 就涉嫌窃取商业机密反诉苹果公司",
+      "originalTitle": "OpenAI counter-sues Apple over alleged theft of trade secrets",
+      "source": "feeds.bbci.co.uk",
+      "sourceOrg": "BBC News",
+      "sourceDate": "2026.11.28",
+      "url": "https://www.bbc.co.uk/news/articles/cm15ekqvlezeo",
+      "tags": [
+        "AI大模型",
+        "时政"
+      ],
+      "summary": "ChatGPT的创造者OpenAI正式对苹果公司提起反诉，指控这家科技巨头通过一名离职员工非法窃取了与其核心业务相关的商业机密，科技巨头之间的法律战持续升级。",
+      "highlights": [
+        "OpenAI正式向苹果发起商业机密反诉",
+        "指控核心机密遭前员工泄露给科技巨头"
+      ],
+      "readingNote": "AI巨头与传统科技霸主的法律博弈正式白热化。",
+      "verifiedAt": "2026.11.29",
+      "verificationUrls": [
+        "https://www.bbc.co.uk/news/articles/cm15ekqvlezeo"
+      ],
+      "cover": "/images/briefing/2026-11-29-2.jpg"
+    },
+    {
+      "id": "brief-20261129-3-82da1c3a",
       "category": "news",
-      "title": "《Warframe：Tau》全新扩展包将于12月9日多平台上线",
-      "originalTitle": "《Warframe：Tau》将于美东冬令时间 12 月 9 日推出",
-      "source": "Steam 新闻",
-      "sourceOrg": "Digital Extremes / Steam",
-      "sourceDate": "2026.11.27",
-      "url": "https://store.steampowered.com/news/app/230410/view/689775303935919548",
-      "tags": [
-        "游戏"
-      ],
-      "summary": "知名科幻动作游戏《Warframe》迎来了其探索始源星系13年后的全新时代。新扩展包《Warframe：Tau》将于12月9日在全平台上线，玩家将踏上新星图，深入充满黑帮势力的熔城大都会及佩里塔荒原迎战全新挑战。",
-      "highlights": [
-        "全新星图开启，引入巨型都市与荒原场景",
-        "包含全新任务模式、地下犯罪帮派剧情线及全新武器机制"
-      ],
-      "readingNote": "13年老牌科幻刷宝射击大作再迎重磅更新，老仓鼠们值得关注。",
-      "verifiedAt": "2026.11.28",
-      "verificationUrls": [
-        "https://store.steampowered.com/news/app/230410/view/689775303935919548"
-      ],
-      "cover": "/images/briefing/2026-11-28-2.jpg"
-    },
-    {
-      "id": "brief-20261128-3-ffb495dc",
-      "category": "focus",
-      "title": "OpenGame项目：打造支持20+AI Agent的超级游戏工作室框架",
-      "originalTitle": "nexu-io/opengame (★2130)",
+      "title": "VIctory-NVIDIA：专为NVIDIA显卡优化的Xbox兼容层",
+      "originalTitle": "trustno1-coder/VIctory-NVIDIA (★6534)",
       "source": "GitHub Trending",
-      "sourceOrg": "nexu-io / GitHub",
+      "sourceOrg": "GitHub",
       "sourceDate": "2026.11.25",
-      "url": "https://github.com/nexu-io/opengame",
+      "url": "https://github.com/trustno1-coder/VIctory-NVIDIA",
       "tags": [
-        "GitHub开源热门",
+        "github开源热门",
         "游戏"
       ],
-      "summary": "GitHub热门项目OpenGame旨在打造适用于AI Agent的“超级游戏引擎”。它能够将Claude Code、Codex、DeepSeek等20多种编码Agent聚合为全栈AI游戏工作室，支持一键生成并发布3D与小游戏至微信、TikTok等多平台。",
+      "summary": "GitHub热门开源项目VIctory-NVIDIA发布，该项目针对NVIDIA RTX系列显卡深度调优了Xbox Series的兼容层，支持DLSS帧生成及2K分辨率流畅运行。",
       "highlights": [
-        "支持跨20+主流AI Agent协同开发游戏",
-        "开箱即用提供100+爆款游戏模板供重新二次混音与制作"
+        "针对NVIDIA显卡优化的Xbox兼容层",
+        "集成DLSS帧生成技术与独立设置菜单"
       ],
-      "readingNote": "将大模型Agent与游戏开发引擎深度融合，展示了AIGC游戏开发的极客新方向。",
-      "verifiedAt": "2026.11.28",
+      "readingNote": "跨平台游戏运行技术的新突破，极具极客钻研价值。",
+      "verifiedAt": "2026.11.29",
       "verificationUrls": [
-        "https://github.com/nexu-io/opengame"
+        "https://github.com/trustno1-coder/VIctory-NVIDIA"
       ],
-      "cover": "/images/briefing/2026-11-28-3.jpg"
+      "cover": "/images/briefing/2026-11-29-3.jpg"
     },
     {
-      "id": "brief-20261128-4-c2c6c952",
-      "category": "focus",
-      "title": "《宝可梦》全新动画季官宣 莉可与罗伊将于2027年10月回归",
-      "originalTitle": "Pokémon Anime Gets New Season Featuring Liko, Roy in October 2027",
-      "source": "Anime News Network",
+      "id": "brief-20261129-4-20996885",
+      "category": "news",
+      "title": "《影之刃零》PC版发布1.0304629版本更新补丁",
+      "originalTitle": "《影之刃零》补丁更新说明（版本号：1.0304629）",
+      "source": "store.steampowered.com",
+      "sourceOrg": "Steam",
+      "sourceDate": "2026.11.28",
+      "url": "https://store.steampowered.com/news/app/4115450/view/698782503191709241",
+      "tags": [
+        "游戏",
+        "ACGN"
+      ],
+      "summary": "国产动作大作《影之刃零》发布了容量约7GB的全新PC补丁，官方提醒玩家在更新前移除第三方Mod并注意清理着色器缓存以防闪退。",
+      "highlights": [
+        "推送7GB大小的新版游戏补丁优化体验",
+        "官方建议清理第三方Mod及着色器缓存"
+      ],
+      "readingNote": "动作游戏爱好者的焦点，更新前记得备份或清理冲突MOD。",
+      "verifiedAt": "2026.11.29",
+      "verificationUrls": [
+        "https://store.steampowered.com/news/app/4115450/view/698782503191709241"
+      ],
+      "cover": "/images/briefing/2026-11-29-4.jpg"
+    },
+    {
+      "id": "brief-20261129-5-7b3b6bed",
+      "category": "reading",
+      "title": "LLM作为上下文工程师：高效引导大模型的新范式",
+      "originalTitle": "Revisiting LLMs as Context Engineers",
+      "source": "Hugging Face Papers",
+      "sourceOrg": "Hugging Face",
+      "sourceDate": "2026.11.29",
+      "url": "https://huggingface.co/papers/2611.30494",
+      "tags": [
+        "AI大模型"
+      ],
+      "summary": "随着大模型在各类新任务中的普及，上下文工程成为无需高昂训练成本即可高效引导模型的核心方法。本文深入探讨了如何利用LLM自身来充当上下文工程师构建动态提示词。",
+      "highlights": [
+        "探讨无需密集训练的高效引导大模型方法",
+        "解析利用LLM构建结构化元数据与提示词的技术"
+      ],
+      "readingNote": "提示词工程走向自动化的必读前沿论文。",
+      "verifiedAt": "2026.11.29",
+      "verificationUrls": [
+        "https://huggingface.co/papers/2611.30494"
+      ],
+      "cover": "/images/briefing/2026-11-29-5.jpg"
+    },
+    {
+      "id": "brief-20261129-6-2ca23028",
+      "category": "reading",
+      "title": "德克萨斯州 Anime Frontier 将举办《Maiden Blood》动画世界首映",
+      "originalTitle": "Texas' Anime Frontier to Screen World Premiere of Maiden Blood Anime",
+      "source": "www.animenewsnetwork.com",
       "sourceOrg": "Anime News Network",
-      "sourceDate": "2026.11.27",
-      "url": "https://www.animenewsnetwork.com/news/2026-11-27/pokemon-anime-gets-new-season-featuring-liko-roy-in-october-2027/.244257",
+      "sourceDate": "2026.11.28",
+      "url": "https://www.animenewsnetwork.com/news/2026-11-28/texas-anime-frontier-to-screen-world-premiere-of-maiden-blood-anime/.244258",
       "tags": [
         "ACGN"
       ],
-      "summary": "宝可梦官方宣布《宝可梦》电视动画将推出全新一季，继续讲述主角莉可（Liko）与罗伊（Roy）的冒险故事，预计于2027年10月播出。此外，官方还将于次年1月推出另一项全新宝可梦企划节目。",
+      "summary": "美国德克萨斯州的 Anime Frontier 漫展宣布，将于12月5日举办全新动画《Maiden Blood》的世界首映礼，导演岸诚二与制作人北林俊也均将作为特邀嘉宾出席。",
       "highlights": [
-        "主角莉可与罗伊确定在2027年秋季续作中继续担任主角",
-        "2027年1月初将率先推出全新的过渡衍生动画节目"
+        "《Maiden Blood》动画将在德州漫展世界首映",
+        "知名导演岸诚二及制作人将出席现场交流"
       ],
-      "readingNote": "地平线篇章世界观得到延伸，宝可梦粉丝可以继续期待两位新主角的后续成长。",
-      "verifiedAt": "2026.11.28",
+      "readingNote": "ACGN迷不容错过的业界新番动态与主创见面会活动。",
+      "verifiedAt": "2026.11.29",
       "verificationUrls": [
-        "https://www.animenewsnetwork.com/news/2026-11-27/pokemon-anime-gets-new-season-featuring-liko-roy-in-october-2027/.244257"
-      ]
-    },
-    {
-      "id": "brief-20261128-5-caa25289",
-      "category": "reading",
-      "title": "研究揭示：仅靠 Markdown 规则文件难以阻挡编码 Agent 的越界行为",
-      "originalTitle": "Markdown Is Not a Firewall: four coding agents, one rules file, four boundaries",
-      "source": "Hugging Face Papers",
-      "sourceOrg": "Hugging Face",
-      "sourceDate": "2026.11.28",
-      "url": "https://huggingface.co/papers/2611.27112",
-      "tags": [
-        "AI大模型",
-        "网络"
+        "https://www.animenewsnetwork.com/news/2026-11-28/texas-anime-frontier-to-screen-world-premiere-of-maiden-blood-anime/.244258"
       ],
-      "summary": "该论文针对自动化编码Agent的安全防御进行了深入实验。许多项目团队习惯在代码库中放置单页Markdown规则文件（如CONTRIBUTING.md）作为防护标准，但实验表明Agent不仅很少读取规则，而且在面对安全边界挑战时极易绕过这些静态说明。",
-      "highlights": [
-        "评估了四种主流编码Agent在面对同一规则文件时的行为差异",
-        "指出静态文本规则无法替代真正的代码沙箱与运行时访问控制"
-      ],
-      "readingNote": "深入探讨了当前AI编码助手在工程落地时的安全软肋，是AI安全领域的一篇佳作。",
-      "verifiedAt": "2026.11.28",
-      "verificationUrls": [
-        "https://huggingface.co/papers/2611.27112"
-      ],
-      "cover": "/images/briefing/2026-11-28-5.jpg"
-    },
-    {
-      "id": "brief-20261128-6-aed701de",
-      "category": "reading",
-      "title": "泽连斯基接受BBC专访 表达对美俄关系与和平谈判进程的不满",
-      "originalTitle": "Zelensky criticises 'strange' Trump-Putin friendship in BBC interview",
-      "source": "BBC News",
-      "sourceOrg": "BBC",
-      "sourceDate": "2026.11.27",
-      "url": "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo?at_medium=RSS&at_campaign=rss",
-      "tags": [
-        "时政"
-      ],
-      "summary": "乌克兰总统泽连斯基在接受BBC专访时，对美俄领导人之间的互动关系提出了批评，认为当前美国在推动结束战争的和平谈判中对俄罗斯的施压力度远远不够，乌克兰正面临极其严峻的冬日考验。",
-      "highlights": [
-        "泽连斯基直言美方在和谈中未对俄罗斯施加足够的政治与经济压力",
-        "基辅及乌克兰全境正迎来又一个面临能源与战场考验的艰难冬季"
-      ],
-      "readingNote": "剖析地缘政治博弈关键时刻的表态，有助于透视俄乌冲突后续走势。",
-      "verifiedAt": "2026.11.28",
-      "verificationUrls": [
-        "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo?at_medium=RSS&at_campaign=rss"
-      ],
-      "cover": "/images/briefing/2026-11-28-6.jpg"
+      "cover": "/images/briefing/2026-11-29-6.jpg"
     }
   ]
 }

@@ -32,6 +32,14 @@
       "model": "doubao-seedream-5-0-flash-260915",
       "sha256": "9ab29bb7a0c9cd5eaf4fb99012e4b75b4878159deb8ff3316074fea0f498741a",
       "sourceSha256": "9ab29bb7a0c9cd5eaf4fb99012e4b75b4878159deb8ff3316074fea0f498741a"
+    },
+    "2026.11.29": {
+      "src": "/images/briefing/2026-11-29-1.jpg",
+      "alt": "2026.11.29 每日选刊封面",
+      "theme": "white-haired dragon girl, old-fashioned study room, vintage books, overflowing papers, classic desk, thoughtful expressi",
+      "model": "doubao-seedream-5-0-flash-260915",
+      "sha256": "8ec640450621ebfa34a5401f0045ee55c6c59fd8583a259829bcb49de3fae418",
+      "sourceSha256": "8ec640450621ebfa34a5401f0045ee55c6c59fd8583a259829bcb49de3fae418"
     }
   }
 }

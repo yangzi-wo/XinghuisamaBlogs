@@ -1,7 +1,163 @@
 {
   "windowDays": 30,
-  "asOfDate": "2026.11.28",
+  "asOfDate": "2026.11.29",
   "issues": [
+    {
+      "edition": {
+        "date": "2026.11.28",
+        "weekday": "星期六",
+        "label": "每日选刊",
+        "notice": "今日速览AI安全新框架、星际战甲新更新、宝可梦动画与开源热门。"
+      },
+      "items": [
+        {
+          "id": "brief-20261128-1-71ca52e2",
+          "category": "news",
+          "title": "OpenAI联合思科推出Linux运行时开源安全工具Shirudo",
+          "originalTitle": "OpenAI and Cisco introduce Shirudo",
+          "source": "OpenAI News",
+          "sourceOrg": "OpenAI / Cisco",
+          "sourceDate": "2026.11.23",
+          "url": "https://openai.com/index/introducing-shirudo",
+          "tags": [
+            "AI大模型",
+            "网络"
+          ],
+          "summary": "OpenAI与思科联合发布了名为Shirudo的Linux开源运行时安全工具。该项目旨在帮助工程团队在为运行中的系统滚动部署安全补丁时提供实时防护，降低系统暴露在漏洞攻击下的风险，进一步提升基础设施安全性。",
+          "highlights": [
+            "针对Linux环境打造的开源运行时保护工具",
+            "助力团队在热更新与补丁无缝滚动部署期间保障系统稳定与安全"
+          ],
+          "readingNote": "开源AI基础设施安全工具的新突破，适合云原生及系统运维开发者关注。",
+          "verifiedAt": "2026.11.28",
+          "verificationUrls": [
+            "https://openai.com/index/introducing-shirudo"
+          ],
+          "cover": "/images/briefing/2026-11-28-1.jpg"
+        },
+        {
+          "id": "brief-20261128-2-191f42a7",
+          "category": "news",
+          "title": "《Warframe：Tau》全新扩展包将于12月9日多平台上线",
+          "originalTitle": "《Warframe：Tau》将于美东冬令时间 12 月 9 日推出",
+          "source": "Steam 新闻",
+          "sourceOrg": "Digital Extremes / Steam",
+          "sourceDate": "2026.11.27",
+          "url": "https://store.steampowered.com/news/app/230410/view/689775303935919548",
+          "tags": [
+            "游戏"
+          ],
+          "summary": "知名科幻动作游戏《Warframe》迎来了其探索始源星系13年后的全新时代。新扩展包《Warframe：Tau》将于12月9日在全平台上线，玩家将踏上新星图，深入充满黑帮势力的熔城大都会及佩里塔荒原迎战全新挑战。",
+          "highlights": [
+            "全新星图开启，引入巨型都市与荒原场景",
+            "包含全新任务模式、地下犯罪帮派剧情线及全新武器机制"
+          ],
+          "readingNote": "13年老牌科幻刷宝射击大作再迎重磅更新，老仓鼠们值得关注。",
+          "verifiedAt": "2026.11.28",
+          "verificationUrls": [
+            "https://store.steampowered.com/news/app/230410/view/689775303935919548"
+          ],
+          "cover": "/images/briefing/2026-11-28-2.jpg"
+        },
+        {
+          "id": "brief-20261128-3-ffb495dc",
+          "category": "focus",
+          "title": "OpenGame项目：打造支持20+AI Agent的超级游戏工作室框架",
+          "originalTitle": "nexu-io/opengame (★2130)",
+          "source": "GitHub Trending",
+          "sourceOrg": "nexu-io / GitHub",
+          "sourceDate": "2026.11.25",
+          "url": "https://github.com/nexu-io/opengame",
+          "tags": [
+            "GitHub开源热门",
+            "游戏"
+          ],
+          "summary": "GitHub热门项目OpenGame旨在打造适用于AI Agent的“超级游戏引擎”。它能够将Claude Code、Codex、DeepSeek等20多种编码Agent聚合为全栈AI游戏工作室，支持一键生成并发布3D与小游戏至微信、TikTok等多平台。",
+          "highlights": [
+            "支持跨20+主流AI Agent协同开发游戏",
+            "开箱即用提供100+爆款游戏模板供重新二次混音与制作"
+          ],
+          "readingNote": "将大模型Agent与游戏开发引擎深度融合，展示了AIGC游戏开发的极客新方向。",
+          "verifiedAt": "2026.11.28",
+          "verificationUrls": [
+            "https://github.com/nexu-io/opengame"
+          ],
+          "cover": "/images/briefing/2026-11-28-3.jpg"
+        },
+        {
+          "id": "brief-20261128-4-c2c6c952",
+          "category": "focus",
+          "title": "《宝可梦》全新动画季官宣 莉可与罗伊将于2027年10月回归",
+          "originalTitle": "Pokémon Anime Gets New Season Featuring Liko, Roy in October 2027",
+          "source": "Anime News Network",
+          "sourceOrg": "Anime News Network",
+          "sourceDate": "2026.11.27",
+          "url": "https://www.animenewsnetwork.com/news/2026-11-27/pokemon-anime-gets-new-season-featuring-liko-roy-in-october-2027/.244257",
+          "tags": [
+            "ACGN"
+          ],
+          "summary": "宝可梦官方宣布《宝可梦》电视动画将推出全新一季，继续讲述主角莉可（Liko）与罗伊（Roy）的冒险故事，预计于2027年10月播出。此外，官方还将于次年1月推出另一项全新宝可梦企划节目。",
+          "highlights": [
+            "主角莉可与罗伊确定在2027年秋季续作中继续担任主角",
+            "2027年1月初将率先推出全新的过渡衍生动画节目"
+          ],
+          "readingNote": "地平线篇章世界观得到延伸，宝可梦粉丝可以继续期待两位新主角的后续成长。",
+          "verifiedAt": "2026.11.28",
+          "verificationUrls": [
+            "https://www.animenewsnetwork.com/news/2026-11-27/pokemon-anime-gets-new-season-featuring-liko-roy-in-october-2027/.244257"
+          ]
+        },
+        {
+          "id": "brief-20261128-5-caa25289",
+          "category": "reading",
+          "title": "研究揭示：仅靠 Markdown 规则文件难以阻挡编码 Agent 的越界行为",
+          "originalTitle": "Markdown Is Not a Firewall: four coding agents, one rules file, four boundaries",
+          "source": "Hugging Face Papers",
+          "sourceOrg": "Hugging Face",
+          "sourceDate": "2026.11.28",
+          "url": "https://huggingface.co/papers/2611.27112",
+          "tags": [
+            "AI大模型",
+            "网络"
+          ],
+          "summary": "该论文针对自动化编码Agent的安全防御进行了深入实验。许多项目团队习惯在代码库中放置单页Markdown规则文件（如CONTRIBUTING.md）作为防护标准，但实验表明Agent不仅很少读取规则，而且在面对安全边界挑战时极易绕过这些静态说明。",
+          "highlights": [
+            "评估了四种主流编码Agent在面对同一规则文件时的行为差异",
+            "指出静态文本规则无法替代真正的代码沙箱与运行时访问控制"
+          ],
+          "readingNote": "深入探讨了当前AI编码助手在工程落地时的安全软肋，是AI安全领域的一篇佳作。",
+          "verifiedAt": "2026.11.28",
+          "verificationUrls": [
+            "https://huggingface.co/papers/2611.27112"
+          ],
+          "cover": "/images/briefing/2026-11-28-5.jpg"
+        },
+        {
+          "id": "brief-20261128-6-aed701de",
+          "category": "reading",
+          "title": "泽连斯基接受BBC专访 表达对美俄关系与和平谈判进程的不满",
+          "originalTitle": "Zelensky criticises 'strange' Trump-Putin friendship in BBC interview",
+          "source": "BBC News",
+          "sourceOrg": "BBC",
+          "sourceDate": "2026.11.27",
+          "url": "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo?at_medium=RSS&at_campaign=rss",
+          "tags": [
+            "时政"
+          ],
+          "summary": "乌克兰总统泽连斯基在接受BBC专访时，对美俄领导人之间的互动关系提出了批评，认为当前美国在推动结束战争的和平谈判中对俄罗斯的施压力度远远不够，乌克兰正面临极其严峻的冬日考验。",
+          "highlights": [
+            "泽连斯基直言美方在和谈中未对俄罗斯施加足够的政治与经济压力",
+            "基辅及乌克兰全境正迎来又一个面临能源与战场考验的艰难冬季"
+          ],
+          "readingNote": "剖析地缘政治博弈关键时刻的表态，有助于透视俄乌冲突后续走势。",
+          "verifiedAt": "2026.11.28",
+          "verificationUrls": [
+            "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo?at_medium=RSS&at_campaign=rss"
+          ],
+          "cover": "/images/briefing/2026-11-28-6.jpg"
+        }
+      ]
+    },
     {
       "edition": {
         "date": "2026.11.27",
