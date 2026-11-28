@@ -105,20 +105,20 @@ async def execute_sync(request: Request):
             repo_root = target_path
 
         try:
-            subprocess.run(["git", "-C", repo_root, "add", "-A"], check=True, env=git_env, timeout=15)
+            subprocess.run(["git", "-C", repo_root, "add", "-A"], check=True, env=git_env, timeout=30)
             status_res = subprocess.run(
                 ["git", "-C", repo_root, "status", "--porcelain"],
-                check=True, capture_output=True, text=True, env=git_env, timeout=15
+                check=True, capture_output=True, text=True, env=git_env, timeout=20
             )
             if status_res.stdout.strip():
                 subprocess.run(
                     ["git", "-C", repo_root, "commit", "-m", "chore: sync content from manager"],
-                    check=True, capture_output=True, text=True, env=git_env, timeout=20
+                    check=True, capture_output=True, text=True, env=git_env, timeout=45
                 )
 
             pull_res = subprocess.run(
                 ["git", "-C", repo_root, "pull", "--rebase", "--autostash", "origin", "main"],
-                capture_output=True, text=True, env=git_env, timeout=30
+                capture_output=True, text=True, env=git_env, timeout=90
             )
             if pull_res.returncode != 0:
                 subprocess.run(["git", "-C", repo_root, "rebase", "--abort"], capture_output=True, env=git_env, timeout=10)
@@ -134,7 +134,7 @@ async def execute_sync(request: Request):
 
             subprocess.run(
                 ["git", "-C", repo_root, "push", "origin", "main"],
-                check=True, capture_output=True, text=True, env=git_env, timeout=120
+                check=True, capture_output=True, text=True, env=git_env, timeout=180
             )
             return {"success": True, "message": "🎉 已同步并自动推送至 GitHub！Cloudflare 约 1 分钟内自动更新。"}
         except Exception as git_err:
